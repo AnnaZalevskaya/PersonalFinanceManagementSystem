@@ -19,4 +19,9 @@
     <Folder Include="Middleware\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OperationsApplication\OperationsApplication.csproj" />
+    <ProjectReference Include="..\OperationsInfrastructure\OperationsInfrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

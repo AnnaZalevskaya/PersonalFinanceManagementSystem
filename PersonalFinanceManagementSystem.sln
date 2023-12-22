@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApplication", "Microser
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthCore", "Microservices\AuthMicroservice\AuthCore\AuthCore.csproj", "{4E4744C7-4BC8-43F8-849E-60A320D2C6F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthInfrastructure", "Microservices\AuthMicroservice\AuthDomain\AuthInfrastructure.csproj", "{D463F3A4-0988-4512-AE4A-50C01F599074}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthInfrastructure", "Microservices\AuthMicroservice\AuthInfrastructure\AuthInfrastructure.csproj", "{D463F3A4-0988-4512-AE4A-50C01F599074}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

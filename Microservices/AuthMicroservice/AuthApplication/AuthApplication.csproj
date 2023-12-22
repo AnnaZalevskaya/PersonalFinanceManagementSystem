@@ -13,4 +13,8 @@
     <Folder Include="Application\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuthCore\AuthCore.csproj" />
+  </ItemGroup>
+
 </Project>

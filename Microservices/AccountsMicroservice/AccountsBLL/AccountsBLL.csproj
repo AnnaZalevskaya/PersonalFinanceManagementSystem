@@ -13,4 +13,8 @@
     <Folder Include="Validators\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AccountsDAL\AccountsDAL.csproj" />
+  </ItemGroup>
+
 </Project>

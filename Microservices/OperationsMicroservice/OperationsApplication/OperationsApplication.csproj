@@ -13,4 +13,8 @@
     <Folder Include="MappConfigs\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OperationsCore\OperationsCore.csproj" />
+  </ItemGroup>
+
 </Project>

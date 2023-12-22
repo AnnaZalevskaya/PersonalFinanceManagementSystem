@@ -19,4 +19,9 @@
     <Folder Include="Middleware\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuthApplication\AuthApplication.csproj" />
+    <ProjectReference Include="..\AuthInfrastructure\AuthInfrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
