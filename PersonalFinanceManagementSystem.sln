@@ -17,11 +17,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OperationsMicroservice", "O
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationsAPI", "Microservices\OperationsMicroservice\OperationsAPI\OperationsAPI.csproj", "{DC5C1729-C7F9-45AA-A874-DA18CB8E2F9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationsApplication", "Microservices\OperationsMicroservice\OperationsApplication\OperationsApplication.csproj", "{E0FDEACD-BE6B-4184-A9FA-89BB02ED0AEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationsApplication", "Microservices\OperationsMicroservice\OperationsApplication\OperationsApplication.csproj", "{E0FDEACD-BE6B-4184-A9FA-89BB02ED0AEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationsCore", "Microservices\OperationsMicroservice\OperationsCore\OperationsCore.csproj", "{88F61241-FEDC-487C-B5F1-8C9A0A45AEC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationsCore", "Microservices\OperationsMicroservice\OperationsCore\OperationsCore.csproj", "{88F61241-FEDC-487C-B5F1-8C9A0A45AEC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationsInfrastructure", "Microservices\OperationsMicroservice\OperationsInfrastructure\OperationsInfrastructure.csproj", "{1864466F-97A4-4028-A612-F147C4E59234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationsInfrastructure", "Microservices\OperationsMicroservice\OperationsInfrastructure\OperationsInfrastructure.csproj", "{1864466F-97A4-4028-A612-F147C4E59234}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthMicroservice", "AuthMicroservice", "{7F499FC9-5255-4B7E-9BF8-0738A4B4492E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthIdentity", "Microservices\AuthMicroservice\AuthIdentity\AuthIdentity.csproj", "{88575B53-BEAF-496F-864D-BE1FC707F996}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,10 @@ Global
 		{1864466F-97A4-4028-A612-F147C4E59234}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1864466F-97A4-4028-A612-F147C4E59234}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1864466F-97A4-4028-A612-F147C4E59234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88575B53-BEAF-496F-864D-BE1FC707F996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88575B53-BEAF-496F-864D-BE1FC707F996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88575B53-BEAF-496F-864D-BE1FC707F996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88575B53-BEAF-496F-864D-BE1FC707F996}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +79,8 @@ Global
 		{E0FDEACD-BE6B-4184-A9FA-89BB02ED0AEA} = {D68BB333-516F-4B05-B1BE-3E9ECC5EE1A5}
 		{88F61241-FEDC-487C-B5F1-8C9A0A45AEC0} = {D68BB333-516F-4B05-B1BE-3E9ECC5EE1A5}
 		{1864466F-97A4-4028-A612-F147C4E59234} = {D68BB333-516F-4B05-B1BE-3E9ECC5EE1A5}
+		{7F499FC9-5255-4B7E-9BF8-0738A4B4492E} = {8D5E5DFF-4AB6-4971-BDFB-3ED505DBE451}
+		{88575B53-BEAF-496F-864D-BE1FC707F996} = {7F499FC9-5255-4B7E-9BF8-0738A4B4492E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8EC97B79-2C5F-4CCA-815A-62D7861FF1E6}
