@@ -27,11 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthMicroservice", "AuthMic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthAPI", "Microservices\AuthMicroservice\AuthAPI\AuthAPI.csproj", "{88575B53-BEAF-496F-864D-BE1FC707F996}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApplication", "Microservices\AuthMicroservice\AuthApplication\AuthApplication.csproj", "{C5669D9C-8F2F-4A8F-B38E-2987152A7650}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApplication", "Microservices\AuthMicroservice\AuthApplication\AuthApplication.csproj", "{C5669D9C-8F2F-4A8F-B38E-2987152A7650}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthCore", "Microservices\AuthMicroservice\AuthCore\AuthCore.csproj", "{4E4744C7-4BC8-43F8-849E-60A320D2C6F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthCore", "Microservices\AuthMicroservice\AuthCore\AuthCore.csproj", "{4E4744C7-4BC8-43F8-849E-60A320D2C6F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthDomain", "Microservices\AuthMicroservice\AuthDomain\AuthDomain.csproj", "{D463F3A4-0988-4512-AE4A-50C01F599074}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthInfrastructure", "Microservices\AuthMicroservice\AuthDomain\AuthInfrastructure.csproj", "{D463F3A4-0988-4512-AE4A-50C01F599074}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
