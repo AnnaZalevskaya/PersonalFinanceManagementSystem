@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OperationsApplication\OperationsApplication.csproj" />
-    <ProjectReference Include="..\OperationsInfrastructure\OperationsInfrastructure.csproj" />
+    <ProjectReference Include="..\OperationsApplication\Operations.Application.csproj" />
+    <ProjectReference Include="..\OperationsInfrastructure\Operations.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

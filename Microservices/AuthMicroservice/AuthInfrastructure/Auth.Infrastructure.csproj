@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AuthApplication\AuthApplication.csproj" />
+    <ProjectReference Include="..\AuthApplication\Auth.Application.csproj" />
   </ItemGroup>
 
 </Project>

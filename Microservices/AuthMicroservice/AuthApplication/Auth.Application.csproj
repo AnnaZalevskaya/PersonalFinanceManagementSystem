@@ -9,12 +9,12 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="MappConfigs\" />
-    <Folder Include="Services\" />
-    <Folder Include="Validators\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Application\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AccountsDAL\AccountsDAL.csproj" />
+    <ProjectReference Include="..\AuthCore\Auth.Core.csproj" />
   </ItemGroup>
 
 </Project>

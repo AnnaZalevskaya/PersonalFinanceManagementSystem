@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>e878ffb1-22ee-4221-8d9f-86a400b0df35</UserSecretsId>
+    <UserSecretsId>edb52af9-b170-486b-b45b-3a384eda0bb1</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
@@ -16,11 +16,12 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AccountsBLL\AccountsBLL.csproj" />
-    <ProjectReference Include="..\AccountsDAL\AccountsDAL.csproj" />
+    <ProjectReference Include="..\AuthApplication\Auth.Application.csproj" />
+    <ProjectReference Include="..\AuthInfrastructure\Auth.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
