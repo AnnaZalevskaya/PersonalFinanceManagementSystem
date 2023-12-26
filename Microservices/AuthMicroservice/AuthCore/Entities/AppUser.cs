@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Auth.Core.Entities
 {
-    public class AppUser : IdentityUser<long>
+    public class AppUser : IdentityUser
     {
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
