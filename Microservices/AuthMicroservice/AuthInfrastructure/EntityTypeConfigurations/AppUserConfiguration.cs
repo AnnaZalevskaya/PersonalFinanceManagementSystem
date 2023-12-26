@@ -8,7 +8,7 @@ namespace Auth.Infrastructure.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            builder.HasKey(x => x.Id);
+            builder.ToTable("Users");       
         }
     }
 }
