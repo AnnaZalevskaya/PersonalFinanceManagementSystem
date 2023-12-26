@@ -20,6 +20,15 @@ namespace Auth.API
             return services;
         }
 
+        public static void Configure(IWebHostEnvironment env,  AuthDbContext context)
+        {
+            if (env.IsDevelopment())
+            {
+                context.Database.EnsureCreated();
+                context.Database.Migrate();
+            }
+        }
+
         public static IServiceCollection ConfigureControllers(this IServiceCollection services)
         {
             services.AddControllers();

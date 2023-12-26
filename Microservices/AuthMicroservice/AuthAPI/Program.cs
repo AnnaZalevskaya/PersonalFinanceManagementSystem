@@ -1,3 +1,5 @@
+using Auth.API.Extensions;
+
 namespace Auth.API
 {
     public class Program
@@ -14,12 +16,14 @@ namespace Auth.API
 
             var app = builder.Build();
 
+            app.MigrateDatabase();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
