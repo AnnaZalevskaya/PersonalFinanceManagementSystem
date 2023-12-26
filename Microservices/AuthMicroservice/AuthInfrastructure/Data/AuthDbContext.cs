@@ -11,7 +11,7 @@ namespace Auth.Infrastructure.Data
         public AuthDbContext(DbContextOptions<AuthDbContext> options)
             : base(options)
         {
-            Database.Migrate();
+            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
