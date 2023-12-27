@@ -11,14 +11,7 @@ namespace Auth.API.Extensions
             {
                 using (var appContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>())
                 {
-                    try
-                    {
-                        appContext.Database.Migrate();
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
+                    appContext.Database.Migrate();
                 }
             }
 
