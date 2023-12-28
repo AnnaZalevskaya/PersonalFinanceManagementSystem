@@ -21,9 +21,6 @@ namespace Auth.API.Controllers
         {
             var response = _userService.Authenticate(model);
 
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
             return Ok(response);
         }
 
@@ -31,11 +28,6 @@ namespace Auth.API.Controllers
         public async Task<IActionResult> RegisterAsync(RegisterRequest model)
         {
             var response = await _userService.Register(model);
-
-            if (response == null)
-            {
-                return BadRequest(new { message = "Didn't register!" });
-            }
 
             return Ok(response);
         }
