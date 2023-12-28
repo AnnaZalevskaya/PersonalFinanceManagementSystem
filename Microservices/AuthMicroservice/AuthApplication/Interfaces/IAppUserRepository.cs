@@ -5,8 +5,7 @@
         List<AppUser> GetAll();
         AppUser GetById(long id);
         AppUser FindByEmail(string email);
-        Task<long> Add(AppUser entity);
+        Task<long> AddAsync(AppUser entity);
         Task SaveChangesAsync();
-        void Dispose();
     }
 }

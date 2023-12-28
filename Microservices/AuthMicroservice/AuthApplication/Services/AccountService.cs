@@ -13,16 +13,14 @@ namespace Auth.Application.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
-        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
         public AccountService(ITokenService tokenService, IUnitOfWork unitOfWork,
-            UserManager<AppUser> userManager, IConfiguration configuration, IMapper mapper)
+            UserManager<AppUser> userManager, IMapper mapper)
         {
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
-            _configuration = configuration;
             _mapper = mapper;
         }
 
@@ -32,8 +30,8 @@ namespace Auth.Application.Services
             var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
             var user = _unitOfWork.Users.FindByEmail(managedUser.Email);
 
-            var roleIds = await _unitOfWork.UserRoles.GetRoleIds(user);
-            var roles = _unitOfWork.Roles.GetRoleIds(roleIds);
+            var roleIds = await _unitOfWork.UserRoles.GetRoleIdsAsync(user);
+            var roles = _unitOfWork.Roles.GetRoleIdsAsync(roleIds);
 
             var accessToken = _tokenService.CreateToken(user, roles);
             user.RefreshToken = JwtExtention.GenerateRefreshToken(_configuration);

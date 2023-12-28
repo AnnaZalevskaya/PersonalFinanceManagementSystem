@@ -1,6 +1,7 @@
 ﻿using Auth.Application.Interfaces;
 using Auth.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Infrastructure.Repositories
 {
@@ -13,11 +14,11 @@ namespace Auth.Infrastructure.Repositories
             _context = context;
         }
 
-        public List<IdentityRole<long>> GetRoleIds(IEnumerable<long> roleIds)
+        public async Task<List<IdentityRole<long>>> GetRoleIdsAsync(IEnumerable<long> roleIds)
         {
-            return _context.Roles
+            return await _context.Roles
                 .Where(x => roleIds.Contains(x.Id))
-                .ToList();
+                .ToListAsync();
         }
     }
 }

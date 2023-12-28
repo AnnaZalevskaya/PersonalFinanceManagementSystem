@@ -28,7 +28,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest model)
+        public async Task<IActionResult> RegisterAsync(RegisterRequest model)
         {
             var response = await _userService.Register(model);
 

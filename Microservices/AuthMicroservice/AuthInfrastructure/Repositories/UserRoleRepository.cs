@@ -15,7 +15,7 @@ namespace Auth.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<long>> GetRoleIds(AppUser user)
+        public async Task<IEnumerable<long>> GetRoleIdsAsync(AppUser user)
         {
             return await _context.UserRoles
                 .Where(r => r.UserId == user.Id)

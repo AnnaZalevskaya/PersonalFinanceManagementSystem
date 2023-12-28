@@ -4,6 +4,6 @@ namespace Auth.Application.Interfaces
 {
     public interface IRoleRepository<IdentityRole>
     {
-        List<IdentityRole<long>> GetRoleIds(IEnumerable<long> roleIds);
+        Task<List<IdentityRole<long>>> GetRoleIdsAsync(IEnumerable<long> roleIds);
     }
 }

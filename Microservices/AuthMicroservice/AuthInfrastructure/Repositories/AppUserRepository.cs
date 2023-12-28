@@ -32,7 +32,7 @@ namespace Auth.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<long> Add(AppUser entity)
+        public async Task<long> AddAsync(AppUser entity)
         {
             var result = await _context.Users.AddAsync(entity);
             await _context.SaveChangesAsync();

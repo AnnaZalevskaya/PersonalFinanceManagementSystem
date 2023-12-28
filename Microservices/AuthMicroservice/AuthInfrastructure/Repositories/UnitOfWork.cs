@@ -20,30 +20,30 @@ namespace Auth.Infrastructure.Repositories
 
         public IAppUserRepository<AppUser> Users
         {
-
             get
             {
                 _accountRepository ??= new AppUserRepository(_context);
+
                 return _accountRepository;
             }
         }
 
         public IRoleRepository<IdentityRole> Roles
         {
-
             get
             {
                 _roleRepository ??= new RoleRepository(_context);
+
                 return _roleRepository;
             }
         }
 
         public IUserRoleRepository<IdentityUserRole<long>> UserRoles
         {
-
             get
             {
                 _userRoleRepository ??= new UserRoleRepository(_context);
+
                 return _userRoleRepository;
             }
         }
@@ -51,11 +51,6 @@ namespace Auth.Infrastructure.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
         }
     }
 }
