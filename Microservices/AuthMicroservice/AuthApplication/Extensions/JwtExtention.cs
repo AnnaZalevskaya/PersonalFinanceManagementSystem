@@ -12,7 +12,7 @@ namespace Auth.Application.Extensions
 {
     public static class JwtExtention
     {
-        public static List<Claim> CreateClaims(this AppUser user, List<IdentityRole> roles)
+        public static List<Claim> CreateClaims(this AppUser user, List<IdentityRole<long>> roles)
         {
             var claims = new List<Claim>
             {

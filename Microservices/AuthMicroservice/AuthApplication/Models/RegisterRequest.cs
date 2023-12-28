@@ -5,6 +5,8 @@ namespace Auth.Application.Models
     public class RegisterRequest
     {
         [Required]
+        public string Id { get; set; } = null!;
+        [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; } = null!;
         [Required]

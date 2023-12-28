@@ -12,7 +12,10 @@ namespace Auth.API
                 .ConfigureSQLServer(builder.Configuration)
                 .ConfigureControllers()
                 .ConfigureEndpointsApiExplorer()
-                .AddSwaggerGen();
+                .AddSwaggerGen()
+                .ConfigureRepositoryWrapper()
+                .ConfigureAuth(builder.Configuration)
+                .ConfigureMapperProfiles();
 
             var app = builder.Build();
 
@@ -26,6 +29,7 @@ namespace Auth.API
             
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
