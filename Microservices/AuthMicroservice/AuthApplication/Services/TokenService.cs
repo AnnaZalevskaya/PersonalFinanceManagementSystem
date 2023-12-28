@@ -1,4 +1,4 @@
-﻿using Auth.API.Extensions;
+﻿using Auth.Application.Extensions;
 using Auth.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

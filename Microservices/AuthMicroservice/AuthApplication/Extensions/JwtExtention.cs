@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Auth.API.Extensions
+namespace Auth.Application.Extensions
 {
     public static class JwtExtention
     {
