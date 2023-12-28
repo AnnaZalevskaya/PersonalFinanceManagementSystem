@@ -48,12 +48,5 @@ namespace Auth.API.Controllers
 
             return Ok(users);
         }
-
-        [Authorize]
-        [HttpGet("token")]
-        public IActionResult TestAuthorization()
-        {
-            return Ok("You're Authorized");
-        }
     }
 }
