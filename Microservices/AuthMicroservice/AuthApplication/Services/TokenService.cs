@@ -1,4 +1,5 @@
 ﻿using Auth.Application.Extensions;
+using Auth.Application.Interfaces;
 using Auth.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Auth.Application.Services
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
 
@@ -15,7 +16,7 @@ namespace Auth.Application.Services
             _configuration = configuration;
         }
 
-        public string CreateToken(AppUser user, List<IdentityRole> roles)
+        public string CreateToken(AppUser user, List<IdentityRole<long>> roles)
         {
             var token = user
                 .CreateClaims(roles)
