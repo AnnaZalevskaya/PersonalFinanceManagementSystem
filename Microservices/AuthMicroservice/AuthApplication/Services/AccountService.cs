@@ -75,15 +75,15 @@ namespace Auth.Application.Services
 
         public List<AppUser> GetAll()
         {
-            var turnover = _unitOfWork.Users.GetAll();
-            var turnoverList = new List<AppUser>();
+            var users = _unitOfWork.Users.GetAll();
+            var usersList = new List<AppUser>();
 
-            foreach (var book in turnover)
+            foreach (var user in users)
             {
-                turnoverList.Add(_mapper.Map<AppUser>(book));
+                usersList.Add(_mapper.Map<AppUser>(user));
             }
 
-            return turnoverList;
+            return usersList;
         }
     }
 }
