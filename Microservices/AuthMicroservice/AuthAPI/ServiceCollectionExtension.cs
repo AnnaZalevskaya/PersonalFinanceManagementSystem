@@ -3,6 +3,7 @@ using Auth.Application.Services;
 using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
 using Auth.Infrastructure.Repositories;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -80,6 +81,14 @@ namespace Auth.API
                 .AddUserManager<UserManager<AppUser>>()
                 .AddSignInManager<SignInManager<AppUser>>()
                 .AddDefaultTokenProviders();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureValidation(this IServiceCollection services)
+        {
+            services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
 
             return services;
         }
