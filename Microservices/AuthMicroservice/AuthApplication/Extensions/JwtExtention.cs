@@ -1,6 +1,8 @@
-﻿using Auth.Core.Entities;
+﻿using Auth.Application.Settings;
+using Auth.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
@@ -28,30 +30,30 @@ namespace Auth.Application.Extensions
             return claims;
         }
 
-        public static SigningCredentials CreateSigningCredentials(this IConfiguration configuration)
+        public static SigningCredentials CreateSigningCredentials(this IOptions<JwtSettings> options)
         {
             return new SigningCredentials(
                 new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!)
+                    Encoding.UTF8.GetBytes(options.Value.Secret!)
                 ),
                 SecurityAlgorithms.HmacSha256
             );
         }
 
-        public static JwtSecurityToken CreateJwtToken(this IEnumerable<Claim> claims, IConfiguration configuration)
+        public static JwtSecurityToken CreateJwtToken(this IEnumerable<Claim> claims, IOptions<JwtSettings> options)
         {
-            var expire = int.Parse(configuration.GetSection("Jwt:Expire").Value);
+            var expire = int.Parse(options.Value.Expire);
 
             return new JwtSecurityToken(
-                configuration["Jwt:Issuer"],
-                configuration["Jwt:Audience"],
+                options.Value.Issuer,
+                options.Value.Audience,
                 claims,
                 expires: DateTime.UtcNow.AddMinutes(expire),
-                signingCredentials: configuration.CreateSigningCredentials()
+                signingCredentials: options.CreateSigningCredentials()
             );
         }
 
-        public static string GenerateRefreshToken(this IConfiguration configuration)
+        public static string GenerateRefreshToken()
         {
             var randomNumber = new byte[64];
             using var rng = RandomNumberGenerator.Create();
