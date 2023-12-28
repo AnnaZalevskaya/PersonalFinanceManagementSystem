@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Auth.Infrastructure.EntityTypeConfigurations
 {
-    public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<string>>
+    public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityUserRole<long>>
     {
-        public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)
+        public void Configure(EntityTypeBuilder<IdentityUserRole<long>> builder)
         {
             builder.ToTable("UserRoles");
+            builder.HasKey(t => t.UserId);
         }
     }
 }

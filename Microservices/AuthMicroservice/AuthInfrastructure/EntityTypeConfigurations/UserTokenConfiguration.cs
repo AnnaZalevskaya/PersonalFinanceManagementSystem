@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Auth.Infrastructure.EntityTypeConfigurations
 {
-    public class UserTokenConfiguration : IEntityTypeConfiguration<IdentityUserToken<string>>
+    public class UserTokenConfiguration : IEntityTypeConfiguration<IdentityUserToken<long>>
     {
-        public void Configure(EntityTypeBuilder<IdentityUserToken<string>> builder)
+        public void Configure(EntityTypeBuilder<IdentityUserToken<long>> builder)
         {
             builder.ToTable("UserTokens");
+            builder.HasKey(x => x.UserId);
         }
     }
 }
