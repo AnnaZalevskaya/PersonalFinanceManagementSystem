@@ -2,10 +2,10 @@
 {
     public interface IAppUserRepository<AppUser>
     {
-        List<AppUser> GetAll();
-        AppUser GetById(long id);
-        AppUser FindByEmail(string email);
-        Task<long> AddAsync(AppUser entity);
+        Task<List<AppUser>> GetAllAsync(CancellationToken cancellationToken);
+        Task<AppUser> GetByIdAsync(long id, CancellationToken cancellationToken);
+        Task<AppUser> FindByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<long> AddAsync(AppUser entity, CancellationToken cancellationToken);
         Task SaveChangesAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Auth.Application.Interfaces;
 using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Infrastructure.Repositories
 {
@@ -13,28 +14,28 @@ namespace Auth.Infrastructure.Repositories
             _context = context;
         }
 
-        public List<AppUser> GetAll()
+        public async Task<List<AppUser>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return _context.Users.ToList();
+            return await _context.Users.ToListAsync(cancellationToken);
         }
 
-        public AppUser GetById(long id)
+        public async Task<AppUser> GetByIdAsync(long id, CancellationToken cancellationToken)
         {
-            var result = _context.Users.FirstOrDefault(user => user.Id == id);
+            var result = await _context.Users.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
 
             return result;
         }
 
-        public AppUser FindByEmail(string email)
+        public async Task<AppUser> FindByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            var result = _context.Users.FirstOrDefault(user => user.Email == email);
+            var result = await _context.Users.FirstOrDefaultAsync(user => user.Email == email, cancellationToken);
 
             return result;
         }
 
-        public async Task<long> AddAsync(AppUser entity)
+        public async Task<long> AddAsync(AppUser entity, CancellationToken cancellationToken)
         {
-            var result = await _context.Users.AddAsync(entity);
+            var result = await _context.Users.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync();
 
             return result.Entity.Id;
@@ -43,11 +44,6 @@ namespace Auth.Infrastructure.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
         }
     }
 }
