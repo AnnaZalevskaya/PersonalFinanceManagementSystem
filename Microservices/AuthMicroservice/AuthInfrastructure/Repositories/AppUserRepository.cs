@@ -36,14 +36,8 @@ namespace Auth.Infrastructure.Repositories
         public async Task<long> AddAsync(AppUser entity, CancellationToken cancellationToken)
         {
             var result = await _context.Users.AddAsync(entity, cancellationToken);
-            await _context.SaveChangesAsync();
 
             return result.Entity.Id;
-        }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
