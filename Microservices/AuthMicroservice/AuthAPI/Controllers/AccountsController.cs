@@ -17,26 +17,28 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthRequest model)
+        public async Task<ActionResult<AuthResponse>> AuthenticateAsync([FromBody] AuthRequest model, 
+            CancellationToken cancellationToken)
         {
-            var response = _userService.Authenticate(model);
+            var response = await _userService.AuthenticateAsync(model, cancellationToken);
 
             return Ok(response);
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(RegisterRequest model)
+        public async Task<ActionResult<AuthResponse>> RegisterAsync([FromBody] RegisterRequest model,
+            CancellationToken cancellationToken)
         {
-            var response = await _userService.Register(model);
+            var response = await _userService.RegisterAsync(model, cancellationToken);
 
             return Ok(response);
         }
 
         [Authorize]
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<ActionResult<List<UserModel>>> GetAllAsync(CancellationToken cancellationToken)
         {
-            var users = _userService.GetAll();
+            var users = await _userService.GetAllAsync(cancellationToken);
 
             return Ok(users);
         }

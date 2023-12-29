@@ -1,13 +1,11 @@
 ﻿using Auth.Application.Models;
-using Auth.Core.Entities;
 
 namespace Auth.Application.Interfaces
 {
     public interface IAccountService
     {
-        Task<AuthResponse> Register(RegisterRequest request);
-        Task<AuthResponse> Authenticate(AuthRequest request);
-        List<AppUser> GetAll();
-
+        Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);
+        Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken);
+        Task<List<UserModel>> GetAllAsync(CancellationToken cancellationToken);
     }
 }

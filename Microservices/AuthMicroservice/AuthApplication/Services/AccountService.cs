@@ -1,9 +1,7 @@
-﻿using Auth.Application.Extensions;
-using Auth.Application.Interfaces;
+﻿using Auth.Application.Interfaces;
 using Auth.Application.Models;
 using Auth.Core.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using AutoMapper;
 
 namespace Auth.Application.Services
@@ -24,21 +22,28 @@ namespace Auth.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<AuthResponse> Authenticate(AuthRequest request)
+        public async Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken)
         {
-            var managedUser = await _userManager.FindByEmailAsync(request.Email.ToUpper());
-            var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
-            var user = _unitOfWork.Users.FindByEmail(managedUser.Email);
+            var user = await _userManager.FindByEmailAsync(request.Email.ToUpper());
 
-            var roleIds = await _unitOfWork.UserRoles.GetRoleIdsAsync(user);
-            var roles = _unitOfWork.Roles.GetRoleIdsAsync(roleIds);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User is not found!");
+            }
 
-            var accessToken = _tokenService.CreateToken(user, roles);
-            user.RefreshToken = JwtExtention.GenerateRefreshToken(_configuration);
-            user.RefreshTokenExpiryTime = DateTime.UtcNow
-                .AddDays(int.Parse(_configuration.GetSection("Jwt:RefreshTokenValidityInDays").Value));
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 
-            await _unitOfWork.SaveChangesAsync();
+            if (!isPasswordValid)
+            {
+                throw new ArgumentException("Invalid password!");
+            }
+
+            var roleIds = await _unitOfWork.UserRoles.GetRoleIdsAsync(user, cancellationToken);
+            var roles = await _unitOfWork.Roles.GetRoleIdsAsync(roleIds, cancellationToken);
+
+            var accessToken = _tokenService.GetToken(user, roles);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new AuthResponse
             {
@@ -50,12 +55,12 @@ namespace Auth.Application.Services
             };
         }
 
-        public async Task<AuthResponse> Register(RegisterRequest request)
+        public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
         {
             var user = _mapper.Map<AppUser>(request);
 
             await _userManager.CreateAsync(user, request.Password);
-            var findUser = _unitOfWork.Users.FindByEmail(user.Email);
+            var findUser = await _unitOfWork.Users.FindByEmailAsync(user.Email, cancellationToken);
 
             if (findUser == null)
             {
@@ -64,21 +69,21 @@ namespace Auth.Application.Services
 
             await _userManager.AddToRoleAsync(findUser, RoleConsts.Client);
 
-            return await Authenticate(new AuthRequest
+            return await AuthenticateAsync(new AuthRequest
             {
                 Email = request.Email,
                 Password = request.Password
-            });
+            }, cancellationToken);
         }
 
-        public List<AppUser> GetAll()
+        public async Task<List<UserModel>> GetAllAsync(CancellationToken cancellationToken)
         {
-            var users = _unitOfWork.Users.GetAll();
-            var usersList = new List<AppUser>();
+            var users = await _unitOfWork.Users.GetAllAsync(cancellationToken);
+            var usersList = new List<UserModel>();
 
             foreach (var user in users)
             {
-                usersList.Add(_mapper.Map<AppUser>(user));
+                usersList.Add(_mapper.Map<UserModel>(user));
             }
 
             return usersList;
