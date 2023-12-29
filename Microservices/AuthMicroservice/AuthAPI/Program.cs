@@ -33,6 +33,8 @@ namespace Auth.API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseExceptionHandlerMiddleware();
+
             app.MapControllers();
 
             app.Run();
