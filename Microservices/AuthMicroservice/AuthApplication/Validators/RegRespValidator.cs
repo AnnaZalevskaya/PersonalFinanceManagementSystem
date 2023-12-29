@@ -9,6 +9,7 @@ namespace Auth.Application.Validators
             RuleFor(resp => resp.Email)
                 .EmailAddress()
                 .NotEmpty();
+
             RuleFor(resp => resp.Username)
                 .NotEmpty();
         }
