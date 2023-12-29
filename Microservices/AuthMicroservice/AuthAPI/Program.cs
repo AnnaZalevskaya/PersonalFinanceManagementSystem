@@ -15,7 +15,10 @@ namespace Auth.API
                 .ConfigureEndpointsApiExplorer()
                 .AddSwaggerGen()
                 .ConfigureRepositoryWrapper()
-                .ConfigureAuth(builder.Configuration)
+                .ConfigureAppServices(builder.Configuration)
+                .ConfigureAuthentication()
+                .ConfigureAuthorization()
+                .ConfigureIdentity()
                 .ConfigureMapperProfiles();
 
             var app = builder.Build();

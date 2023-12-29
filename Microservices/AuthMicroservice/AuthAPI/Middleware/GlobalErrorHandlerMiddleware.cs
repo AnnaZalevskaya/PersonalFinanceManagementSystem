@@ -28,17 +28,17 @@ namespace Auth.API.Middleware
         private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             var statusCode = HttpStatusCode.InternalServerError;
-            var message = "Произошла ошибка сервера.";
+            var message = "A server error has occurred.";
 
             if (ex is NotFoundException)
             {
                 statusCode = HttpStatusCode.NotFound; 
-                message = "Запрошенный ресурс не найден.";
+                message = "The requested resource was not found.";
             }
             else if (ex is UnauthorizedException)
             {
                 statusCode = HttpStatusCode.Unauthorized; 
-                message = "Доступ запрещен.";
+                message = "Access is denied.";
             }
 
             var response = new { error = message };

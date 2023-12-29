@@ -1,19 +1,11 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Auth.Application.Settings
+﻿namespace Auth.Application.Settings
 {
     public class JwtSettings
     {
-        public string Expire { get; }
-        public string Secret { get; }
-        public string Issuer { get; }
-        public string Audience { get; }
-        public string TokenValidityInMinutes { get; }
-        public string RefreshTokenValidityInDays { get; }
+        public string Expire { get; init; }
+        public string Secret { get; init; }
+        public string Issuer { get; init; }
+        public string Audience { get; init; }
+        public string RefreshTokenValidityInDays { get; init;  }
     }
 }

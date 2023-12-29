@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Interfaces;
 using Auth.Application.Services;
+using Auth.Application.Settings;
 using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
 using Auth.Infrastructure.Repositories;
@@ -8,10 +9,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Auth.API
+namespace Auth.API.Extensions
 {
     public static class ServiceCollectionExtension
     {
@@ -22,7 +25,8 @@ namespace Auth.API
             return services;
         }
 
-        public static IServiceCollection ConfigureSQLServer(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureSQLServer(this IServiceCollection services, 
+            IConfiguration configuration)
         {
             services.AddDbContext<AuthDbContext>(options
                  => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
@@ -44,10 +48,19 @@ namespace Auth.API
             return services;
         }
 
-        public static IServiceCollection ConfigureAuth(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureAppServices(this IServiceCollection services, 
+            IConfiguration configuration)
         {
+            services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<ITokenService, TokenService>();     
+            services.AddScoped<ITokenService, TokenService>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services)
+        {
+            var jwtOptions = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>();
 
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,18 +77,29 @@ namespace Auth.API
                         ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = configuration["Jwt:Issuer"]!,
-                        ValidAudience = configuration["Jwt:Audience"]!,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!))
+                        ValidIssuer = jwtOptions.Value.Issuer,
+                        ValidAudience = jwtOptions.Value.Audience,
+                        IssuerSigningKey = 
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Secret))
                     };
                 });
 
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthorization(this IServiceCollection services)
+        {
             services.AddAuthorization(options => options.DefaultPolicy =
                 new AuthorizationPolicyBuilder
                     (JwtBearerDefaults.AuthenticationScheme)
                         .RequireAuthenticatedUser()
                         .Build());
 
+            return services;
+        }
+
+        public static IServiceCollection ConfigureIdentity(this IServiceCollection services)
+        {
             services.AddIdentity<AppUser, IdentityRole<long>>()
                 .AddEntityFrameworkStores<AuthDbContext>()
                 .AddUserManager<UserManager<AppUser>>()

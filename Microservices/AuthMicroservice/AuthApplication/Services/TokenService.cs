@@ -3,9 +3,7 @@ using Auth.Application.Interfaces;
 using Auth.Application.Settings;
 using Auth.Core.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Auth.Application.Services
