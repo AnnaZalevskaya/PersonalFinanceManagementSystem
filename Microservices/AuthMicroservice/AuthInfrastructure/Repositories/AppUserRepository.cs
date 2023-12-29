@@ -1,4 +1,5 @@
 ﻿using Auth.Application.Interfaces;
+using Auth.Application.Settings;
 using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,13 @@ namespace Auth.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<AppUser>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<AppUser>> GetAllAsync(PaginationSettings paginationSettings, 
+            CancellationToken cancellationToken)
         {
-            return await _context.Users.ToListAsync(cancellationToken);
+            return await _context.Users
+                .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
+                .Take(paginationSettings.PageSize)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<AppUser> GetByIdAsync(long id, CancellationToken cancellationToken)

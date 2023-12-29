@@ -1,4 +1,5 @@
 ﻿using Auth.Application.Models;
+using Auth.Application.Settings;
 
 namespace Auth.Application.Interfaces
 {
@@ -6,6 +7,6 @@ namespace Auth.Application.Interfaces
     {
         Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);
         Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken);
-        Task<List<UserModel>> GetAllAsync(CancellationToken cancellationToken);
+        Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken);
     }
 }

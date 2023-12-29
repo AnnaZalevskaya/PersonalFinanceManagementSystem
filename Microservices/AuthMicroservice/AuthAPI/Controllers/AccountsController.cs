@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Interfaces;
 using Auth.Application.Models;
+using Auth.Application.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,9 +37,10 @@ namespace Auth.API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<UserModel>>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings, 
+            CancellationToken cancellationToken)
         {
-            var users = await _userService.GetAllAsync(cancellationToken);
+            var users = await _userService.GetAllAsync(paginationSettings, cancellationToken);
 
             return Ok(users);
         }

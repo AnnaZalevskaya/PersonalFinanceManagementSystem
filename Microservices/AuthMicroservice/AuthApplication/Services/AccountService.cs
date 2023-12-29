@@ -3,6 +3,7 @@ using Auth.Application.Models;
 using Auth.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
+using Auth.Application.Settings;
 
 namespace Auth.Application.Services
 {
@@ -76,9 +77,10 @@ namespace Auth.Application.Services
             }, cancellationToken);
         }
 
-        public async Task<List<UserModel>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings,
+            CancellationToken cancellationToken)
         {
-            var users = await _unitOfWork.Users.GetAllAsync(cancellationToken);
+            var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
             var usersList = new List<UserModel>();
 
             foreach (var user in users)
