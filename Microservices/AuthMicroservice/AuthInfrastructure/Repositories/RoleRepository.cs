@@ -14,11 +14,12 @@ namespace Auth.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<IdentityRole<long>>> GetRoleIdsAsync(IEnumerable<long> roleIds)
+        public async Task<List<IdentityRole<long>>> GetRoleIdsAsync(IEnumerable<long> roleIds, 
+            CancellationToken cancellationToken)
         {
             return await _context.Roles
                 .Where(x => roleIds.Contains(x.Id))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
     }
 }

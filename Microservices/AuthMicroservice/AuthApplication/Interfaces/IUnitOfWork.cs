@@ -9,6 +9,6 @@ namespace Auth.Application.Interfaces
         IRoleRepository<IdentityRole> Roles { get; }
         IUserRoleRepository<IdentityUserRole<long>> UserRoles { get; }
 
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

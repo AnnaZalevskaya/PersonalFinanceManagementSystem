@@ -15,12 +15,12 @@ namespace Auth.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<long>> GetRoleIdsAsync(AppUser user)
+        public async Task<IEnumerable<long>> GetRoleIdsAsync(AppUser user, CancellationToken cancellationToken)
         {
             return await _context.UserRoles
                 .Where(r => r.UserId == user.Id)
                 .Select(x => x.RoleId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
     }
 }

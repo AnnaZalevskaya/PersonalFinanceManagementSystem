@@ -41,9 +41,9 @@ namespace Auth.Infrastructure.Repositories
             return result.Entity.Id;
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

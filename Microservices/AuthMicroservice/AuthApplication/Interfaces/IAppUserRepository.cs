@@ -6,6 +6,6 @@
         Task<AppUser> GetByIdAsync(long id, CancellationToken cancellationToken);
         Task<AppUser> FindByEmailAsync(string email, CancellationToken cancellationToken);
         Task<long> AddAsync(AppUser entity, CancellationToken cancellationToken);
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
