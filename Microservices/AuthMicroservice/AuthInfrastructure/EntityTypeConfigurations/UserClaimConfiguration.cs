@@ -8,7 +8,7 @@ namespace Auth.Infrastructure.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<IdentityUserClaim<long>> builder)
         {
-            builder.ToTable("UserClaim");
+            builder.ToTable("UserClaims");
             builder.HasKey(x => x.Id);
         }
     }

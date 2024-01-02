@@ -8,9 +8,6 @@ namespace Auth.Application.Validators
     {
         public RegReqValidator()
         {
-            RuleFor(req => req.Id)
-                .NotNull();
-
             RuleFor(req => req.Email)
                 .EmailAddress()
                 .NotEmpty();
@@ -18,7 +15,7 @@ namespace Auth.Application.Validators
             RuleFor(req => req.Username)
                 .NotEmpty();
 
-            RuleFor(req => req.Phone)
+            RuleFor(req => req.Phonenumber)
                 .Length(13)
                 .Matches(new Regex(@"^\+375(17|29|33|44)[0-9]{7}$"))
                 .NotEmpty();

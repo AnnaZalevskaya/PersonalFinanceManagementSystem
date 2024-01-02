@@ -50,7 +50,7 @@ namespace Auth.Application.Services
             {
                 Username = user.UserName!,
                 Email = user.Email!,
-                Phone = user.PhoneNumber!,
+                Phonenumber = user.PhoneNumber!,
                 Token = accessToken,
                 RefreshToken = user.RefreshToken
             };

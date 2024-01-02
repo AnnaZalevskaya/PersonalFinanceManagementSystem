@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace Auth.Application.Extensions
 {
@@ -17,13 +18,13 @@ namespace Auth.Application.Extensions
         {
             var claims = new List<Claim>
             {
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, user.UserName!),
-            new(ClaimTypes.Email, user.Email!),
-            new(ClaimTypes.MobilePhone, user.PhoneNumber!),
-            new(ClaimTypes.Role, string.Join(" ", roles.Select(x => x.Name))),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.UserName!),
+                new(ClaimTypes.Email, user.Email!),
+                new(ClaimTypes.MobilePhone, user.PhoneNumber!),
+                new(ClaimTypes.Role, string.Join(" ", roles.Select(x => x.Name))),
             };
 
             return claims;
