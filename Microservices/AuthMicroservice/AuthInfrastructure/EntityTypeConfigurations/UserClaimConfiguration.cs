@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Auth.Infrastructure.EntityTypeConfigurations
 {
-    public class UserClaimConfiguration : IEntityTypeConfiguration<IdentityUserClaim<string>>
+    public class UserClaimConfiguration : IEntityTypeConfiguration<IdentityUserClaim<long>>
     {
-        public void Configure(EntityTypeBuilder<IdentityUserClaim<string>> builder)
+        public void Configure(EntityTypeBuilder<IdentityUserClaim<long>> builder)
         {
-            builder.ToTable("UserClaim");
+            builder.ToTable("UserClaims");
+            builder.HasKey(x => x.Id);
         }
     }
 }
