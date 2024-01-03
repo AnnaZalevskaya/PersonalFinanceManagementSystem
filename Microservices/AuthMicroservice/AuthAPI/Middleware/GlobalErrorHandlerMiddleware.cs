@@ -27,8 +27,8 @@ namespace Auth.API.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            var statusCode = HttpStatusCode.InternalServerError;
-            var message = "A server error has occurred.";
+            HttpStatusCode statusCode;
+            string message;
 
             if (ex is NotFoundException)
             {
@@ -39,6 +39,11 @@ namespace Auth.API.Middleware
             {
                 statusCode = HttpStatusCode.Unauthorized; 
                 message = "Access is denied.";
+            }
+            else
+            {
+                statusCode = HttpStatusCode.InternalServerError;
+                message = "A server error has occurred.";
             }
 
             var response = new { error = message };

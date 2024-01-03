@@ -1,4 +1,5 @@
 using Auth.API.Extensions;
+using Auth.API.Middleware;
 
 namespace Auth.API
 {
@@ -30,13 +31,13 @@ namespace Auth.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            
+
+            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
+
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseExceptionHandlerMiddleware();
 
             app.MapControllers();
 
