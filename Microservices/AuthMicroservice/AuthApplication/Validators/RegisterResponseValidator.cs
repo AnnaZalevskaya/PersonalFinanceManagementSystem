@@ -3,12 +3,12 @@ using FluentValidation;
 
 namespace Auth.Application.Validators
 {
-    public class RegRespValidator : AbstractValidator<RegisterResponse>
+    public class RegisterResponseValidator : AbstractValidator<RegisterResponse>
     {
-        public RegRespValidator() {
+        public RegisterResponseValidator() {
             RuleFor(resp => resp.Email)
-                .EmailAddress()
-                .NotEmpty();
+                .NotEmpty()
+                .EmailAddress();
 
             RuleFor(resp => resp.Username)
                 .NotEmpty();

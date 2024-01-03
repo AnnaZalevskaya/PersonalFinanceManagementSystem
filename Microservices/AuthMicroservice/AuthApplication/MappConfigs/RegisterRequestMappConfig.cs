@@ -4,9 +4,9 @@ using AutoMapper;
 
 namespace Auth.Application.MappConfigs
 {
-    public class RegReqMappConfig : Profile
+    public class RegisterRequestMappConfig : Profile
     {
-        public RegReqMappConfig() 
+        public RegisterRequestMappConfig() 
         {
             CreateMap<RegisterRequest, AppUser>().ReverseMap();
         }
