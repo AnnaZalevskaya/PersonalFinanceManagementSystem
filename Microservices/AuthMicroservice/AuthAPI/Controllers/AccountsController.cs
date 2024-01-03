@@ -27,7 +27,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthResponse>> RegisterAsync([FromBody] RegisterRequest model,
+        public async Task<ActionResult<RegisterResponse>> RegisterAsync([FromBody] RegisterRequest model,
             CancellationToken cancellationToken)
         {
             var response = await _userService.RegisterAsync(model, cancellationToken);

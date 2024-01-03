@@ -21,19 +21,24 @@ namespace Auth.Infrastructure.Repositories
             return await _context.Users
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Take(paginationSettings.PageSize)
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
 
         public async Task<AppUser> GetByIdAsync(long id, CancellationToken cancellationToken)
         {
-            var result = await _context.Users.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+            var result = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
 
             return result;
         }
 
         public async Task<AppUser> FindByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            var result = await _context.Users.FirstOrDefaultAsync(user => user.Email == email, cancellationToken);
+            var result = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Email == email, cancellationToken);
 
             return result;
         }

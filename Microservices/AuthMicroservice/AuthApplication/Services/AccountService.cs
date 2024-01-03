@@ -44,37 +44,41 @@ namespace Auth.Application.Services
 
             var accessToken = _tokenService.GetToken(user, roles);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
             return new AuthResponse
             {
                 Username = user.UserName!,
                 Email = user.Email!,
-                Phonenumber = user.PhoneNumber!,
+                PhoneNumber = user.PhoneNumber!,
                 Token = accessToken,
                 RefreshToken = user.RefreshToken
             };
         }
 
-        public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
+        public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
         {
             var user = _mapper.Map<AppUser>(request);
 
-            await _userManager.CreateAsync(user, request.Password);
             var findUser = await _unitOfWork.Users.FindByEmailAsync(user.Email, cancellationToken);
 
-            if (findUser == null)
+            if (findUser != null)
             {
-                throw new Exception($"User {request.Email} not found");
+                throw new Exception($"User {request.Email} already exists");
             }
 
-            await _userManager.AddToRoleAsync(findUser, RoleConsts.Client);
+            var result = await _userManager.CreateAsync(user, request.Password);     
 
-            return await AuthenticateAsync(new AuthRequest
+            if (!result.Succeeded) {
+                throw new Exception("Error! The user has not been created.");
+            }
+
+            await _userManager.AddToRoleAsync(user, RoleConsts.Client);
+
+            return new RegisterResponse
             {
+                Username = request.Username,
                 Email = request.Email,
-                Password = request.Password
-            }, cancellationToken);
+                PhoneNumber = request.PhoneNumber
+            };
         }
 
         public async Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings,
