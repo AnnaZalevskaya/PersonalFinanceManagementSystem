@@ -11,6 +11,7 @@ namespace Auth.API
 
             builder.Services
                 .ConfigureSQLServer(builder.Configuration)
+                .ConfigureSwagger()
                 .ConfigureControllers()
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()
