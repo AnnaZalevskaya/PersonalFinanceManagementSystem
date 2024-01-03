@@ -44,14 +44,10 @@ namespace Auth.Application.Services
 
             var accessToken = _tokenService.GetToken(user, roles);
 
-            return new AuthResponse
-            {
-                Username = user.UserName!,
-                Email = user.Email!,
-                PhoneNumber = user.PhoneNumber!,
-                Token = accessToken,
-                RefreshToken = user.RefreshToken
-            };
+            var response = _mapper.Map<AuthResponse>(user);
+            response.Token = accessToken;
+
+            return response;
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
@@ -73,12 +69,9 @@ namespace Auth.Application.Services
 
             await _userManager.AddToRoleAsync(user, RoleConsts.Client);
 
-            return new RegisterResponse
-            {
-                Username = request.Username,
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber
-            };
+            var response = _mapper.Map<RegisterResponse>(user);
+
+            return response;
         }
 
         public async Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings,
