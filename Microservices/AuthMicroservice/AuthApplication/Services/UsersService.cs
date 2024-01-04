@@ -7,14 +7,14 @@ using Auth.Application.Settings;
 
 namespace Auth.Application.Services
 {
-    public class AccountService : IAccountService
+    public class UsersService : IUsersService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
 
-        public AccountService(ITokenService tokenService, IUnitOfWork unitOfWork,
+        public UsersService(ITokenService tokenService, IUnitOfWork unitOfWork,
             UserManager<AppUser> userManager, IMapper mapper)
         {
             _tokenService = tokenService;

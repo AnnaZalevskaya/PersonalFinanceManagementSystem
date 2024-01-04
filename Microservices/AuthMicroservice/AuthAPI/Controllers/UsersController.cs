@@ -8,11 +8,11 @@ namespace Auth.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountsController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly IAccountService _userService;
+        private readonly IUsersService _userService;
 
-        public AccountsController(IAccountService userService)
+        public UsersController(IUsersService userService)
         {
             _userService = userService;
         }
