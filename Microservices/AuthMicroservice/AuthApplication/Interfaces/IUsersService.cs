@@ -3,7 +3,7 @@ using Auth.Application.Settings;
 
 namespace Auth.Application.Interfaces
 {
-    public interface IAccountService
+    public interface IUsersService
     {
         Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);
         Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken);

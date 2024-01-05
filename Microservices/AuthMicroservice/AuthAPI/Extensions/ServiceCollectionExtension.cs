@@ -85,7 +85,7 @@ namespace Auth.API.Extensions
             IConfiguration configuration)
         {
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<ITokenService, TokenService>();
 
             return services;
