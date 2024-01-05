@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Accounts.Presentation.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/financial-accounts")]
     public class FinancialAccountsController : ControllerBase
     {
         private readonly IFinancialAccountService _service;

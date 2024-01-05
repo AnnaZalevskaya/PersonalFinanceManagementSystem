@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Accounts.Presentation.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/currencies")]
     public class CurrenciesController : ControllerBase
     {
         private readonly ICurrencyService _service;
