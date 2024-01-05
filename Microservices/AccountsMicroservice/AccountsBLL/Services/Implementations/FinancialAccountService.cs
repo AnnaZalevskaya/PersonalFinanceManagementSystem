@@ -29,6 +29,13 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
+            var account = await _unitOfWork.FinancialAccounts.GetByIdAsync(id, cancellationToken);
+
+            if (account == null)
+            {
+                throw new EntityNotFoundException("Account not found");
+            }
+
             await _unitOfWork.FinancialAccounts.DeleteAsync(id, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync();
@@ -38,13 +45,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             CancellationToken cancellationToken)
         {
             var accounts = await _unitOfWork.FinancialAccounts.GetAllAsync(paginationSettings, cancellationToken);
-            var accountsList = new List<FinancialAccountModel>();
-
-            foreach (var account in accounts)
-            {
-                FinancialAccountModel dto = _mapper.Map<FinancialAccountModel>(account);
-                accountsList.Add(dto);
-            }
+            var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
             return accountsList;
         }
@@ -54,13 +55,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
         {
             var accounts = await _unitOfWork.FinancialAccounts
                 .GetAccountsByUserIdAsync(userId, paginationSettings, cancellationToken);
-            var accountsList = new List<FinancialAccountModel>();
-
-            foreach (var account in accounts)
-            {
-                FinancialAccountModel dto = _mapper.Map<FinancialAccountModel>(account);
-                accountsList.Add(dto);
-            }
+            var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
             return accountsList;
         }
@@ -81,14 +76,16 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
         public async Task UpdateAsync(int id, FinancialAccountModel updateModel, CancellationToken cancellationToken)
         {
-            var account = _mapper.Map<FinancialAccount>(updateModel);
+            var account = await _unitOfWork.FinancialAccounts.GetByIdAsync(id, cancellationToken);
 
             if (account == null)
             {
                 throw new EntityNotFoundException("Account not found");
             }
 
-            await _unitOfWork.FinancialAccounts.UpdateAsync(id, account, cancellationToken);
+            var updateAccount = _mapper.Map<FinancialAccount>(updateModel);
+
+            await _unitOfWork.FinancialAccounts.UpdateAsync(id, updateAccount, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync();
         }

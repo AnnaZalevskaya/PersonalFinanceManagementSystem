@@ -21,13 +21,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
         public async Task<List<CurrencyModel>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
             var currencies = await _unitOfWork.Currencies.GetAllAsync(paginationSettings, cancellationToken);
-            var currenciesList = new List<CurrencyModel>();
-
-            foreach (var currency in currencies)
-            {
-                CurrencyModel dto = _mapper.Map<CurrencyModel>(currency);
-                currenciesList.Add(dto);
-            }
+            var currenciesList = _mapper.Map<List<CurrencyModel>>(currencies);
 
             return currenciesList;
         }

@@ -21,13 +21,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
         public async Task<List<FinancialAccountTypeModel>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
             var types = await _unitOfWork.FinancialAccountTypes.GetAllAsync(paginationSettings, cancellationToken);
-            var typesList = new List<FinancialAccountTypeModel>();
-
-            foreach (var type in types)
-            {
-                FinancialAccountTypeModel dto = _mapper.Map<FinancialAccountTypeModel>(type);
-                typesList.Add(dto);
-            }
+            var typesList = _mapper.Map<List<FinancialAccountTypeModel>>(types);
 
             return typesList;
         }
