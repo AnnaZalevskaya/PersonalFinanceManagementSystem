@@ -1,11 +1,9 @@
-﻿using Operations.Application.Settings;
-using Operations.Core.Entities;
+﻿using Operations.Core.Entities;
 
 namespace Operations.Application.Interfaces
 {
-    public interface ICategoryTypeRepository
+    public interface ICategoryTypeRepository : IBaseRepository<CategoryType>
     {
-        Task<CategoryType> GetAsync(int id, CancellationToken cancellationToken);
-        Task<IEnumerable<CategoryType>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken);
+        
     }
 }

@@ -1,8 +1,7 @@
 ﻿namespace Operations.Core.Entities
 {
-    public class CategoryType
+    public class CategoryType : BaseEntity
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+
     }
 }
