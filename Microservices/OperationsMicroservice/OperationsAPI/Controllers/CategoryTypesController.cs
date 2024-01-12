@@ -12,6 +12,7 @@ namespace Operations.API.Controllers
     public class CategoryTypesController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public CategoryTypesController(IMediator mediator)
         {
             _mediator = mediator;

@@ -16,6 +16,7 @@ namespace Operations.Application.Operations.Commands.DeleteOperation
         public async Task Handle(DeleteOperationCommand command, CancellationToken cancellationToken)
         {
             var operation = await _unitOfWork.Operations.GetAsync(command.Id, cancellationToken);
+
             if (operation == null)
             {
                 throw new EntityNotFoundException("Operation not found");

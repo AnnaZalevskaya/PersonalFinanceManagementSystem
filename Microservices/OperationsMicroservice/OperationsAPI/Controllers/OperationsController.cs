@@ -14,6 +14,7 @@ namespace Operations.API.Controllers
     public class OperationsController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public OperationsController(IMediator mediator)
         {
             _mediator = mediator;

@@ -10,6 +10,7 @@ namespace Operations.Application.MappConfigs
         public OperationMappConfig()
         {
             CreateMap<Operation, OperationModel>().ReverseMap();
+
             CreateMap<Operation, CreateOperationCommand>().ReverseMap();
         }
     }
