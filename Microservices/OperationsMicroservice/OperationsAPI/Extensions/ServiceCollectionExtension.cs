@@ -1,18 +1,7 @@
 ﻿using FluentValidation.AspNetCore;
-using MediatR;
 using Microsoft.OpenApi.Models;
-using Operations.Api;
 using Operations.Application.Interfaces;
-using Operations.Application.Models;
-using Operations.Application;
-using Operations.Application.Operations.Commands.CreateOperation;
-using Operations.Application.Operations.Commands.DeleteOperation;
 using Operations.Application.Operations.Queries.GetCategoryDetails;
-using Operations.Application.Operations.Queries.GetCategoryList;
-using Operations.Application.Operations.Queries.GetCategoryTypeDetails;
-using Operations.Application.Operations.Queries.GetCategoryTypeList;
-using Operations.Application.Operations.Queries.GetOperationDetails;
-using Operations.Application.Operations.Queries.GetOperationList;
 using Operations.Infrastructure.Data;
 using Operations.Infrastructure.Repositories;
 using Operations.Infrastructure.Settings;
@@ -25,7 +14,7 @@ namespace Operations.API.Extensions
             IConfiguration configuration)
         {
             services.Configure<DatabaseSettings>(configuration.GetSection(nameof(DatabaseSettings)));
-            services.AddSingleton<OperationsDbContext>();   
+            services.AddSingleton<OperationsDbContext>();
 
             return services;
         }
@@ -65,25 +54,11 @@ namespace Operations.API.Extensions
             return services;
         }
 
+
         public static IServiceCollection ConfigureMediatR(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-            services.AddTransient<IRequestHandler<GetOperationListQuery, List<OperationModel>>, 
-                GetOperationListQueryHandler>();
-            services.AddTransient<IRequestHandler<GetOperationDetailsQuery, OperationModel>, 
-                GetOperationDetailsQueryHandler>();
-            services.AddTransient<IRequestHandler<GetOperationListByAccountIdQuery, List<OperationModel>>,
-                GetOperationListByAccountIdQueryHandler>();
-            services.AddTransient<IRequestHandler<CreateOperationCommand>, CreateOperationCommandHandler>();
-            services.AddTransient<IRequestHandler<DeleteOperationCommand>, DeleteOperationCommandHandler>();
-            services.AddTransient<IRequestHandler<GetCategoryTypeListQuery, List<CategoryTypeModel>>,
-                GetCategoryTypeListQueryHandler>();
-            services.AddTransient<IRequestHandler<GetCategoryTypeDetailsQuery, CategoryTypeModel>,
-                GetCategoryTypeDetailsQueryHandler>();
-            services.AddTransient<IRequestHandler<GetCategoryListQuery, List<CategoryModel>>,
-                GetCategoryListQueryHandler>();
-            services.AddTransient<IRequestHandler<GetCategoryDetailsQuery, CategoryModel>,
-                GetCategoryDetailsQueryHandler>();
+            services.AddMediatR(cfg => 
+            cfg.RegisterServicesFromAssembly(typeof(GetCategoryDetailsQueryHandler).Assembly));
 
             return services;
         }
