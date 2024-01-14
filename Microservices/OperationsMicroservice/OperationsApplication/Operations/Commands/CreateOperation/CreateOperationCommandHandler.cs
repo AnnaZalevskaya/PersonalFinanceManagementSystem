@@ -18,7 +18,7 @@ namespace Operations.Application.Operations.Commands.CreateOperation
 
         public async Task Handle(CreateOperationCommand command, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Operation>(command);
+            var entity = _mapper.Map<Operation>(command.Model);
 
             await _unitOfWork.Operations.CreateAsync(entity, cancellationToken);
         }

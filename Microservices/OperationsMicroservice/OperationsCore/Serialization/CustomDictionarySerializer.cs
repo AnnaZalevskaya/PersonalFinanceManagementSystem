@@ -17,13 +17,13 @@ namespace Operations.Core.Serialization
             foreach (var pair in value)
             {
                 bsonWriter.WriteName(pair.Key);
-                SerializeValue(context, args, pair.Value);
+                SerializeValue(context, pair.Value);
             }
 
             bsonWriter.WriteEndDocument();
         }
 
-        private void SerializeValue(BsonSerializationContext context, BsonSerializationArgs args, object value)
+        private void SerializeValue(BsonSerializationContext context, object value)
         {
             var bsonWriter = context.Writer;
 
@@ -32,20 +32,24 @@ namespace Operations.Core.Serialization
                 bsonWriter.WriteNull();
             }
 
-            else if (value is int intValue)
-            {
-                bsonWriter.WriteInt32(intValue);
-            }
-
-            else if (value is double doubleValue)
-            {
-                bsonWriter.WriteDouble(doubleValue);
-            }
-
             else if (value is JsonElement jsonElement)
             {
-                var jsonString = jsonElement.GetRawText();
-                bsonWriter.WriteString(jsonString);
+                var jsonString = jsonElement.GetRawText().Replace("\"", "");
+
+                if (int.TryParse(jsonString, out int intVal))
+                {
+                    bsonWriter.WriteInt32(intVal);
+                }
+
+                else if (double.TryParse(jsonString, out double doubleVal))
+                {
+                    bsonWriter.WriteDouble(doubleVal);
+                }
+
+                else
+                {
+                    bsonWriter.WriteString(jsonString);
+                }
             }
         }
 
@@ -71,27 +75,23 @@ namespace Operations.Core.Serialization
         private object DeserializeValue(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var bsonReader = context.Reader;
+
             switch (bsonReader.GetCurrentBsonType())
             {
                 case (BsonType.Int32):
                     return bsonReader.ReadInt32();
-                    break;
 
                 case (BsonType.Double): 
                     return bsonReader.ReadDouble();
-                    break;
 
                 case (BsonType.String): 
                     return bsonReader.ReadString();
-                    break;
 
                 case (BsonType.DateTime): 
                     return bsonReader.ReadDateTime();
-                    break;
 
                 case (BsonType.Document): 
                     return bsonReader.ReadString();
-                    break;
 
                 default:
                     throw new BsonSerializationException("Unexpected BsonType" + bsonReader.GetCurrentBsonType());
