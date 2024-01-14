@@ -11,7 +11,7 @@ namespace Operations.Core.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public int AccountId { get; set; }
-        public DateTime Date {  get; set; } = DateTime.UtcNow;
+        public DateTime Date {  get; set; } = DateTime.UtcNow.AddHours(3);
         [BsonSerializer(typeof(CustomDictionarySerializer))]
         public Dictionary<string, object> Description { get; set; }
     }
