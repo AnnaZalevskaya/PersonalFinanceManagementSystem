@@ -15,7 +15,7 @@ namespace Operations.Application.Validators
             RuleFor(category => category.Name)
                 .NotEmpty();
 
-            RuleFor(category => category.CategoryTypeId)
+            RuleFor(category => category.CategoryType)
                 .NotEmpty();
         }
     }

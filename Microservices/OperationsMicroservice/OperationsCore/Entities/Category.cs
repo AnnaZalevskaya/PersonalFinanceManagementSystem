@@ -1,8 +1,11 @@
-﻿namespace Operations.Core.Entities
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
+
+namespace Operations.Core.Entities
 {
-    public class Category :BaseEntity
+    public class Category : BaseEntity
     {    
-        public int CategoryTypeId { get; set; }
-        public CategoryType CategoryType { get; set; }
+        [BsonElement("CategoryType")]
+        public MongoDBRef CategoryType { get; set; }
     }
 }
