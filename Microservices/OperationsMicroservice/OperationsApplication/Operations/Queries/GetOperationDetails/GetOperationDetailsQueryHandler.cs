@@ -21,6 +21,7 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
             CancellationToken cancellationToken)
         {
             var operation = await _unitOfWork.Operations.GetAsync(query.Id, cancellationToken);
+
             if (operation == null)
             {
                 throw new EntityNotFoundException("Operation not found");

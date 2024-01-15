@@ -22,6 +22,7 @@ namespace Operations.Application.Operations.Queries.GetCategoryTypeDetails
             CancellationToken cancellationToken)
         {
             var type = await _unitOfWork.CategoryTypes.GetAsync(query.Id, cancellationToken);
+
             if (type == null)
             {
                 throw new EntityNotFoundException("Type not found");

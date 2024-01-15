@@ -20,7 +20,8 @@ namespace Operations.Application.Operations.Queries.GetCategoryDetails
         public async Task<CategoryModel> Handle(GetCategoryDetailsQuery query,
             CancellationToken cancellationToken)
         {
-            var category = await _unitOfWork.CategoryTypes.GetAsync(query.Id, cancellationToken);
+            var category = await _unitOfWork.Categories.GetAsync(query.Id, cancellationToken);
+
             if (category == null)
             {
                 throw new EntityNotFoundException("Category not found");
