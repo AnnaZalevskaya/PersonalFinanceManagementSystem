@@ -1,9 +1,7 @@
 ﻿namespace Accounts.DataAccess.Entities
 {
-    public class Currency
+    public class Currency : BaseEntity
     {
-        public int Id { get; set; } 
-        public string? Name { get; set; }
         public string? Abbreviation { get; set; }
         public List<FinancialAccount>? FinancialAccounts { get; set; }
     }

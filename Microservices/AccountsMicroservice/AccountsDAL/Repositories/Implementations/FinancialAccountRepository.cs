@@ -18,6 +18,7 @@ namespace Accounts.DataAccess.Repositories.Implementations
         {
             var userAccounts = await _context.FinancialAccounts
                 .Where(account => account.UserId == userId)
+                .OrderBy(e => e.Id)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Take(paginationSettings.PageSize)
                 .AsNoTracking()

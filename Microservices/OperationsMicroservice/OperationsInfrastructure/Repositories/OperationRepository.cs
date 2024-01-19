@@ -28,7 +28,7 @@ namespace Operations.Infrastructure.Repositories
         public async Task<Operation> GetAsync(string id, CancellationToken cancellationToken)
         {
             var operation = await _context.Operations
-                .Find(o => o.Id == id)
+                .Find(operation => operation.Id == id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             return operation;
@@ -39,6 +39,8 @@ namespace Operations.Infrastructure.Repositories
         {
             var operations = await _context.Operations
                 .Find(operations => true)
+                .SortBy(operation => operation.AccountId)
+                .ThenBy(operation => operation.Date)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Limit(paginationSettings.PageSize)
                 .ToListAsync(cancellationToken);
@@ -50,7 +52,8 @@ namespace Operations.Infrastructure.Repositories
             PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
             var operations = await _context.Operations
-                .Find(o => o.AccountId == accountId)
+                .Find(operation => operation.AccountId == accountId)
+                .SortBy(operation => operation.Date)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Limit(paginationSettings.PageSize)
                 .ToListAsync(cancellationToken);

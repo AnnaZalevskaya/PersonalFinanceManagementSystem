@@ -19,6 +19,7 @@ namespace Auth.Infrastructure.Repositories
         {
             return await _context.Roles
                 .Where(x => roleIds.Contains(x.Id))
+                .OrderBy(e => e.Id)
                 .ToListAsync(cancellationToken);
         }
     }

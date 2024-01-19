@@ -25,6 +25,7 @@ namespace Operations.Infrastructure.Repositories
 
             return await collection
                 .Find(entity => true)
+                .SortBy(entity => entity.Id)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Limit(paginationSettings.PageSize)
                 .ToListAsync(cancellationToken);
