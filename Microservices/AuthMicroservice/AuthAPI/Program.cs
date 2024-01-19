@@ -15,7 +15,6 @@ namespace Auth.API
                 .ConfigureControllers()
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()
-                .AddSwaggerGen()
                 .ConfigureRepositoryWrapper()
                 .ConfigureAppServices(builder.Configuration)
                 .ConfigureAuthentication()
