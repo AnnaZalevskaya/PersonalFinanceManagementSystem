@@ -47,7 +47,7 @@ namespace Operations.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync(CreateOperationModel model)
+        public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
             await _mediator.Send(new CreateOperationCommand(model));
 

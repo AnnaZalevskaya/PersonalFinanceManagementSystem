@@ -17,7 +17,8 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewAccountAsync(FinancialAccountModel model, CancellationToken cancellationToken)
+        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model, 
+            CancellationToken cancellationToken)
         {
             await _service.AddAsync(model, cancellationToken);
 
@@ -33,7 +34,8 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditAccountAsync(int id, FinancialAccountModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditAccountAsync(int id, [FromBody] FinancialAccountModel model, 
+            CancellationToken cancellationToken)
         {
             await _service.UpdateAsync(id, model, cancellationToken);
 
@@ -41,7 +43,8 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, CancellationToken cancellationToken) 
+        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, 
+            CancellationToken cancellationToken) 
         {
             return Ok(await _service.GetByIdAsync(id, cancellationToken));
         }
