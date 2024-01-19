@@ -1,5 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
-using Ocelot.DependencyInjection;
+﻿using Ocelot.DependencyInjection;
 
 namespace OcelotAPIGateway.Extensions
 {
