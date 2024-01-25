@@ -1,10 +1,14 @@
-﻿using Accounts.BusinessLogic.Services.Implementations;
+﻿using Accounts.BusinessLogic.Consumers;
+using Accounts.BusinessLogic.Services.Implementations;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.UnitOfWork;
+using Accounts.Presentation.Consumers;
 using FluentValidation.AspNetCore;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace Accounts.Presentation.Extensions
 {
@@ -75,6 +79,50 @@ namespace Accounts.Presentation.Extensions
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
+        {
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<GetAllAccountsConsumer>();
+                x.AddConsumer<GetAllAccountsByUserConsumer>();
+                x.AddConsumer<GetAccountConsumer>();
+                x.AddConsumer<CreateAccountConsumer>();
+                x.AddConsumer<UpdateAccountConsumer>();
+                x.AddConsumer<DeleteAccountConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(new Uri("rabbitmq://localhost"));
+                    cfg.ReceiveEndpoint("accountsQueue", e =>
+                    {
+                        e.PrefetchCount = 20;
+                        e.UseMessageRetry(r => r.Interval(2, 100));
+
+                        e.Consumer<GetAllAccountsConsumer>(context);
+                        e.Consumer<GetAllAccountsByUserConsumer>(context);
+                        e.Consumer<GetAccountConsumer>(context);
+                        e.Consumer<CreateAccountConsumer>(context);
+                        e.Consumer<UpdateAccountConsumer>(context);
+                        e.Consumer<DeleteAccountConsumer>(context);
+                    });
+                    cfg.ConfigureNewtonsoftJsonSerializer(settings =>
+                    {
+                        settings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+
+                        return settings;
+                    });
+                    cfg.ConfigureNewtonsoftJsonDeserializer(configure =>
+                    {
+                        configure.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+
+                        return configure;
+                    });
+                });
+            });
+            services.AddMassTransitHostedService();
+        
             return services;
         }
     }
