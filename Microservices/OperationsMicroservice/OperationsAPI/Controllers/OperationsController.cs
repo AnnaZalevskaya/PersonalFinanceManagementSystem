@@ -1,10 +1,9 @@
-﻿using MediatR;
+﻿using Accounts.BusinessLogic.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Operations.Application.MassTransit.Requests;
+using Operations.Application.MassTransit.Responses;
 using Operations.Application.Models;
-using Operations.Application.Operations.Commands.CreateOperation;
-using Operations.Application.Operations.Commands.DeleteOperation;
-using Operations.Application.Operations.Queries.GetOperationDetails;
-using Operations.Application.Operations.Queries.GetOperationList;
 using Operations.Application.Settings;
 
 namespace Operations.API.Controllers
@@ -13,43 +12,63 @@ namespace Operations.API.Controllers
     [Route("api/operations")]
     public class OperationsController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IBusControl _busControl;
+        private readonly Uri _rabbitMqUrl = new Uri("rabbitmq://localhost/operationsQueue");
 
-        public OperationsController(IMediator mediator)
+        public OperationsController(IBusControl busControl)
         {
-            _mediator = mediator;
+            _busControl = busControl;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetAllAsync([FromQuery] PaginationSettings paginationSettings)
         {
-            var operations = await _mediator.Send(new GetOperationListQuery(paginationSettings));
-
-            return Ok(operations);
+            var account = HttpContext.Items["Account"] as FinancialAccountModel;
+            var response = await GetResponseRabbitTask<FinancialAccountModel, 
+                ICollection<OperationModel>>(account);
+            
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<OperationModel>> GetByIdAsync(string id)
         {
-            var operation = await _mediator.Send(new GetOperationDetailsQuery(id));
+            var account = HttpContext.Items["Account"] as FinancialAccountModel;
+            var response = await GetResponseRabbitTask<GetOperationRequest, 
+                OperationModel>(new GetOperationRequest
+                {
+                    Id = id,
+                    Account = account
+                });
 
-            return Ok(operation);
+            return Ok(response);
         }
 
         [HttpGet("account/{accountId}")]
         public async Task<ActionResult<List<OperationModel>>> GetByAccountIdAsync(int accountId,
             [FromQuery] PaginationSettings paginationSettings)
         {
-            var operations = await _mediator
-                .Send(new GetOperationListByAccountIdQuery(accountId, paginationSettings));
+            var account = HttpContext.Items["Account"] as FinancialAccountModel;
+            var response = await GetResponseRabbitTask<GetOperationsByAccountRequest,
+                OperationModel>(new GetOperationsByAccountRequest
+                {
+                    Id = accountId,
+                    Account = account,
+                    PaginationSettings = paginationSettings,
+                });
 
-            return Ok(operations);
+            return Ok(response);
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
-            await _mediator.Send(new CreateOperationCommand(model));
+            var account = HttpContext.Items["Account"] as FinancialAccountModel;
+            await GetResponseRabbitTask<AddOperationRequest, GetOperationsResponse>(new AddOperationRequest()
+            {
+                Account = account,
+                Operation = model
+            });
 
             return NoContent();
         }
@@ -57,9 +76,23 @@ namespace Operations.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFromHistoryAsync(string id)
         {
-            await _mediator.Send(new DeleteOperationCommand(id));
+            var account = HttpContext.Items["Account"] as FinancialAccountModel;
+            await GetResponseRabbitTask<DeleteOperationRequest, GetOperationsResponse>(new DeleteOperationRequest()
+            {
+                Account = account,
+                Id = id
+            });
 
             return NoContent();
+        }
+
+        private async Task<TOut> GetResponseRabbitTask<TIn, TOut>(TIn request)
+            where TIn : class
+            where TOut : class
+        {
+            var client = _busControl.CreateRequestClient<TIn>(_rabbitMqUrl);
+            var response = await client.GetResponse<TOut>(request);
+            return response.Message;
         }
     }
 }

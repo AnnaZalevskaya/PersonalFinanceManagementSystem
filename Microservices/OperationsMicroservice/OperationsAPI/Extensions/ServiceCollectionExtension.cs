@@ -1,10 +1,15 @@
 ﻿using FluentValidation.AspNetCore;
+using MassTransit;
 using Microsoft.OpenApi.Models;
+using Operations.Application.Consumers;
 using Operations.Application.Interfaces;
 using Operations.Application.Operations.Queries.GetCategoryDetails;
 using Operations.Infrastructure.Data;
 using Operations.Infrastructure.Repositories;
 using Operations.Infrastructure.Settings;
+using Newtonsoft.Json;
+using Operations.Application.Operations.Commands.CreateOperation;
+using Operations.API.Consumers;
 
 namespace Operations.API.Extensions
 {
@@ -57,8 +62,8 @@ namespace Operations.API.Extensions
 
         public static IServiceCollection ConfigureMediatR(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => 
-            cfg.RegisterServicesFromAssembly(typeof(GetCategoryDetailsQueryHandler).Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(
+                typeof(GetCategoryDetailsQueryHandler).Assembly));
 
             return services;
         }
@@ -74,6 +79,48 @@ namespace Operations.API.Extensions
         public static IServiceCollection ConfigureMapperProfiles(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
+        {
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<AddOperationConsumer>();
+                x.AddConsumer<DeleteOperationConsumer>();
+                x.AddConsumer<GetOperationConsumer>();
+                x.AddConsumer<GetOperationsConsumer>();
+                x.AddConsumer<GetOperationsByAccountConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+
+                    cfg.Host(new Uri("rabbitmq://localhost"));
+                    cfg.ReceiveEndpoint("operationsQueue", e =>
+                    {
+                        e.PrefetchCount = 20;
+                        e.UseMessageRetry(r => r.Interval(2, 100));
+
+                        e.Consumer<AddOperationConsumer>(context);
+                        e.Consumer<DeleteOperationConsumer>(context);
+                        e.Consumer<GetOperationConsumer>(context);
+                        e.Consumer<GetOperationsConsumer>(context);
+                        e.Consumer<GetOperationsByAccountConsumer>(context);
+                    });
+                    cfg.ConfigureNewtonsoftJsonSerializer(settings =>
+                    {
+                        settings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+
+                        return settings;
+                    });
+                    cfg.ConfigureNewtonsoftJsonDeserializer(configure =>
+                    {
+                        configure.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                        return configure;
+                    });
+                });
+            });
+            services.AddMassTransitHostedService();
 
             return services;
         }
