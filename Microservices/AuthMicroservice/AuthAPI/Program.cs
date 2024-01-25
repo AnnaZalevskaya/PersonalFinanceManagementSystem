@@ -9,12 +9,14 @@ namespace Auth.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services
+            builder.Services               
                 .ConfigureSQLServer(builder.Configuration)
                 .ConfigureSwagger()
+                .ConfigureRabbitMQ()
                 .ConfigureControllers()
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()
+                .ConfigureCORS()
                 .ConfigureRepositoryWrapper()
                 .ConfigureAppServices(builder.Configuration)
                 .ConfigureAuthentication()
@@ -35,6 +37,8 @@ namespace Auth.API
             app.UseMiddleware<GlobalErrorHandlerMiddleware>();
 
             app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors("AllowSpecificOrigins");
 
             app.UseAuthentication();
             app.UseAuthorization();
