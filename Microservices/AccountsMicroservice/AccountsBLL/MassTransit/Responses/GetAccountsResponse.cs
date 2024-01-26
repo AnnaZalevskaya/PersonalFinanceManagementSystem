@@ -4,7 +4,7 @@ namespace Accounts.BusinessLogic.MassTransit.Responses
 {
     public class GetAccountsResponse
     {
-        public int UserId { get; set; } 
+        public string UserName { get; set; } 
         public List<FinancialAccountModel> Accounts { get; set; }
     }
 }

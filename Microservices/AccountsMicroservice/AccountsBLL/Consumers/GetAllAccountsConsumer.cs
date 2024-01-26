@@ -1,4 +1,5 @@
 ﻿using Accounts.BusinessLogic.MassTransit.Requests;
+using Accounts.BusinessLogic.MassTransit.Responses;
 using Accounts.BusinessLogic.Services.Interfaces;
 using MassTransit;
 
@@ -13,11 +14,15 @@ namespace Accounts.BusinessLogic.Consumers
 
         public async Task Consume(ConsumeContext<GetAllAccountsRequest> context)
         {
-            var cancellationToken = context.CancellationToken;
-            var paginationSettings = context.Message.PaginationSettings;
+            var accounts = await _accountsService
+                .GetAllAsync(context.Message.PaginationSettings, context.CancellationToken);
 
-            var accounts = await _accountsService.GetAllAsync(paginationSettings, cancellationToken);
-            await context.RespondAsync(accounts);
+            var response = new GetAccountsResponse
+            {
+                Accounts = accounts
+            };
+
+            await context.RespondAsync(response);
         }
     }
 }

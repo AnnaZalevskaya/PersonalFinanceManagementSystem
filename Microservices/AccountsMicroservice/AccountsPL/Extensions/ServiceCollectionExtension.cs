@@ -56,6 +56,7 @@ namespace Accounts.Presentation.Extensions
             services.AddScoped<IFinancialAccountService, FinancialAccountService>();
             services.AddScoped<IFinancialAccountTypeService, FinancialAccountTypeService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IAccountMessageService, AccountMessageService>();
 
             return services;
         }

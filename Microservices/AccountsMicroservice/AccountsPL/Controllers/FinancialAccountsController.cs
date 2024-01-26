@@ -1,9 +1,9 @@
 ﻿using Accounts.BusinessLogic.MassTransit.Requests;
 using Accounts.BusinessLogic.MassTransit.Responses;
 using Accounts.BusinessLogic.Models;
+using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Settings;
 using Auth.Application.Models;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Accounts.Presentation.Controllers
@@ -12,38 +12,27 @@ namespace Accounts.Presentation.Controllers
     [Route("api/financial-accounts")]
     public class FinancialAccountsController : ControllerBase
     {
-        private readonly IBusControl _busControl;
-        private readonly Uri _rabbitMqUrl = new Uri("rabbitmq://localhost/accountsQueue");
+        private readonly IAccountMessageService _messageService;
 
-        public FinancialAccountsController(IBusControl busControl)
+        public FinancialAccountsController(IAccountMessageService messageService)
         {
-            _busControl = busControl;
+            _messageService = messageService;
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model)
         {
             var user = HttpContext.Items["User"] as UserModel;
-            var productsResponse = await GetResponseRabbitTask<CreateAccountsRequest, 
-                ICollection<FinancialAccountModel>>(new CreateAccountsRequest()
-            {
-                AccountId = model.Id,
-                User = user
-            });
+            var account = await _messageService.CreateNewAccountAsync(model, user);
 
-            return Ok(productsResponse);
+            return Ok(account);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> CloseAccountAsync(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> CloseAccountAsync(int id)
         {
             var user = HttpContext.Items["User"] as UserModel;
-            await GetResponseRabbitTask<DeleteAccountRequest,
-                GetAccountsResponse>(new DeleteAccountRequest()
-                {
-                    Id = id,
-                    User = user
-                });
+            _messageService.CloseAccountAsync(id, user);
 
             return NoContent();
         }
@@ -52,62 +41,35 @@ namespace Accounts.Presentation.Controllers
         public async Task<IActionResult> EditAccountAsync(int id, [FromBody] FinancialAccountModel model)
         {
             var user = HttpContext.Items["User"] as UserModel;
-            await GetResponseRabbitTask<UpdateAccountRequest,
-                GetAccountsResponse>(new UpdateAccountRequest()
-                {
-                    Id = id,
-                    Model = model,
-                    User = user
-                });
+            await _messageService.EditAccountAsync(id, model, user);
 
             return NoContent();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, 
-            CancellationToken cancellationToken) 
+        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id) 
         {
             var user = HttpContext.Items["User"] as UserModel;
-            var response = await GetResponseRabbitTask<GetAccountRequest, 
-                FinancialAccountModel>(new GetAccountRequest
-            {
-                Id = id,
-                User = user
-            });
+            var account = await _messageService.GetAccountAsync(id, user);
 
-            return Ok(response);
+            return Ok(account);
         }
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<List<FinancialAccountModel>>> GetUserAccountsAsync(int userId,
             [FromQuery] PaginationSettings paginationSettings)
         {
-            var response = await GetResponseRabbitTask<GetAccountsByUserRequest, 
-                ICollection<FinancialAccountModel>>(new GetAccountsByUserRequest
-            {
-                UserId = userId,
-                PaginationSettings = paginationSettings
-            });
+            var accounts = await _messageService.GetUserAccountsAsync(userId, paginationSettings);
 
-            return Ok(response);
+            return Ok(accounts);
         }
 
         [HttpGet]
         public async Task<ActionResult<List<FinancialAccountModel>>> GetAllAccountsAsync([FromQuery] PaginationSettings paginationSettings)
         {
-            var user = HttpContext.Items["User"] as UserModel;
-            var response = await GetResponseRabbitTask<UserModel, ICollection<FinancialAccountModel>>(user);
+            var response = await _messageService.GetAllAccountsAsync(paginationSettings);
 
             return Ok(response);
-        }
-
-        private async Task<TOut> GetResponseRabbitTask<TIn, TOut>(TIn request)
-            where TIn : class
-            where TOut : class
-        {
-            var client = _busControl.CreateRequestClient<TIn>(_rabbitMqUrl);
-            var response = await client.GetResponse<TOut>(request);
-            return response.Message;
         }
     }
 }

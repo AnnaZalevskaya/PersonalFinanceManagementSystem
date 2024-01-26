@@ -14,7 +14,8 @@ namespace Accounts.Presentation.Consumers
 
         public async Task Consume(ConsumeContext<UpdateAccountRequest> context)
         {
-            await _accountsService.UpdateAsync(context.Message.Id, context.Message.Model, context.CancellationToken);
+            await context.RespondAsync(_accountsService
+                .UpdateAsync(context.Message.Id, context.Message.Model, context.CancellationToken));
         }
     }
 }
