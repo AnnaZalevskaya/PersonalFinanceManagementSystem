@@ -15,7 +15,7 @@ namespace Operations.API.Consumers
 
         public async Task Consume(ConsumeContext<DeleteOperationRequest> context)
         {
-            await _mediator.Send(new DeleteOperationCommand(context.Message.Id));
+            await context.RespondAsync(_mediator.Send(new DeleteOperationCommand(context.Message.Id)));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Accounts.BusinessLogic.Models;
+using Operations.Application.Models;
 using Operations.Application.Settings;
 
 namespace Operations.Application.MassTransit.Requests

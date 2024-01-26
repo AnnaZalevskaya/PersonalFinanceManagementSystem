@@ -2,6 +2,7 @@
 using MediatR;
 using Operations.Application.Consumers;
 using Operations.Application.MassTransit.Requests;
+using Operations.Application.MassTransit.Responses;
 using Operations.Application.Operations.Queries.GetOperationList;
 
 namespace Operations.API.Consumers
@@ -15,9 +16,16 @@ namespace Operations.API.Consumers
 
         public async Task Consume(ConsumeContext<GetOperationsByAccountRequest> context)
         {
-            var operations = _mediator.Send(
+            var operations = await _mediator.Send(
                 new GetOperationListByAccountIdQuery(context.Message.Id, context.Message.PaginationSettings));
-            await context.RespondAsync(operations);
+
+            var response = new GetOperationsResponse
+            {
+                Operations = operations,
+                Count = operations.Count
+            };
+
+            await context.RespondAsync(response);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Operations.Api
                 .ConfigureEndpointsApiExplorer()
                 .ConfigureRepositoryWrapper()
                 .ConfigureMediatR()
+                .ConfigureAppServices()
                 .ConfigureMapperProfiles();
 
             var app = builder.Build();

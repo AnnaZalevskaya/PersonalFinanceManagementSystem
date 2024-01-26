@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using MediatR;
 using Operations.Application.MassTransit.Requests;
+using Operations.Application.MassTransit.Responses;
 using Operations.Application.Operations.Queries.GetOperationList;
 
 namespace Operations.Application.Consumers
@@ -14,9 +15,15 @@ namespace Operations.Application.Consumers
 
         public async Task Consume(ConsumeContext<GetAllOperationsRequest> context)
         {
-            var operations = _mediator.Send(new GetOperationListQuery(context.Message.PaginationSettings));
-            await context.RespondAsync(operations);
+            var operations = await _mediator.Send(new GetOperationListQuery(context.Message.PaginationSettings));
 
+            var response = new GetOperationsResponse
+            {
+                Operations = operations, 
+                Count = operations.Count
+            };
+
+            await context.RespondAsync(response);
         }
     }
 }

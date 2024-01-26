@@ -1,8 +1,6 @@
 ﻿using Accounts.BusinessLogic.Models;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Operations.Application.MassTransit.Requests;
-using Operations.Application.MassTransit.Responses;
+using Operations.Application.Interfaces;
 using Operations.Application.Models;
 using Operations.Application.Settings;
 
@@ -12,36 +10,28 @@ namespace Operations.API.Controllers
     [Route("api/operations")]
     public class OperationsController : ControllerBase
     {
-        private readonly IBusControl _busControl;
-        private readonly Uri _rabbitMqUrl = new Uri("rabbitmq://localhost/operationsQueue");
+        private readonly IOperationMessageService _messageService;
 
-        public OperationsController(IBusControl busControl)
+        public OperationsController(IOperationMessageService messageService)
         {
-            _busControl = busControl;
+            _messageService = messageService;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetAllAsync([FromQuery] PaginationSettings paginationSettings)
         {
-            var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            var response = await GetResponseRabbitTask<FinancialAccountModel, 
-                ICollection<OperationModel>>(account);
-            
-            return Ok(response);
+            var operations = await _messageService.GetAllAsync(paginationSettings);
+
+            return Ok(operations);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<OperationModel>> GetByIdAsync(string id)
         {
             var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            var response = await GetResponseRabbitTask<GetOperationRequest, 
-                OperationModel>(new GetOperationRequest
-                {
-                    Id = id,
-                    Account = account
-                });
+            var operation = _messageService.GetByIdAsync(id, account);
 
-            return Ok(response);
+            return Ok(operation);
         }
 
         [HttpGet("account/{accountId}")]
@@ -49,50 +39,27 @@ namespace Operations.API.Controllers
             [FromQuery] PaginationSettings paginationSettings)
         {
             var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            var response = await GetResponseRabbitTask<GetOperationsByAccountRequest,
-                OperationModel>(new GetOperationsByAccountRequest
-                {
-                    Id = accountId,
-                    Account = account,
-                    PaginationSettings = paginationSettings,
-                });
+            var operations = _messageService.GetByAccountIdAsync(accountId, paginationSettings, account);
 
-            return Ok(response);
+            return Ok(operations);
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
+        public async Task<ActionResult<OperationModel>> CreateAsync([FromBody] CreateOperationModel model)
         {
             var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            await GetResponseRabbitTask<AddOperationRequest, GetOperationsResponse>(new AddOperationRequest()
-            {
-                Account = account,
-                Operation = model
-            });
+            var newOperation = await _messageService.CreateAsync(model, account);
 
-            return NoContent();
+            return Ok(newOperation);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFromHistoryAsync(string id)
         {
             var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            await GetResponseRabbitTask<DeleteOperationRequest, GetOperationsResponse>(new DeleteOperationRequest()
-            {
-                Account = account,
-                Id = id
-            });
+            await _messageService.DeleteFromHistoryAsync(id, account);
 
             return NoContent();
-        }
-
-        private async Task<TOut> GetResponseRabbitTask<TIn, TOut>(TIn request)
-            where TIn : class
-            where TOut : class
-        {
-            var client = _busControl.CreateRequestClient<TIn>(_rabbitMqUrl);
-            var response = await client.GetResponse<TOut>(request);
-            return response.Message;
         }
     }
 }

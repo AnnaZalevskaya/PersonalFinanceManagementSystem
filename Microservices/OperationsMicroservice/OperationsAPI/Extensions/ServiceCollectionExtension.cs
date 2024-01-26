@@ -8,8 +8,10 @@ using Operations.Infrastructure.Data;
 using Operations.Infrastructure.Repositories;
 using Operations.Infrastructure.Settings;
 using Newtonsoft.Json;
-using Operations.Application.Operations.Commands.CreateOperation;
 using Operations.API.Consumers;
+using Accounts.BusinessLogic.Services.Implementations;
+using Accounts.BusinessLogic.Services.Interfaces;
+using Operations.Application.Services;
 
 namespace Operations.API.Extensions
 {
@@ -48,6 +50,13 @@ namespace Operations.API.Extensions
         public static IServiceCollection ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAppServices(this IServiceCollection services)
+        {
+            services.AddScoped<IOperationMessageService, OperationMessageService>();
 
             return services;
         }
