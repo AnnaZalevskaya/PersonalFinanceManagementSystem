@@ -1,6 +1,4 @@
-﻿using Accounts.BusinessLogic.MassTransit.Requests;
-using Accounts.BusinessLogic.MassTransit.Responses;
-using Accounts.BusinessLogic.Models;
+﻿using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Settings;
 using Auth.Application.Models;
@@ -32,7 +30,7 @@ namespace Accounts.Presentation.Controllers
         public async Task<IActionResult> CloseAccountAsync(int id)
         {
             var user = HttpContext.Items["User"] as UserModel;
-            _messageService.CloseAccountAsync(id, user);
+            await _messageService.CloseAccountAsync(id, user);
 
             return NoContent();
         }

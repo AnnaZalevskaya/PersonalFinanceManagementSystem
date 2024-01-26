@@ -12,7 +12,7 @@ namespace Accounts.BusinessLogic.Services.Interfaces
             UserModel user);
         public Task<IActionResult> CloseAccountAsync(int id, UserModel user);
         public Task<IActionResult> EditAccountAsync(int id, FinancialAccountModel model, UserModel user);
-        public Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, UserModel user);
+        public Task<ActionResult<GetAccountResponse>> GetAccountAsync(int id, UserModel user);
         public Task<ActionResult<GetAccountsResponse>> GetUserAccountsAsync(int userId, 
             PaginationSettings paginationSettings);
         public Task<ActionResult<GetAccountsResponse>> GetAllAccountsAsync(PaginationSettings paginationSettings);

@@ -61,7 +61,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return response;
         }
 
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, UserModel user)
+        public async Task<ActionResult<GetAccountResponse>> GetAccountAsync(int id, UserModel user)
         {
             var request = new GetAccountRequest
             {
@@ -69,7 +69,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 User = user
             };
 
-            var response = await GetResponseRabbitTask<GetAccountRequest, FinancialAccountModel>(request);
+            var response = await GetResponseRabbitTask<GetAccountRequest, GetAccountResponse>(request);
 
             return response;
         }
@@ -106,6 +106,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
         {
             var client = _busControl.CreateRequestClient<TIn>(_rabbitMqUrl);
             var response = await client.GetResponse<TOut>(request);
+
             return response.Message;
         }
     }
