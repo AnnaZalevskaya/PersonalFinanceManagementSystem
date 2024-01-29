@@ -1,0 +1,59 @@
+version: '3.4'
+
+services:
+  ocelotapigateway:
+    image: ${DOCKER_REGISTRY-}ocelotapigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/OcelotAPIGateway/Dockerfile
+    depends_on:
+      - accounts.presentation
+      - auth.api
+      - operations.api
+
+  accounts.presentation:
+    image: ${DOCKER_REGISTRY-}accountspresentation
+    build:
+      context: .
+      dockerfile: Microservices/AccountsMicroservice/AccountsPL/Dockerfile
+    depends_on:
+      - postgresql
+
+  postgresql:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: financial_accounts_db
+    ports:
+      - 5432:5432
+
+  auth.api:
+    image: ${DOCKER_REGISTRY-}authapi
+    build:
+      context: .
+      dockerfile: Microservices/AuthMicroservice/AuthAPI/Dockerfile
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      SA_PASSWORD: 12345
+      ACCEPT_EULA: Y
+    ports:
+      - 1433:1433
+
+  operations.api:
+    image: ${DOCKER_REGISTRY-}operationsapi
+    build:
+      context: .
+      dockerfile: Microservices/OperationsMicroservice/OperationsAPI/Dockerfile
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+
