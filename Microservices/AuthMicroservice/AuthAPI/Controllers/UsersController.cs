@@ -11,33 +11,33 @@ namespace Auth.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _userService;
-        private readonly IAuthMessageService _messageService;
 
-        public UsersController(IUsersService userService, IAuthMessageService messageService)
+        public UsersController(IUsersService userService)
         {
             _userService = userService;
-            _messageService = messageService;
         }
 
         [HttpPost("authenticate")]
-        public async Task<ActionResult<AuthResponse>> AuthenticateAsync([FromBody] AuthRequest model)
+        public async Task<ActionResult<AuthResponse>> AuthenticateAsync([FromBody] AuthRequest model,
+            CancellationToken cancellationToken)
         {
-            var user = await _messageService.AuthenticateAsync(model);
+            var response = await _userService.AuthenticateAsync(model, cancellationToken);
 
-            return Ok(user);
+            return Ok(response);
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<RegisterResponse>> RegisterAsync([FromBody] RegisterRequest model)
+        public async Task<ActionResult<RegisterResponse>> RegisterAsync([FromBody] RegisterRequest model,
+            CancellationToken cancellationToken)
         {
-            var newUser = await _messageService.RegisterAsync(model);
+            var response = await _userService.RegisterAsync(model, cancellationToken);
 
-            return Ok(newUser);
+            return Ok(response);
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings, 
+        public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {
             var users = await _userService.GetAllAsync(paginationSettings, cancellationToken);

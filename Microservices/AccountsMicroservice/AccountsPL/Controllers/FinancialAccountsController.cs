@@ -1,7 +1,6 @@
 ﻿using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Settings;
-using Auth.Application.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Accounts.Presentation.Controllers
@@ -10,64 +9,58 @@ namespace Accounts.Presentation.Controllers
     [Route("api/financial-accounts")]
     public class FinancialAccountsController : ControllerBase
     {
-        private readonly IAccountMessageService _messageService;
+        private readonly IFinancialAccountService _service;
 
-        public FinancialAccountsController(IAccountMessageService messageService)
+        public FinancialAccountsController(IFinancialAccountService service)
         {
-            _messageService = messageService;
+            _service = service;
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model)
+        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model, 
+            CancellationToken cancellationToken)
         {
-            var user = HttpContext.Items["User"] as UserModel;
-            var account = await _messageService.CreateNewAccountAsync(model, user);
+            await _service.AddAsync(model, cancellationToken);
 
-            return Ok(account);
+            return NoContent();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> CloseAccountAsync(int id)
+        public async Task<IActionResult> CloseAccountAsync(int id, CancellationToken cancellationToken)
         {
-            var user = HttpContext.Items["User"] as UserModel;
-            await _messageService.CloseAccountAsync(id, user);
+            await _service.DeleteAsync(id, cancellationToken);
 
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditAccountAsync(int id, [FromBody] FinancialAccountModel model)
+        public async Task<IActionResult> EditAccountAsync(int id, [FromBody] FinancialAccountModel model, 
+            CancellationToken cancellationToken)
         {
-            var user = HttpContext.Items["User"] as UserModel;
-            await _messageService.EditAccountAsync(id, model, user);
+            await _service.UpdateAsync(id, model, cancellationToken);
 
             return NoContent();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id) 
+        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, 
+            CancellationToken cancellationToken)
         {
-            var user = HttpContext.Items["User"] as UserModel;
-            var account = await _messageService.GetAccountAsync(id, user);
-
-            return Ok(account);
+            return Ok(await _service.GetByIdAsync(id, cancellationToken));
         }
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<List<FinancialAccountModel>>> GetUserAccountsAsync(int userId,
-            [FromQuery] PaginationSettings paginationSettings)
+            [FromQuery] PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
-            var accounts = await _messageService.GetUserAccountsAsync(userId, paginationSettings);
-
-            return Ok(accounts);
+            return Ok(await _service.GetAccountsByUserIdAsync(paginationSettings, cancellationToken));
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<FinancialAccountModel>>> GetAllAccountsAsync([FromQuery] PaginationSettings paginationSettings)
+        public async Task<ActionResult<List<FinancialAccountModel>>> GetAllAccountsAsync([FromQuery] PaginationSettings paginationSettings,
+            CancellationToken cancellationToken)
         {
-            var response = await _messageService.GetAllAccountsAsync(paginationSettings);
-
-            return Ok(response);
+            return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using Accounts.BusinessLogic.Models;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Operations.Application.Interfaces;
 using Operations.Application.Models;
+using Operations.Application.Operations.Commands.CreateOperation;
+using Operations.Application.Operations.Commands.DeleteOperation;
+using Operations.Application.Operations.Queries.GetOperationDetails;
+using Operations.Application.Operations.Queries.GetOperationList;
 using Operations.Application.Settings;
 
 namespace Operations.API.Controllers
@@ -10,17 +13,17 @@ namespace Operations.API.Controllers
     [Route("api/operations")]
     public class OperationsController : ControllerBase
     {
-        private readonly IOperationMessageService _messageService;
+        private readonly IMediator _mediator;
 
-        public OperationsController(IOperationMessageService messageService)
+        public OperationsController(IMediator mediator)
         {
-            _messageService = messageService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetAllAsync([FromQuery] PaginationSettings paginationSettings)
         {
-            var operations = await _messageService.GetAllAsync(paginationSettings);
+            var operations = await _mediator.Send(new GetOperationListQuery(paginationSettings));
 
             return Ok(operations);
         }
@@ -28,8 +31,7 @@ namespace Operations.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OperationModel>> GetByIdAsync(string id)
         {
-            var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            var operation = _messageService.GetByIdAsync(id, account);
+            var operation = await _mediator.Send(new GetOperationDetailsQuery(id));
 
             return Ok(operation);
         }
@@ -38,26 +40,24 @@ namespace Operations.API.Controllers
         public async Task<ActionResult<List<OperationModel>>> GetByAccountIdAsync(int accountId,
             [FromQuery] PaginationSettings paginationSettings)
         {
-            var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            var operations = _messageService.GetByAccountIdAsync(accountId, paginationSettings, account);
+            var operations = await _mediator
+                .Send(new GetOperationListByAccountIdQuery(accountId, paginationSettings));
 
             return Ok(operations);
         }
 
         [HttpPost]
-        public async Task<ActionResult<OperationModel>> CreateAsync([FromBody] CreateOperationModel model)
+        public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
-            var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            var newOperation = await _messageService.CreateAsync(model, account);
+            await _mediator.Send(new CreateOperationCommand(model));
 
-            return Ok(newOperation);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFromHistoryAsync(string id)
         {
-            var account = HttpContext.Items["Account"] as FinancialAccountModel;
-            await _messageService.DeleteFromHistoryAsync(id, account);
+            await _mediator.Send(new DeleteOperationCommand(id));
 
             return NoContent();
         }
