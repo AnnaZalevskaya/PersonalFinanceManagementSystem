@@ -49,7 +49,8 @@ namespace Auth.Application.Services
 
             var response = _mapper.Map<AuthResponse>(user);
             response.Token = accessToken;
-            _producer.SendMessage(response);
+
+            _producer.SendMessage(response, response.Id.ToString());
 
             return response;
         }

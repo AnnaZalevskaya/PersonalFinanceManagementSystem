@@ -53,12 +53,13 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return accountsList;
         }
 
-        public async Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(PaginationSettings paginationSettings, 
-            CancellationToken cancellationToken)
+        public async Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId,
+            PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
-            int userId = _consumer.ConsumeMessage();
+            int id = _consumer.ConsumeMessage(userId.ToString());
+
             var accounts = await _unitOfWork.FinancialAccounts
-                .GetAccountsByUserIdAsync(userId, paginationSettings, cancellationToken);
+                .GetAccountsByUserIdAsync(id, paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
             return accountsList;

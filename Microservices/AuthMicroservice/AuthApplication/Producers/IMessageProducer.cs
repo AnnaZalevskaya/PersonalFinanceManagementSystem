@@ -2,6 +2,6 @@
 {
     public interface IMessageProducer
     {
-        void SendMessage(object messageObject);
+        void SendMessage(object messageObject, string id);
     }
 }

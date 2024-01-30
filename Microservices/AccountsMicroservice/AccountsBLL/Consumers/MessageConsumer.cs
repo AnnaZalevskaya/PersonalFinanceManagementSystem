@@ -2,7 +2,6 @@
 using RabbitMQ.Client;
 using System.Text;
 using Newtonsoft.Json;
-using Accounts.BusinessLogic.Models;
 
 namespace Accounts.BusinessLogic.Consumers
 {
@@ -17,15 +16,17 @@ namespace Accounts.BusinessLogic.Consumers
             _factory = new ConnectionFactory() { HostName = "localhost" };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "message_queue",
+            
+        }
+
+        public int ConsumeMessage(string id)
+        {
+            _channel.QueueDeclare(queue: "users_queue_" + id,
                                   durable: false,
                                   exclusive: false,
                                   autoDelete: false,
                                   arguments: null);
-        }
 
-        public int ConsumeMessage()
-        {
             int response = 0;
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
@@ -36,7 +37,7 @@ namespace Accounts.BusinessLogic.Consumers
                 Console.WriteLine(" [x] Received id: {0}", messageObject.Id);
                 response = messageObject.Id;
             };
-            _channel.BasicConsume(queue: "message_queue",
+            _channel.BasicConsume(queue: "users_queue_" + id,
                                  autoAck: true,
                                  consumer: consumer);
 

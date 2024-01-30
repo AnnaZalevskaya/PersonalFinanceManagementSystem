@@ -1,9 +1,7 @@
-﻿using Accounts.BusinessLogic.Models;
-
-namespace Accounts.BusinessLogic.Consumers
+﻿namespace Accounts.BusinessLogic.Consumers
 {
     public interface IMessageConsumer
     {
-        int ConsumeMessage();
+        int ConsumeMessage(string id);
     }
 }
