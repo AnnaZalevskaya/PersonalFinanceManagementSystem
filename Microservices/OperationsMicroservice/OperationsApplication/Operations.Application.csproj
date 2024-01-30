@@ -28,8 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AccountsMicroservice\AccountsBLL\Accounts.BusinessLogic.csproj" />
-    <ProjectReference Include="..\..\AuthMicroservice\AuthApplication\Auth.Application.csproj" />
     <ProjectReference Include="..\OperationsCore\Operations.Core.csproj" />
   </ItemGroup>
 
