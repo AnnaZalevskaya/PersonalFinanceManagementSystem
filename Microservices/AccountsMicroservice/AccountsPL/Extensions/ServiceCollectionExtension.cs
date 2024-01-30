@@ -56,7 +56,6 @@ namespace Accounts.Presentation.Extensions
             services.AddScoped<IFinancialAccountService, FinancialAccountService>();
             services.AddScoped<IFinancialAccountTypeService, FinancialAccountTypeService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
-            services.AddScoped<IAccountMessageService, AccountMessageService>();
 
             return services;
         }
@@ -85,45 +84,8 @@ namespace Accounts.Presentation.Extensions
 
         public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
         {
-            services.AddMassTransit(x =>
-            {
-                x.AddConsumer<GetAllAccountsConsumer>();
-                x.AddConsumer<GetAllAccountsByUserConsumer>();
-                x.AddConsumer<GetAccountConsumer>();
-                x.AddConsumer<CreateAccountConsumer>();
-                x.AddConsumer<UpdateAccountConsumer>();
-                x.AddConsumer<DeleteAccountConsumer>();
-                x.UsingRabbitMq((context, cfg) =>
-                {
-                    cfg.Host(new Uri("rabbitmq://localhost"));
-                    cfg.ReceiveEndpoint("accountsQueue", e =>
-                    {
-                        e.PrefetchCount = 20;
-                        e.UseMessageRetry(r => r.Interval(2, 100));
+            services.AddSingleton<IMessageConsumer, MessageConsumer>();
 
-                        e.Consumer<GetAllAccountsConsumer>(context);
-                        e.Consumer<GetAllAccountsByUserConsumer>(context);
-                        e.Consumer<GetAccountConsumer>(context);
-                        e.Consumer<CreateAccountConsumer>(context);
-                        e.Consumer<UpdateAccountConsumer>(context);
-                        e.Consumer<DeleteAccountConsumer>(context);
-                    });
-                    cfg.ConfigureNewtonsoftJsonSerializer(settings =>
-                    {
-                        settings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-
-                        return settings;
-                    });
-                    cfg.ConfigureNewtonsoftJsonDeserializer(configure =>
-                    {
-                        configure.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-
-                        return configure;
-                    });
-                });
-            });
-            services.AddMassTransitHostedService();
-        
             return services;
         }
     }

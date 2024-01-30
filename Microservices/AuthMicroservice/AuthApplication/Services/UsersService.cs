@@ -4,6 +4,7 @@ using Auth.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using Auth.Application.Settings;
+using Auth.Application.Producers;
 
 namespace Auth.Application.Services
 {
@@ -13,14 +14,16 @@ namespace Auth.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IMessageProducer _producer;
 
         public UsersService(ITokenService tokenService, IUnitOfWork unitOfWork,
-            UserManager<AppUser> userManager, IMapper mapper)
+            UserManager<AppUser> userManager, IMapper mapper, IMessageProducer producer)
         {
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _mapper = mapper;
+            _producer = producer;
         }
 
         public async Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken)
@@ -46,6 +49,7 @@ namespace Auth.Application.Services
 
             var response = _mapper.Map<AuthResponse>(user);
             response.Token = accessToken;
+            _producer.SendMessage(response);
 
             return response;
         }

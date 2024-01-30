@@ -1,5 +1,5 @@
-﻿using Auth.Application.Consumers;
-using Auth.Application.Interfaces;
+﻿using Auth.Application.Interfaces;
+using Auth.Application.Producers;
 using Auth.Application.Services;
 using Auth.Application.Settings;
 using Auth.Core.Entities;
@@ -89,7 +89,6 @@ namespace Auth.API.Extensions
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IAuthMessageService, AuthMessageService>();
 
             return services;
         }
@@ -106,11 +105,11 @@ namespace Auth.API.Extensions
                 .AddJwtBearer(options =>
                 {
                     options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
+                    options.RequireHttpsMetadata = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtOptions.Value.Issuer,
@@ -178,36 +177,7 @@ namespace Auth.API.Extensions
 
         public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
         {
-            services.AddMassTransit(x =>
-            {
-                x.AddConsumer<AuthenticateConsumer>();
-                x.AddConsumer<RegisterUserConsumer>();
-                x.UsingRabbitMq((context, cfg) =>
-                {
-                    cfg.Host(new Uri("rabbitmq://localhost"));
-                    cfg.ReceiveEndpoint("usersQueue", e =>
-                    {
-                        e.PrefetchCount = 20;
-                        e.UseMessageRetry(r => r.Interval(2, 100));
-
-                        e.Consumer<AuthenticateConsumer>(context);
-                        e.Consumer<RegisterUserConsumer>(context);
-                    });
-                    cfg.ConfigureNewtonsoftJsonSerializer(settings =>
-                    {
-                        settings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-
-                        return settings;
-                    });
-                    cfg.ConfigureNewtonsoftJsonDeserializer(configure =>
-                    {
-                        configure.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-                        return configure;
-                    });
-                });
-
-            });
-            services.AddMassTransitHostedService();
+            services.AddSingleton<IMessageProducer, MessageProducer>();
 
             return services;
         }

@@ -1,4 +1,5 @@
 ﻿using Abp.Domain.Entities;
+using Accounts.BusinessLogic.Consumers;
 using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Entities;
@@ -12,11 +13,13 @@ namespace Accounts.BusinessLogic.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IMessageConsumer _consumer;
 
-        public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper)
+        public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper, IMessageConsumer consumer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _consumer = consumer;
         }
 
         public async Task AddAsync(FinancialAccountModel addModel, CancellationToken cancellationToken)
@@ -50,9 +53,10 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return accountsList;
         }
 
-        public async Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId, 
-            PaginationSettings paginationSettings, CancellationToken cancellationToken)
+        public async Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(PaginationSettings paginationSettings, 
+            CancellationToken cancellationToken)
         {
+            int userId = _consumer.ConsumeMessage();
             var accounts = await _unitOfWork.FinancialAccounts
                 .GetAccountsByUserIdAsync(userId, paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
