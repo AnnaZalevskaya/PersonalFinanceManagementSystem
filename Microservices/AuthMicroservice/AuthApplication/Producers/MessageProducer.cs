@@ -15,21 +15,20 @@ namespace Auth.Application.Producers
             _factory = new ConnectionFactory() { HostName = "localhost" };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-        }
-
-        public void SendMessage(object messageObject, string id)
-        {
-            _channel.QueueDeclare(queue: "users_queue_" + id,
+            _channel.QueueDeclare(queue: "users_queue",
                                   durable: false,
                                   exclusive: false,
                                   autoDelete: false,
                                   arguments: null);
+        }
 
+        public void SendMessage(object messageObject)
+        {
             var messageJson = JsonConvert.SerializeObject(messageObject);
             var body = Encoding.UTF8.GetBytes(messageJson);
 
             _channel.BasicPublish(exchange: "",
-                                 routingKey: "users_queue_" + id,
+                                 routingKey: "users_queue",
                                  basicProperties: null,
                                  body: body);
             Console.WriteLine(" [x] Sent obj: {0}", messageObject);

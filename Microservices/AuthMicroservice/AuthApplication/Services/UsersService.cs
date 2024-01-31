@@ -50,7 +50,7 @@ namespace Auth.Application.Services
             var response = _mapper.Map<AuthResponse>(user);
             response.Token = accessToken;
 
-            _producer.SendMessage(response, response.Id.ToString());
+            _producer.SendMessage(response);
 
             return response;
         }
