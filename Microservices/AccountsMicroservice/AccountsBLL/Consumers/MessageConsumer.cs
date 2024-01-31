@@ -1,5 +1,4 @@
-﻿using RabbitMQ.Client.Events;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -16,38 +15,44 @@ namespace Accounts.BusinessLogic.Consumers
             _factory = new ConnectionFactory() { HostName = "localhost" };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            
+            _channel.QueueDeclare(queue: "users_queue",
+                      durable: false,
+                      exclusive: false,
+                      autoDelete: false,
+                      arguments: null);
         }
 
-        public int ConsumeMessage(string id)
+        public int ConsumeMessage(int id)
         {
-            _channel.QueueDeclare(queue: "users_queue_" + id,
-                                  durable: false,
-                                  exclusive: false,
-                                  autoDelete: false,
-                                  arguments: null);
+            var message = GetMessageFromQueue(msg => msg.Id == id);
 
-            int response = 0;
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (model, ea) =>
+            if (message != null)
             {
-                var body = ea.Body.ToArray();
-                var messageJson = Encoding.UTF8.GetString(body);
-                var messageObject = JsonConvert.DeserializeObject<dynamic>(messageJson);
+                var messageObject = JsonConvert.DeserializeObject<dynamic>(message);
                 Console.WriteLine(" [x] Received id: {0}", messageObject.Id);
-                response = messageObject.Id;
-            };
-            _channel.BasicConsume(queue: "users_queue_" + id,
-                                 autoAck: true,
-                                 consumer: consumer);
 
-            return response;
+                return messageObject.Id;
+            }
+
+            return 0;
         }
 
-        public void Close()
+        private string GetMessageFromQueue(Func<dynamic, bool> filter)
         {
-            _channel.Close();
-            _connection.Close();
+            BasicGetResult result = _channel.BasicGet("users_queue", true);
+
+            if (result != null)
+            {
+                var body = result.Body.ToArray();
+                var messageObject = JsonConvert.DeserializeObject<dynamic>(Encoding.UTF8.GetString(body));
+
+                if (filter(messageObject))
+                {
+                    return Encoding.UTF8.GetString(body);
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model, 
+        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model,
             CancellationToken cancellationToken)
         {
             await _service.AddAsync(model, cancellationToken);
@@ -25,10 +25,11 @@ namespace Accounts.Presentation.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> CloseAccountAsync(int id, CancellationToken cancellationToken)
+        [HttpDelete("{userId}/{accountId}")]
+        public async Task<IActionResult> CloseAccountAsync(int userId, int accountId, 
+            CancellationToken cancellationToken)
         {
-            await _service.DeleteAsync(id, cancellationToken);
+            await _service.DeleteAsync(userId, accountId, cancellationToken);
 
             return NoContent();
         }
@@ -53,7 +54,7 @@ namespace Accounts.Presentation.Controllers
         public async Task<ActionResult<List<FinancialAccountModel>>> GetUserAccountsAsync(int userId,
             [FromQuery] PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
-            return Ok(await _service.GetAccountsByUserIdAsync(paginationSettings, cancellationToken));
+            return Ok(await _service.GetAccountsByUserIdAsync(userId, paginationSettings, cancellationToken));
         }
 
         [HttpGet]

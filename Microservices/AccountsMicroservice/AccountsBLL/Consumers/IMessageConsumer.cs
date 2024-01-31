@@ -2,6 +2,6 @@
 {
     public interface IMessageConsumer
     {
-        int ConsumeMessage(string id);
+        int ConsumeMessage(int id);
     }
 }
