@@ -25,7 +25,7 @@ namespace Operations.Application.Operations.Commands.CreateOperation
 
             if (id == 0)
             {
-                throw new Exception("The account was not found");
+                throw new Exception("The user's account was not found");
             }
 
             var entity = _mapper.Map<Operation>(command.Model);

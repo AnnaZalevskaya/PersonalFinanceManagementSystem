@@ -29,7 +29,7 @@ namespace Operations.Application.Operations.Commands.DeleteOperation
 
             if (receivedAccountId == 0 || command.AccountId != receivedAccountId)
             {
-                throw new Exception("The account was not found");
+                throw new Exception("The user's account was not found");
             }
 
             await _unitOfWork.Operations.DeleteAsync(command.Id, cancellationToken);

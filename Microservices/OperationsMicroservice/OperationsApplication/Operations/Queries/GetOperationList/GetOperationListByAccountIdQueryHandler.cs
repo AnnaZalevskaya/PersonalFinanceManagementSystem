@@ -28,7 +28,7 @@ namespace Operations.Application.Operations.Queries.GetOperationList
 
             if (id == 0)
             {
-                throw new Exception("The account was not found");
+                throw new Exception("The user's account was not found");
             }
 
             var entities = await _unitOfWork.Operations
