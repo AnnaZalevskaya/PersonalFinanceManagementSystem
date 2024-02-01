@@ -12,6 +12,6 @@ namespace Accounts.BusinessLogic.Services.Interfaces
         Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId, PaginationSettings paginationSettings, 
             CancellationToken cancellationToken);
         Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken);
-        Task UpdateAsync(int id, FinancialAccountModel updateModel, CancellationToken cancellationToken);
+        Task UpdateAsync(int userId, int id, FinancialAccountModel updateModel, CancellationToken cancellationToken);
     }
 }

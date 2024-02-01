@@ -35,10 +35,10 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditAccountAsync(int id, [FromBody] FinancialAccountModel model, 
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
+            [FromBody] FinancialAccountModel model, CancellationToken cancellationToken)
         {
-            await _service.UpdateAsync(id, model, cancellationToken);
+            await _service.UpdateAsync(userId, accountId, model, cancellationToken);
 
             return NoContent();
         }

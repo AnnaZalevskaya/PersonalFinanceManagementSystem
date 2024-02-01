@@ -104,7 +104,8 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return accountModel;
         }
 
-        public async Task UpdateAsync(int id, FinancialAccountModel updateModel, CancellationToken cancellationToken)
+        public async Task UpdateAsync(int userId, int id, FinancialAccountModel updateModel, 
+            CancellationToken cancellationToken)
         {
             var account = await _unitOfWork.FinancialAccounts.GetByIdAsync(id, cancellationToken);
 
@@ -113,9 +114,9 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 throw new EntityNotFoundException("Account not found");
             }
 
-            int userId = _consumer.ConsumeMessage(updateModel.UserId);
+            int receivedUserId = _consumer.ConsumeMessage(account.UserId);
 
-            if (userId == 0)
+            if (receivedUserId == 0 || userId != receivedUserId)
             {
                 throw new Exception("The user is not logged in");
             }
