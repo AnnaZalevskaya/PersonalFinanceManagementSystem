@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using Auth.Application.Settings;
 using Auth.Application.Producers;
+using Auth.Application.Models.Consts;
 
 namespace Auth.Application.Services
 {

@@ -1,4 +1,4 @@
-﻿namespace Auth.Application.Models
+﻿namespace Auth.Application.Models.Consts
 {
     public class RoleConsts
     {

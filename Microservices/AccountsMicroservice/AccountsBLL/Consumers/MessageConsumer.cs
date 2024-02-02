@@ -1,6 +1,7 @@
 ﻿using RabbitMQ.Client;
 using System.Text;
 using Newtonsoft.Json;
+using Accounts.BusinessLogic.Models.Consts;
 
 namespace Accounts.BusinessLogic.Consumers
 {
@@ -12,10 +13,10 @@ namespace Accounts.BusinessLogic.Consumers
 
         public MessageConsumer()
         {
-            _factory = new ConnectionFactory() { HostName = "localhost" };
+            _factory = new ConnectionFactory() { HostName = RabbitMQConsts.Host };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "users_queue",
+            _channel.QueueDeclare(queue: RabbitMQConsts.ReceivingQueue,
                       durable: false,
                       exclusive: false,
                       autoDelete: false,
@@ -39,7 +40,7 @@ namespace Accounts.BusinessLogic.Consumers
 
         private string GetMessageFromQueue(Func<dynamic, bool> filter)
         {
-            BasicGetResult result = _channel.BasicGet("users_queue", true);
+            BasicGetResult result = _channel.BasicGet(RabbitMQConsts.ReceivingQueue, true);
 
             if (result != null)
             {

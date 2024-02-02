@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Accounts.BusinessLogic.Models.Consts;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
 
@@ -12,10 +13,10 @@ namespace Accounts.BusinessLogic.Producers
 
         public MessageProducer()
         {
-            _factory = new ConnectionFactory() { HostName = "localhost" };
+            _factory = new ConnectionFactory() { HostName = RabbitMQConsts.Host };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "accounts_queue",
+            _channel.QueueDeclare(queue: RabbitMQConsts.SendingQueue,
                                   durable: false,
                                   exclusive: false,
                                   autoDelete: false,
@@ -29,7 +30,7 @@ namespace Accounts.BusinessLogic.Producers
                 var messageJson = JsonConvert.SerializeObject(messageObject);
                 var body = Encoding.UTF8.GetBytes(messageJson);
                 _channel.BasicPublish(exchange: "",
-                                     routingKey: "accounts_queue",
+                                     routingKey: RabbitMQConsts.SendingQueue,
                                      basicProperties: null,
                                      body: body);
                 Console.WriteLine(" [x] Sent obj: {0}", messageObject);
