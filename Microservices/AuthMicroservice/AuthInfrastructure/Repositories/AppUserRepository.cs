@@ -19,6 +19,7 @@ namespace Auth.Infrastructure.Repositories
             CancellationToken cancellationToken)
         {
             return await _context.Users
+                .OrderBy(e => e.Id)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Take(paginationSettings.PageSize)
                 .AsNoTracking()

@@ -6,11 +6,12 @@ namespace Accounts.BusinessLogic.Services.Interfaces
     public interface IFinancialAccountService
     {
         Task AddAsync(FinancialAccountModel addModel, CancellationToken cancellationToken);
-        Task DeleteAsync(int id, CancellationToken cancellationToken);
-        Task<List<FinancialAccountModel>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken);
-        Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId, 
-            PaginationSettings paginationSettings, CancellationToken cancellationToken);
+        Task DeleteAsync(int userId, int id, CancellationToken cancellationToken);
+        Task<List<FinancialAccountModel>> GetAllAsync(PaginationSettings paginationSettings, 
+            CancellationToken cancellationToken);
+        Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId, PaginationSettings paginationSettings, 
+            CancellationToken cancellationToken);
         Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken);
-        Task UpdateAsync(int id, FinancialAccountModel updateModel, CancellationToken cancellationToken);
+        Task UpdateAsync(int userId, int id, FinancialAccountModel updateModel, CancellationToken cancellationToken);
     }
 }

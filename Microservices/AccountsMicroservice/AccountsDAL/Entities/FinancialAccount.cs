@@ -1,9 +1,7 @@
 ﻿namespace Accounts.DataAccess.Entities
 {
-    public class FinancialAccount
+    public class FinancialAccount : BaseEntity
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
         public int AccountTypeId { get; set; }
         public FinancialAccountType? AccountType { get; set; }
         public int CurrencyId { get; set; }

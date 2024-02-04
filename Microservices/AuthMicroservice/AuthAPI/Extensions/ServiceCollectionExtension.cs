@@ -1,10 +1,12 @@
 ﻿using Auth.Application.Interfaces;
+using Auth.Application.Producers;
 using Auth.Application.Services;
 using Auth.Application.Settings;
 using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
 using Auth.Infrastructure.Repositories;
 using FluentValidation.AspNetCore;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace Auth.API.Extensions
@@ -49,7 +52,7 @@ namespace Auth.API.Extensions
                                 Id = "Bearer"
                             }
                         },
-                        new string[]{}
+                        new List<string>(){ }
                     }
                 });
             });
@@ -102,11 +105,11 @@ namespace Auth.API.Extensions
                 .AddJwtBearer(options =>
                 {
                     options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
+                    options.RequireHttpsMetadata = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtOptions.Value.Issuer,
@@ -141,6 +144,22 @@ namespace Auth.API.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureCORS(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins", 
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureValidation(this IServiceCollection services)
         {
             services.AddFluentValidationAutoValidation()
@@ -152,6 +171,13 @@ namespace Auth.API.Extensions
         public static IServiceCollection ConfigureMapperProfiles(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
+        {
+            services.AddSingleton<IMessageProducer, MessageProducer>();
 
             return services;
         }

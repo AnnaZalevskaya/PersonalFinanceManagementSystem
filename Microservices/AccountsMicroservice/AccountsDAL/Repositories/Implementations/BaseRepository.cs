@@ -1,11 +1,12 @@
 ﻿using Accounts.DataAccess.Data;
+using Accounts.DataAccess.Entities;
 using Accounts.DataAccess.Repositories.Interfaces;
 using Accounts.DataAccess.Settings;
 using Microsoft.EntityFrameworkCore;
 
 namespace Accounts.DataAccess.Repositories.Implementations
 {
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
         protected readonly FinancialAccountsDbContext _context;
 
@@ -29,6 +30,7 @@ namespace Accounts.DataAccess.Repositories.Implementations
             CancellationToken cancellationToken)
         {
             return await _context.Set<TEntity>()
+                .OrderBy(e => e.Id)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Take(paginationSettings.PageSize)
                 .AsNoTracking()

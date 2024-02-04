@@ -17,31 +17,35 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewAccountAsync(FinancialAccountModel model, CancellationToken cancellationToken)
+        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model,
+            CancellationToken cancellationToken)
         {
             await _service.AddAsync(model, cancellationToken);
 
             return NoContent();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> CloseAccountAsync(int id, CancellationToken cancellationToken)
+        [HttpDelete("{userId}/{accountId}")]
+        public async Task<IActionResult> CloseAccountAsync(int userId, int accountId, 
+            CancellationToken cancellationToken)
         {
-            await _service.DeleteAsync(id, cancellationToken);
+            await _service.DeleteAsync(userId, accountId, cancellationToken);
 
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditAccountAsync(int id, FinancialAccountModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
+            [FromBody] FinancialAccountModel model, CancellationToken cancellationToken)
         {
-            await _service.UpdateAsync(id, model, cancellationToken);
+            await _service.UpdateAsync(userId, accountId, model, cancellationToken);
 
             return NoContent();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, CancellationToken cancellationToken) 
+        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, 
+            CancellationToken cancellationToken)
         {
             return Ok(await _service.GetByIdAsync(id, cancellationToken));
         }
@@ -54,7 +58,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<FinancialAccountModel>>> GetAllAccountsAsync([FromQuery] PaginationSettings paginationSettings, 
+        public async Task<ActionResult<List<FinancialAccountModel>>> GetAllAccountsAsync([FromQuery] PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {
             return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));

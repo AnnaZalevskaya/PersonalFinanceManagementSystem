@@ -11,6 +11,7 @@ namespace Accounts.Presentation
             builder.Services
                 .ConfigurePostgreSQL(builder.Configuration)
                 .ConfigureSwagger()
+                .ConfigureRabbitMQ()
                 .ConfigureControllers()
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()

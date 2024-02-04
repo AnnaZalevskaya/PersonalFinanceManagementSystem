@@ -47,17 +47,17 @@ namespace Operations.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync(CreateOperationModel model)
+        public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
             await _mediator.Send(new CreateOperationCommand(model));
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFromHistoryAsync(string id)
+        [HttpDelete("{accountId}/{operationId}")]
+        public async Task<IActionResult> DeleteFromHistoryAsync(int accountId, string operationId)
         {
-            await _mediator.Send(new DeleteOperationCommand(id));
+            await _mediator.Send(new DeleteOperationCommand(accountId, operationId));
 
             return NoContent();
         }

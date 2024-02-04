@@ -1,4 +1,6 @@
-﻿using Accounts.BusinessLogic.Services.Implementations;
+﻿using Accounts.BusinessLogic.Consumers;
+using Accounts.BusinessLogic.Producers;
+using Accounts.BusinessLogic.Services.Implementations;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.UnitOfWork;
@@ -74,6 +76,14 @@ namespace Accounts.Presentation.Extensions
         public static IServiceCollection ConfigureMapperProfiles(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
+        {
+            services.AddSingleton<IMessageProducer, MessageProducer>();
+            services.AddSingleton<IMessageConsumer, MessageConsumer>();
 
             return services;
         }

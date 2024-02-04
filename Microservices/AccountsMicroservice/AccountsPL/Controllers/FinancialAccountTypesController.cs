@@ -17,13 +17,15 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FinancialAccountTypeModel>> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<FinancialAccountTypeModel>> GetByIdAsync(int id, 
+            CancellationToken cancellationToken)
         {
             return Ok(await _service.GetByIdAsync(id, cancellationToken));
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<FinancialAccountTypeModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings, CancellationToken cancellationToken)
+        public async Task<ActionResult<List<FinancialAccountTypeModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings, 
+            CancellationToken cancellationToken)
         {
             return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));
         }

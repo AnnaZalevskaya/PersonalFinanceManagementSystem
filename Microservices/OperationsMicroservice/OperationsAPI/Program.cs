@@ -11,6 +11,7 @@ namespace Operations.Api
             builder.Services
                 .ConfigureMongoDB(builder.Configuration)
                 .ConfigureSwagger()
+                .ConfigureRabbitMQ()
                 .ConfigureControllers()
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()
@@ -27,6 +28,7 @@ namespace Operations.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseRouting();
 
             app.UseAuthorization();
 

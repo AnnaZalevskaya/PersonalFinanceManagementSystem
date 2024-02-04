@@ -18,7 +18,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<ActionResult<AuthResponse>> AuthenticateAsync([FromBody] AuthRequest model, 
+        public async Task<ActionResult<AuthResponse>> AuthenticateAsync([FromBody] AuthRequest model,
             CancellationToken cancellationToken)
         {
             var response = await _userService.AuthenticateAsync(model, cancellationToken);
@@ -37,7 +37,7 @@ namespace Auth.API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings, 
+        public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {
             var users = await _userService.GetAllAsync(paginationSettings, cancellationToken);
