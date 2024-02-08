@@ -7,6 +7,7 @@ using Accounts.DataAccess.Entities;
 using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
+using gRPC.Protos.Client;
 
 namespace Accounts.BusinessLogic.Services.Implementations
 {
@@ -16,14 +17,17 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IMessageConsumer _consumer;
         private readonly IMessageProducer _producer;
+        private readonly AccountBalance.AccountBalanceClient _balanceClient;
 
-        public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper, 
-            IMessageConsumer consumer, IMessageProducer producer)
+        public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
+            IMessageConsumer consumer, IMessageProducer producer,
+            AccountBalance.AccountBalanceClient balanceClient)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _consumer = consumer;
             _producer = producer;
+            _balanceClient = balanceClient;
         }
 
         public async Task AddAsync(FinancialAccountModel addModel, CancellationToken cancellationToken)
@@ -68,6 +72,24 @@ namespace Accounts.BusinessLogic.Services.Implementations
             var accounts = await _unitOfWork.FinancialAccounts.GetAllAsync(paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
+            for (int i = 0; i < accountsList.Count(); i++)
+            {
+                var request = new AccountIdRequest()
+                {
+                    AccountId = accountsList.ElementAt(i).Id
+                };
+
+                var accountBalanceResponse = await _balanceClient
+                    .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+                if (accountBalanceResponse == null)
+                {
+                    throw new Exception("Response is null");
+                }
+
+                accountsList.ElementAt(i).Balance = accountBalanceResponse.Balance;
+            }
+
             return accountsList;
         }
 
@@ -101,6 +123,21 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             var accountModel = _mapper.Map<FinancialAccountModel>(account);
 
+            var request = new AccountIdRequest()
+            {
+                AccountId = account.Id
+            };
+
+            var accountBalanceResponse = await _balanceClient
+                .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+            if (accountBalanceResponse == null)
+            {
+                throw new Exception("Response is null");
+            }
+
+            accountModel.Balance = accountBalanceResponse.Balance;
+
             return accountModel;
         }
 
@@ -120,6 +157,21 @@ namespace Accounts.BusinessLogic.Services.Implementations
             {
                 throw new Exception("The user is not logged in");
             }
+
+            var request = new AccountIdRequest()
+            {
+                AccountId = account.Id
+            };
+
+            var accountBalanceResponse = await _balanceClient
+                .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+            if (accountBalanceResponse == null)
+            {
+                throw new Exception("Response is null");
+            }
+
+            updateModel.Balance = accountBalanceResponse.Balance;
 
             var updateAccount = _mapper.Map<FinancialAccount>(updateModel);
 

@@ -7,5 +7,6 @@
         public int AccountTypeId { get; set; }
         public int CurrencyId { get; set; }
         public int UserId { get; set; }
+        public double Balance { get; set; }
     }
 }
