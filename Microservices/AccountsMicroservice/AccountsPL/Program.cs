@@ -17,6 +17,7 @@ namespace Accounts.Presentation
                 .ConfigureEndpointsApiExplorer()
                 .ConfigureRepositoryWrapper()
                 .ConfigureAppServices()
+                .ConfigureGrpc()
                 .ConfigureMapperProfiles();
 
             var app = builder.Build();

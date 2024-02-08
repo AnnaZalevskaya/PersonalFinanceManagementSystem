@@ -5,8 +5,10 @@ using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.UnitOfWork;
 using FluentValidation.AspNetCore;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using static gRPC.Protos.Client.AccountBalance;
 
 namespace Accounts.Presentation.Extensions
 {
@@ -84,6 +86,15 @@ namespace Accounts.Presentation.Extensions
         {
             services.AddSingleton<IMessageProducer, MessageProducer>();
             services.AddSingleton<IMessageConsumer, MessageConsumer>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureGrpc(this IServiceCollection services)
+        {
+            services.AddGrpc();
+            services.AddGrpcClient<AccountBalanceClient>(o => 
+                o.Address = new Uri("https://localhost:44344"));
 
             return services;
         }
