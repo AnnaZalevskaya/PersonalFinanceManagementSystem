@@ -1,11 +1,16 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
 using Operations.Application.Consumers;
 using Operations.Application.Interfaces;
+using Operations.Application.Interfaces.gRPC;
 using Operations.Application.Operations.Queries.GetCategoryDetails;
 using Operations.Infrastructure.Data;
 using Operations.Infrastructure.Repositories;
+using Operations.Infrastructure.Repositories.gRPC;
 using Operations.Infrastructure.Settings;
+using System.Net;
 
 namespace Operations.API.Extensions
 {
@@ -44,6 +49,7 @@ namespace Operations.API.Extensions
         public static IServiceCollection ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IOperationsGrpcRepository, OperationsGrpcRepository>();
 
             return services;
         }
@@ -82,6 +88,13 @@ namespace Operations.API.Extensions
         public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
         {
             services.AddSingleton<IMessageConsumer, MessageConsumer>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureGrpc(this IServiceCollection services)
+        {
+            services.AddGrpc();
 
             return services;
         }

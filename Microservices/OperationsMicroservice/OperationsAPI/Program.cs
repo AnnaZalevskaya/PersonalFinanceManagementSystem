@@ -1,4 +1,5 @@
 using Operations.API.Extensions;
+using Operations.Application.Operations.Commands.gRPC;
 
 namespace Operations.Api
 {
@@ -17,6 +18,7 @@ namespace Operations.Api
                 .ConfigureEndpointsApiExplorer()
                 .ConfigureRepositoryWrapper()
                 .ConfigureMediatR()
+                .ConfigureGrpc()
                 .ConfigureMapperProfiles();
 
             var app = builder.Build();
@@ -31,6 +33,8 @@ namespace Operations.Api
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.MapGrpcService<AccountBalanceGrpcCommandHandler>();
 
             app.MapControllers();
 
