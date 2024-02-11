@@ -30,7 +30,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             _balanceClient = balanceClient;
         }
 
-        public async Task AddAsync(FinancialAccountModel addModel, CancellationToken cancellationToken)
+        public async Task AddAsync(FinancialAccountActionModel addModel, CancellationToken cancellationToken)
         {
             int userId = _consumer.ConsumeMessage(addModel.UserId);
 
@@ -159,7 +159,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return accountModel;
         }
 
-        public async Task UpdateAsync(int userId, int id, FinancialAccountModel updateModel, 
+        public async Task UpdateAsync(int userId, int id, FinancialAccountActionModel updateModel, 
             CancellationToken cancellationToken)
         {
             var account = await _unitOfWork.FinancialAccounts.GetByIdAsync(id, cancellationToken);
@@ -176,22 +176,8 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 throw new Exception("The user is not logged in");
             }
 
-            var request = new AccountIdRequest()
-            {
-                AccountId = account.Id
-            };
-
-            var accountBalanceResponse = await _balanceClient
-                .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
-
-            if (accountBalanceResponse == null)
-            {
-                throw new Exception("Response is null");
-            }
-
-            updateModel.Balance = accountBalanceResponse.Balance;
-
             var updateAccount = _mapper.Map<FinancialAccount>(updateModel);
+            updateAccount.Id = account.Id;
 
             await _unitOfWork.FinancialAccounts.UpdateAsync(id, updateAccount, cancellationToken);
 
