@@ -72,11 +72,11 @@ namespace Accounts.BusinessLogic.Services.Implementations
             var accounts = await _unitOfWork.FinancialAccounts.GetAllAsync(paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
-            for (int i = 0; i < accountsList.Count(); i++)
+            foreach (var account in accountsList)
             {
-                var request = new AccountIdRequest()
+                var request = new AccountIdRequest
                 {
-                    AccountId = accountsList.ElementAt(i).Id
+                    AccountId = account.Id
                 };
 
                 var accountBalanceResponse = await _balanceClient
@@ -87,7 +87,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
                     throw new Exception("Response is null");
                 }
 
-                accountsList.ElementAt(i).Balance = accountBalanceResponse.Balance;
+                account.Balance = accountBalanceResponse.Balance;
             }
 
             return accountsList;
@@ -106,6 +106,24 @@ namespace Accounts.BusinessLogic.Services.Implementations
             var accounts = await _unitOfWork.FinancialAccounts
                 .GetAccountsByUserIdAsync(id, paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
+
+            foreach (var account in accountsList)
+            {
+                var request = new AccountIdRequest
+                {
+                    AccountId = account.Id
+                };
+
+                var accountBalanceResponse = await _balanceClient
+                    .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+                if (accountBalanceResponse == null)
+                {
+                    throw new Exception("Response is null");
+                }
+
+                account.Balance = accountBalanceResponse.Balance;
+            }
 
             _producer.SendMessages(accountsList);   
 

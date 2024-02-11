@@ -1,6 +1,5 @@
 ﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
 using Operations.Application.Consumers;
 using Operations.Application.Interfaces;
@@ -10,7 +9,6 @@ using Operations.Infrastructure.Data;
 using Operations.Infrastructure.Repositories;
 using Operations.Infrastructure.Repositories.gRPC;
 using Operations.Infrastructure.Settings;
-using System.Net;
 
 namespace Operations.API.Extensions
 {
@@ -94,7 +92,10 @@ namespace Operations.API.Extensions
 
         public static IServiceCollection ConfigureGrpc(this IServiceCollection services)
         {
-            services.AddGrpc();
+            services.AddGrpc(options =>
+            {
+                options.EnableDetailedErrors = true; 
+            });
 
             return services;
         }

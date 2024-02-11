@@ -11,15 +11,15 @@ namespace Operations.Api
 
             builder.Services
                 .ConfigureMongoDB(builder.Configuration)
+                .ConfigureRepositoryWrapper()
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
-                .ConfigureControllers()
-                .ConfigureValidation()
-                .ConfigureEndpointsApiExplorer()
-                .ConfigureRepositoryWrapper()
                 .ConfigureMediatR()
-                .ConfigureGrpc()
-                .ConfigureMapperProfiles();
+                .ConfigureGrpc()        
+                .ConfigureMapperProfiles()
+                .ConfigureValidation()
+                .ConfigureControllers()
+                .ConfigureEndpointsApiExplorer();
 
             var app = builder.Build();
 
@@ -31,10 +31,11 @@ namespace Operations.Api
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseGrpcWeb();
 
             app.UseAuthorization();
 
-            app.MapGrpcService<AccountBalanceGrpcCommandHandler>();
+            app.MapGrpcService<AccountBalanceGrpcCommandHandler>().EnableGrpcWeb();
 
             app.MapControllers();
 
