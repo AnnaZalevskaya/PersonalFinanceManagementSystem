@@ -8,6 +8,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 COPY ["ApiGateway/OcelotApiGateway.csproj", "ApiGateway/"]
+COPY ["ApiGateway/Configuration/ocelot.docker.json", "ApiGateway/Configuration/"] 
 RUN dotnet restore "./ApiGateway/OcelotApiGateway.csproj"
 
 COPY . .

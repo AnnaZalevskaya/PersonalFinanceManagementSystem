@@ -1,23 +1,23 @@
 version: '3.4'
 
 services:
-  ocelotapigateway:
-    image: ${DOCKER_REGISTRY-}ocelotapigateway
-    build:
-      context: .
-      dockerfile: ApiGateway/OcelotAPIGateway/Dockerfile
-    depends_on:
-      - accounts.presentation
-      - auth.api
-      - operations.api
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      SA_PASSWORD: 12345
+      ACCEPT_EULA: Y
+    ports:
+      - 1433:1433
 
-  accounts.presentation:
-    image: ${DOCKER_REGISTRY-}accountspresentation
+  authapi:
+    image: authapi
     build:
       context: .
-      dockerfile: Microservices/AccountsMicroservice/AccountsPL/Dockerfile
+      dockerfile: Microservices/AuthMicroservice/AuthAPI/Dockerfile
+    ports:
+      - 8001:80
     depends_on:
-      - postgresql
+      - sqlserver
 
   postgresql:
     image: postgres:latest
@@ -28,32 +28,45 @@ services:
     ports:
       - 5432:5432
 
-  auth.api:
-    image: ${DOCKER_REGISTRY-}authapi
+  accountspresentation:
+    image: accountspresentation
     build:
       context: .
-      dockerfile: Microservices/AuthMicroservice/AuthAPI/Dockerfile
-    depends_on:
-      - sqlserver
-
-  sqlserver:
-    image: microsoft/mssql-server-linux:2017-latest
-    environment:
-      SA_PASSWORD: 12345
-      ACCEPT_EULA: Y
+      dockerfile: Microservices/AccountsMicroservice/AccountsPL/Dockerfile
     ports:
-      - 1433:1433
-
-  operations.api:
-    image: ${DOCKER_REGISTRY-}operationsapi
-    build:
-      context: .
-      dockerfile: Microservices/OperationsMicroservice/OperationsAPI/Dockerfile
+      - 8002:80
     depends_on:
-      - mongodb
+      - postgresql
 
   mongodb:
     image: mongo:latest
     ports:
       - 27017:27017
 
+  operationsapi:
+    image: operationsapi
+    build:
+      context: .
+      dockerfile: Microservices/OperationsMicroservice/OperationsAPI/Dockerfile
+    ports:
+      - 8003:80
+    depends_on:
+      - mongodb
+
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  ocelotapigateway:
+    image: ocelotapigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/OcelotAPIGateway/Dockerfile
+    ports:
+      - 8000:80
+    depends_on:
+      - accountspresentation
+      - authapi
+      - operationsapi
