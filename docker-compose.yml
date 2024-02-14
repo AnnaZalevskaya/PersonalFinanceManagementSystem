@@ -18,6 +18,7 @@ services:
       dockerfile: Microservices/AccountsMicroservice/AccountsPL/Dockerfile
     depends_on:
       - postgresql
+      - redis_accounts 
 
   postgresql:
     image: postgres:latest
@@ -35,6 +36,7 @@ services:
       dockerfile: Microservices/AuthMicroservice/AuthAPI/Dockerfile
     depends_on:
       - sqlserver
+      - redis_users
 
   sqlserver:
     image: microsoft/mssql-server-linux:2017-latest
@@ -51,9 +53,22 @@ services:
       dockerfile: Microservices/OperationsMicroservice/OperationsAPI/Dockerfile
     depends_on:
       - mongodb
+      - redis_operations
 
   mongodb:
     image: mongo:latest
     ports:
       - 27017:27017
 
+  redis_accounts:
+    image: redis
+    ports:
+      - "6379:6379"
+  redis_operations:
+    image: redis
+    ports:
+      - "6380:6379"
+  redis_users:
+    image: redis
+    ports:
+      - "6390:6379"
