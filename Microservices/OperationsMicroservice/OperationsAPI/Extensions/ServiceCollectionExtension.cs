@@ -1,5 +1,4 @@
 ﻿using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
 using Operations.Application.Consumers;
 using Operations.Application.Interfaces;

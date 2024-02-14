@@ -90,10 +90,11 @@ namespace Accounts.Presentation.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureGrpc(this IServiceCollection services)
+        public static IServiceCollection ConfigureGrpc(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddGrpc();
-            services.AddGrpcClient<AccountBalanceClient>(o => o.Address = new Uri("https://localhost:44344"))
+            services.AddGrpcClient<AccountBalanceClient>(options => 
+                options.Address = new Uri(configuration.GetSection("GRPC:ServerURI").Value))
                 .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(new HttpClientHandler())); 
 
             return services;
