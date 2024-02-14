@@ -16,15 +16,17 @@ namespace Auth.Application.Services
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IMessageProducer _producer;
+        private readonly ICacheRepository _cacheRepository;
 
-        public UsersService(ITokenService tokenService, IUnitOfWork unitOfWork,
-            UserManager<AppUser> userManager, IMapper mapper, IMessageProducer producer)
+        public UsersService(ITokenService tokenService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, 
+            IMapper mapper, IMessageProducer producer, ICacheRepository cacheRepository)
         {
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _mapper = mapper;
             _producer = producer;
+            _cacheRepository = cacheRepository;
         }
 
         public async Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken)
@@ -53,6 +55,13 @@ namespace Auth.Application.Services
 
             _producer.SendMessage(response);
 
+            var cachedObj = await _cacheRepository.GetDataCacheAsync<UserModel>(user.Id);
+
+            if (cachedObj == null)
+            {
+                throw new Exception("There is no relevant object in the cache");
+            }
+
             return response;
         }
 
@@ -75,6 +84,9 @@ namespace Auth.Application.Services
 
             await _userManager.AddToRoleAsync(user, RoleConsts.Client);
 
+            var userModel = _mapper.Map<UserModel>(user);
+            await _cacheRepository.SetDataCacheAsync(user.Id, userModel);
+
             var response = _mapper.Map<RegisterResponse>(user);
 
             return response;
@@ -84,12 +96,7 @@ namespace Auth.Application.Services
             CancellationToken cancellationToken)
         {
             var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
-            var usersList = new List<UserModel>();
-
-            foreach (var user in users)
-            {
-                usersList.Add(_mapper.Map<UserModel>(user));
-            }
+            var usersList = _mapper.Map<List<UserModel>>(users);
 
             return usersList;
         }

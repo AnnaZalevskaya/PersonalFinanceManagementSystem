@@ -6,7 +6,6 @@ using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
 using Auth.Infrastructure.Repositories;
 using FluentValidation.AspNetCore;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using System.Text;
 
 namespace Auth.API.Extensions
@@ -79,6 +77,7 @@ namespace Auth.API.Extensions
         public static IServiceCollection ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
 
             return services;
         }
@@ -178,6 +177,17 @@ namespace Auth.API.Extensions
         public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
         {
             services.AddSingleton<IMessageProducer, MessageProducer>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDistributedMemoryCache();
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = configuration.GetSection("Redis:Host").Value;
+                options.InstanceName = configuration.GetSection("Redis:Instance").Value;
+            });
 
             return services;
         }

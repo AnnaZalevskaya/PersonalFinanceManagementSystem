@@ -17,6 +17,7 @@ namespace Auth.API
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()
                 .ConfigureCORS()
+                .ConfigureRedis(builder.Configuration)
                 .ConfigureRepositoryWrapper()
                 .ConfigureAppServices(builder.Configuration)
                 .ConfigureAuthentication()
