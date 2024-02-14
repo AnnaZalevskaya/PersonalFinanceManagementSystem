@@ -15,6 +15,7 @@ namespace Accounts.Presentation
                 .ConfigureControllers()
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()
+                .ConfigureRedis(builder.Configuration)
                 .ConfigureRepositoryWrapper()
                 .ConfigureAppServices()
                 .ConfigureMapperProfiles();

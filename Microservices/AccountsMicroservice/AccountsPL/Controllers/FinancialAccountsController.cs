@@ -34,7 +34,7 @@ namespace Accounts.Presentation.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{accountId}")]
         public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
             [FromBody] FinancialAccountModel model, CancellationToken cancellationToken)
         {
