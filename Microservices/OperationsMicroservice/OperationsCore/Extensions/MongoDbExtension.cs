@@ -6,7 +6,7 @@ namespace Operations.Core.Extensions
     {
         public static string GetAsName<T>(this MongoDBRef mongoDBRef)
         {
-            var client = new MongoClient("mongodb://localhost:27017/");
+            var client = new MongoClient();
             var database = client.GetDatabase(mongoDBRef.DatabaseName);
             var collection = database.GetCollection<T>(mongoDBRef.CollectionName); 
             var filter = Builders<T>.Filter.Eq("_id", mongoDBRef.Id); 

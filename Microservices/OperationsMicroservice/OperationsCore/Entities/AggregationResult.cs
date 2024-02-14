@@ -2,7 +2,7 @@
 {
     public class AggregationResult
     {
-        public string _id { get; set; }
+        public string operationCategoryType { get; set; }
         public double totalAmount { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace Operations.Infrastructure.Repositories.gRPC
             _context = context;
         }
 
-        public async Task<IEnumerable<AggregationResult>> GetByAccountIdAsync(int accountId)
+        public async Task<IEnumerable<AggregationResult>> GetByAccountIdAsync(int accountId, CancellationToken cancellationToken)
         {
             var matchStage = new BsonDocument("$match", new BsonDocument("AccountId", accountId));
 
@@ -45,18 +45,18 @@ namespace Operations.Infrastructure.Repositories.gRPC
                 { "totalAmount", new BsonDocument("$sum", "$Description.Amount") }
             });
 
-            var pipeline = new[] { matchStage, lookupStage, unwindStage1, lookupStage2, unwindStage2, groupStage };
+            var projectStage = new BsonDocument("$project", new BsonDocument
+            {
+                { "operationCategoryType", "$_id" }, 
+                { "totalAmount", 1 },
+                { "_id", 0 }
+            });
+
+            var pipeline = new[] { matchStage, lookupStage, unwindStage1, lookupStage2, unwindStage2, groupStage, projectStage };
 
             var result = await _context.Operations
                 .Aggregate<AggregationResult>(pipeline)
-                .ToListAsync();
-
-            foreach( var item in result )
-            {
-                Console.WriteLine(item._id);
-                Console.WriteLine(item.totalAmount);
-                Console.WriteLine("---------------------------");
-            }
+                .ToListAsync(cancellationToken);
 
             return result;
         }

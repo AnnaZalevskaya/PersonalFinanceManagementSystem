@@ -17,22 +17,20 @@ namespace Operations.Application.Operations.Commands.gRPC
         public async override Task<AccountBalanceResponse> GetAccountBalance(AccountIdRequest request,
             ServerCallContext context)
         {
-            var operations = await _operationsGrpcRepository.GetByAccountIdAsync(request.AccountId);
+            var operations = await _operationsGrpcRepository.GetByAccountIdAsync(request.AccountId, context.CancellationToken);
             double balance = 0;
 
             foreach (var operation in operations)
             {
-                if (operation._id == OperationCategoryTypeConsts.Income)
+                if (operation.operationCategoryType == OperationCategoryTypeConsts.Income)
                 {
                     balance += operation.totalAmount;
                 }
-                else if (operation._id == OperationCategoryTypeConsts.Expense)
+                else if (operation.operationCategoryType == OperationCategoryTypeConsts.Expense)
                 {
                     balance -= operation.totalAmount;
                 }
             }
-
-            Console.WriteLine("balance: " + balance);
 
             var response = new AccountBalanceResponse()
             {
