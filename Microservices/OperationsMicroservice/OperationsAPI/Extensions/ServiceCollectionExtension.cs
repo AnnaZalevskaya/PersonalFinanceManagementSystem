@@ -44,6 +44,7 @@ namespace Operations.API.Extensions
         public static IServiceCollection ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
 
             return services;
         }
@@ -82,6 +83,17 @@ namespace Operations.API.Extensions
         public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
         {
             services.AddSingleton<IMessageConsumer, MessageConsumer>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDistributedMemoryCache();
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = configuration.GetSection("Redis:Host").Value;
+                options.InstanceName = configuration.GetSection("Redis:Instance").Value;
+            });
 
             return services;
         }

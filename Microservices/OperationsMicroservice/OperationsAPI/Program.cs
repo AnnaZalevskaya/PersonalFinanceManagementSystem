@@ -15,6 +15,7 @@ namespace Operations.Api
                 .ConfigureControllers()
                 .ConfigureValidation()
                 .ConfigureEndpointsApiExplorer()
+                .ConfigureRedis(builder.Configuration)
                 .ConfigureRepositoryWrapper()
                 .ConfigureMediatR()
                 .ConfigureMapperProfiles();

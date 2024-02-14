@@ -10,11 +10,13 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ICacheRepository _cacheRepository;
 
-        public GetOperationDetailsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetOperationDetailsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ICacheRepository cacheRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _cacheRepository = cacheRepository;
         }
 
         public async Task<OperationModel> Handle(GetOperationDetailsQuery query, 
@@ -25,6 +27,13 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
             if (operation == null)
             {
                 throw new EntityNotFoundException("Operation not found");
+            }
+
+            var cachedObj = await _cacheRepository.GetDataCacheAsync<OperationModel>(query.Id);
+
+            if (cachedObj == null)
+            {
+                throw new Exception("There is no relevant object in the cache");
             }
 
             return _mapper.Map<OperationModel>(operation);
