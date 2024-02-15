@@ -1,4 +1,5 @@
 using Operations.API.Extensions;
+using Operations.Application.Operations.Commands.gRPC;
 
 namespace Operations.Api
 {
@@ -10,15 +11,16 @@ namespace Operations.Api
 
             builder.Services
                 .ConfigureMongoDB(builder.Configuration)
+                .ConfigureRepositoryWrapper()
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
-                .ConfigureControllers()
-                .ConfigureValidation()
-                .ConfigureEndpointsApiExplorer()
-                .ConfigureRedis(builder.Configuration)
-                .ConfigureRepositoryWrapper()
                 .ConfigureMediatR()
-                .ConfigureMapperProfiles();
+                .ConfigureGrpc()        
+                .ConfigureMapperProfiles()
+                .ConfigureValidation()
+                .ConfigureControllers()
+                .ConfigureRedis(builder.Configuration)
+                .ConfigureEndpointsApiExplorer();
 
             var app = builder.Build();
 
@@ -30,8 +32,11 @@ namespace Operations.Api
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseGrpcWeb();
 
             app.UseAuthorization();
+
+            app.MapGrpcService<AccountBalanceGrpcCommandHandler>().EnableGrpcWeb();
 
             app.MapControllers();
 

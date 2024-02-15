@@ -7,8 +7,10 @@ using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Repositories.Interfaces;
 using Accounts.DataAccess.UnitOfWork;
 using FluentValidation.AspNetCore;
+using Grpc.Net.Client.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using static gRPC.Protos.Client.AccountBalance;
 
 namespace Accounts.Presentation.Extensions
 {
@@ -91,14 +93,25 @@ namespace Accounts.Presentation.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureGrpc(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddGrpc();
+            services.AddGrpcClient<AccountBalanceClient>(options => 
+                options.Address = new Uri(configuration.GetSection("GRPC:ServerURI").Value))
+                .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(new HttpClientHandler())); 
+
+            return services;
+        }
+      
         public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDistributedMemoryCache();
-            services.AddStackExchangeRedisCache(options => {
+            services.AddStackExchangeRedisCache(options => 
+            {
                 options.Configuration = configuration.GetSection("Redis:Host").Value;
                 options.InstanceName = configuration.GetSection("Redis:Instance").Value;
             });
-
+        
             return services;
         }
     }

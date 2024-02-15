@@ -10,15 +10,16 @@ namespace Accounts.Presentation
 
             builder.Services
                 .ConfigurePostgreSQL(builder.Configuration)
+                .ConfigureRepositoryWrapper()
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
-                .ConfigureControllers()
-                .ConfigureValidation()
-                .ConfigureEndpointsApiExplorer()
-                .ConfigureRedis(builder.Configuration)
-                .ConfigureRepositoryWrapper()
                 .ConfigureAppServices()
-                .ConfigureMapperProfiles();
+                .ConfigureGrpc(builder.Configuration)
+                .ConfigureMapperProfiles()
+                .ConfigureValidation()
+                .ConfigureControllers()  
+                .ConfigureRedis(builder.Configuration)
+                .ConfigureEndpointsApiExplorer();
 
             var app = builder.Build();
 

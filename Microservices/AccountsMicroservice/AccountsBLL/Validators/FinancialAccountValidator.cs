@@ -18,6 +18,11 @@ namespace Accounts.BusinessLogic.Validators
             RuleFor(account => account.AccountTypeId)
                 .NotEmpty();
 
+            RuleFor(account => account.UserId)
+                .NotEmpty()
+                .Must((type, user) => user == type.UserId)
+                .WithMessage("Account owner must not be changed!");
+
             RuleFor(type => type.CurrencyId)
                 .NotEmpty()
                 .NotNull();
