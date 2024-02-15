@@ -11,18 +11,18 @@ namespace Auth.API
 
             builder.Services               
                 .ConfigureSQLServer(builder.Configuration)
-                .ConfigureSwagger()
-                .ConfigureRabbitMQ()
-                .ConfigureControllers()
-                .ConfigureValidation()
-                .ConfigureEndpointsApiExplorer()
-                .ConfigureCORS()
                 .ConfigureRepositoryWrapper()
-                .ConfigureAppServices(builder.Configuration)
                 .ConfigureAuthentication()
                 .ConfigureAuthorization()
                 .ConfigureIdentity()
-                .ConfigureMapperProfiles();
+                .ConfigureSwagger()
+                .ConfigureRabbitMQ()
+                .ConfigureAppServices(builder.Configuration)
+                .ConfigureMapperProfiles()               
+                .ConfigureValidation()
+                .ConfigureControllers()
+                .ConfigureCORS()
+                .ConfigureEndpointsApiExplorer();
 
             var app = builder.Build();
 

@@ -6,7 +6,6 @@ using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
 using Auth.Infrastructure.Repositories;
 using FluentValidation.AspNetCore;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

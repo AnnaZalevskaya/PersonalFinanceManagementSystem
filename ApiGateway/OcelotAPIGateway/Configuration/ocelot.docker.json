@@ -1,0 +1,78 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/auth/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "SwaggerKey": "auth-api"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "accountspresentation",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/accounts/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "accounts-presentation"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "operationsapi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/operations/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "operations-api"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "auth-api",
+      "Config": [
+        {
+          "Name": "Auth API",
+          "Version": "v1",
+          "Url": "http://authapi:80/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "accounts-presentation",
+      "Config": [
+        {
+          "Name": "Financial accounts API",
+          "Version": "v1",
+          "Url": "http://accountspresentation:80/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "operations-api",
+      "Config": [
+        {
+          "Name": "Financial operations API",
+          "Version": "v1",
+          "Url": "http://operationsapi:80/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost"
+  }
+}

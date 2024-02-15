@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "gRPC.Protos.Client";
+
+package balance;
+
+message AccountIdRequest {
+    int32 account_id = 1;
+}
+
+message AccountBalanceResponse {
+    double balance = 1;
+}
+
+service AccountBalance {
+    rpc GetAccountBalance(AccountIdRequest) returns (AccountBalanceResponse);
+}

@@ -7,6 +7,7 @@ using Accounts.DataAccess.Entities;
 using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
+using gRPC.Protos.Client;
 
 namespace Accounts.BusinessLogic.Services.Implementations
 {
@@ -16,17 +17,20 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IMessageConsumer _consumer;
         private readonly IMessageProducer _producer;
+        private readonly AccountBalance.AccountBalanceClient _balanceClient;
 
-        public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper, 
-            IMessageConsumer consumer, IMessageProducer producer)
+        public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
+            IMessageConsumer consumer, IMessageProducer producer,
+            AccountBalance.AccountBalanceClient balanceClient)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _consumer = consumer;
             _producer = producer;
+            _balanceClient = balanceClient;
         }
 
-        public async Task AddAsync(FinancialAccountModel addModel, CancellationToken cancellationToken)
+        public async Task AddAsync(FinancialAccountActionModel addModel, CancellationToken cancellationToken)
         {
             int userId = _consumer.ConsumeMessage(addModel.UserId);
 
@@ -68,6 +72,24 @@ namespace Accounts.BusinessLogic.Services.Implementations
             var accounts = await _unitOfWork.FinancialAccounts.GetAllAsync(paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
+            foreach (var account in accountsList)
+            {
+                var request = new AccountIdRequest
+                {
+                    AccountId = account.Id
+                };
+
+                var accountBalanceResponse = await _balanceClient
+                    .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+                if (accountBalanceResponse == null)
+                {
+                    throw new Exception("Response is null");
+                }
+
+                account.Balance = accountBalanceResponse.Balance;
+            }
+
             return accountsList;
         }
 
@@ -85,6 +107,24 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 .GetAccountsByUserIdAsync(id, paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
+            foreach (var account in accountsList)
+            {
+                var request = new AccountIdRequest
+                {
+                    AccountId = account.Id
+                };
+
+                var accountBalanceResponse = await _balanceClient
+                    .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+                if (accountBalanceResponse == null)
+                {
+                    throw new Exception("Response is null");
+                }
+
+                account.Balance = accountBalanceResponse.Balance;
+            }
+
             _producer.SendMessages(accountsList);   
 
             return accountsList;
@@ -101,10 +141,25 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             var accountModel = _mapper.Map<FinancialAccountModel>(account);
 
+            var request = new AccountIdRequest()
+            {
+                AccountId = account.Id
+            };
+
+            var accountBalanceResponse = await _balanceClient
+                .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+            if (accountBalanceResponse == null)
+            {
+                throw new Exception("Response is null");
+            }
+
+            accountModel.Balance = accountBalanceResponse.Balance;
+
             return accountModel;
         }
 
-        public async Task UpdateAsync(int userId, int id, FinancialAccountModel updateModel, 
+        public async Task UpdateAsync(int userId, int id, FinancialAccountActionModel updateModel, 
             CancellationToken cancellationToken)
         {
             var account = await _unitOfWork.FinancialAccounts.GetByIdAsync(id, cancellationToken);
@@ -122,6 +177,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             }
 
             var updateAccount = _mapper.Map<FinancialAccount>(updateModel);
+            updateAccount.Id = account.Id;
 
             await _unitOfWork.FinancialAccounts.UpdateAsync(id, updateAccount, cancellationToken);
 

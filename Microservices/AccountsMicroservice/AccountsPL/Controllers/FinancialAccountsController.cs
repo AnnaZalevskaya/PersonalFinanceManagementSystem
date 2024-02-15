@@ -17,7 +17,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountModel model,
+        public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountActionModel model,
             CancellationToken cancellationToken)
         {
             await _service.AddAsync(model, cancellationToken);
@@ -34,9 +34,9 @@ namespace Accounts.Presentation.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{accountId}")]
         public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
-            [FromBody] FinancialAccountModel model, CancellationToken cancellationToken)
+            [FromBody] FinancialAccountActionModel model, CancellationToken cancellationToken)
         {
             await _service.UpdateAsync(userId, accountId, model, cancellationToken);
 
