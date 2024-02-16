@@ -89,6 +89,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             if (cachedData.Count == 0)
             {
                 throw new Exception("There is no relevant information in the cache");
+            }
 
             foreach (var account in accountsList)
             {
