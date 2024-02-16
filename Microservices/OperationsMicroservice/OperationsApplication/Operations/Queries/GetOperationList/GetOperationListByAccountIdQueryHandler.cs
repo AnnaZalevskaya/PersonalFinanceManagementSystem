@@ -40,12 +40,17 @@ namespace Operations.Application.Operations.Queries.GetOperationList
 
             foreach (var operation in operationsList)
             {
-                cachedData.Add(await _cacheRepository.GetDataCacheAsync<OperationModel>(operation.Id));
+                var cachedObj = await _cacheRepository.GetDataCacheAsync<OperationModel>(operation.Id);
+
+                if (cachedObj != null)
+                {
+                    cachedData.Add(cachedObj);
+                }          
             }
 
-            if (cachedData.Count == 0)
+            if (cachedData.Count == operationsList.Count)
             {
-                throw new Exception("There is no relevant information in the cache");
+                return cachedData;
             }
 
             return operationsList;

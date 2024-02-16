@@ -57,7 +57,7 @@ namespace Auth.Application.Services
 
             var cachedObj = await _cacheRepository.GetDataCacheAsync<UserModel>(user.Id);
 
-            if (cachedObj == null)
+            if (cachedObj != null)
             {
                 throw new Exception("There is no relevant object in the cache");
             }
@@ -78,14 +78,12 @@ namespace Auth.Application.Services
 
             var result = await _userManager.CreateAsync(user, request.Password);     
 
-            if (!result.Succeeded) {
+            if (!result.Succeeded) 
+            {
                 throw new Exception("Error! The user has not been created.");
             }
 
             await _userManager.AddToRoleAsync(user, RoleConsts.Client);
-
-            var userModel = _mapper.Map<UserModel>(user);
-            await _cacheRepository.SetDataCacheAsync(user.Id, userModel);
 
             var response = _mapper.Map<RegisterResponse>(user);
 
@@ -97,6 +95,22 @@ namespace Auth.Application.Services
         {
             var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
             var usersList = _mapper.Map<List<UserModel>>(users);
+            var cachedData = new List<UserModel>();
+
+            foreach (var user in usersList)
+            {
+                var cachedElement = await _cacheRepository.GetDataCacheAsync<UserModel>(user.Id);
+
+                if (cachedElement != null)
+                {
+                    cachedData.Add(cachedElement);
+                }
+            }
+
+            if (cachedData.Count == usersList.Count)
+            {
+                return cachedData;
+            }
 
             return usersList;
         }

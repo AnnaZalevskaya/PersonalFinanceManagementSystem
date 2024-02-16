@@ -22,18 +22,18 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
         public async Task<OperationModel> Handle(GetOperationDetailsQuery query, 
             CancellationToken cancellationToken)
         {
+            var cachedObj = await _cacheRepository.GetDataCacheAsync<OperationModel>(query.Id);
+
+            if (cachedObj != null)
+            {
+                return cachedObj;
+            }
+
             var operation = await _unitOfWork.Operations.GetAsync(query.Id, cancellationToken);
 
             if (operation == null)
             {
                 throw new EntityNotFoundException("Operation not found");
-            }
-
-            var cachedObj = await _cacheRepository.GetDataCacheAsync<OperationModel>(query.Id);
-
-            if (cachedObj == null)
-            {
-                throw new Exception("There is no relevant object in the cache");
             }
 
             return _mapper.Map<OperationModel>(operation);

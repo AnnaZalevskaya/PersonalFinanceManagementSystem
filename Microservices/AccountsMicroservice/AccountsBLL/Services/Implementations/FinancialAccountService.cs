@@ -9,6 +9,7 @@ using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using gRPC.Protos.Client;
+using static gRPC.Protos.Client.AccountBalance;
 
 namespace Accounts.BusinessLogic.Services.Implementations
 {
@@ -18,12 +19,12 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IMessageConsumer _consumer;
         private readonly IMessageProducer _producer;
-        private readonly AccountBalance.AccountBalanceClient _balanceClient;
+        private readonly AccountBalanceClient _balanceClient;
         private readonly ICacheRepository _cacheRepository;
         
         public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
             IMessageConsumer consumer, IMessageProducer producer,
-            AccountBalance.AccountBalanceClient balanceClient, ICacheRepository cacheRepository)
+            AccountBalanceClient balanceClient, ICacheRepository cacheRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -78,17 +79,21 @@ namespace Accounts.BusinessLogic.Services.Implementations
         {
             var accounts = await _unitOfWork.FinancialAccounts.GetAllAsync(paginationSettings, cancellationToken);  
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
-
             var cachedData = new List<FinancialAccountModel>();
 
             foreach (var account in accountsList)
             {
-                cachedData.Add(await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(account.Id));
+                var cachedElement = await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(account.Id);
+
+                if (cachedElement != null)
+                {
+                    cachedData.Add(cachedElement);
+                }            
             }
 
-            if (cachedData.Count == 0)
+            if (cachedData.Count == accountsList.Count)
             {
-                throw new Exception("There is no relevant information in the cache");
+                return cachedData;
             }
 
             foreach (var account in accountsList)
@@ -129,12 +134,17 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             foreach (var account in accountsList)
             {
-                cachedData.Add(await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(account.Id));
+                var cachedElement = await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(account.Id);
+
+                if (cachedElement != null)
+                {
+                    cachedData.Add(cachedElement);
+                }
             }
 
-            if (cachedData.Count == 0)
+            if (cachedData.Count == accountsList.Count)
             {
-                throw new Exception("There is no relevant information in the cache");
+                return cachedData;
             }
 
             foreach (var account in accountsList)
@@ -162,6 +172,13 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
         public async Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
+            var cachedObj = await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(id);
+
+            if (cachedObj != null)
+            {
+                return cachedObj;
+            }
+
             var account = await _unitOfWork.FinancialAccounts.GetByIdAsync(id, cancellationToken);
 
             if (account == null)
@@ -170,13 +187,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
             }
 
             var accountModel = _mapper.Map<FinancialAccountModel>(account);
-
-            var cachedObj = await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(id);
-
-            if (cachedObj == null)
-            {
-                throw new Exception("There is no relevant object in the cache");
-            }
 
             var request = new AccountIdRequest()
             {
