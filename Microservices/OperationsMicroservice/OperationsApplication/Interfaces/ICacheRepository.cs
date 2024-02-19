@@ -2,8 +2,10 @@
 {
     public interface ICacheRepository
     {
-        Task<T> GetDataCacheAsync<T>(string id);
-        Task SetDataCacheAsync<T>(string id, T value);
-        Task RemoveDataCacheAsync(string id);
+        Task CacheDataAsync<T>(string id, T value);
+        Task<T> GetCachedDataAsync<T>(string id);
+        Task CacheLargeDataAsync<T>(string id, List<T> data);
+        Task<List<T>> GetCachedLargeDataAsync<T>(string id);
+        Task RemoveCachedDataAsync(string id);
     }
 }

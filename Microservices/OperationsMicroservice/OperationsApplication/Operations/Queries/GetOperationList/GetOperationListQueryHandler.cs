@@ -21,25 +21,28 @@ namespace Operations.Application.Operations.Queries.GetOperationList
         public async Task<List<OperationModel>> Handle(GetOperationListQuery query, 
             CancellationToken cancellationToken)
         {
+            var cachedOperations = await _cacheRepository
+                .GetCachedLargeDataAsync<OperationModel>($"all_operations_{query.paginationSettings.PageNumber}" +
+                $"_{query.paginationSettings.PageSize}");
+
+            if (cachedOperations.Count != 0)
+            {
+                return cachedOperations;
+            }
+
             var entities = await _unitOfWork.Operations
                 .GetAllAsync(query.paginationSettings, cancellationToken);
             var operationsList = _mapper.Map<List<OperationModel>>(entities);
             var cachedData = new List<OperationModel>();
 
-            foreach (var operation in operationsList)
-            {
-                var cachedObj = await _cacheRepository.GetDataCacheAsync<OperationModel>(operation.Id);
-
-                if (cachedObj != null)
-                {
-                    cachedData.Add(cachedObj);
-                }
-            }
-
             if (cachedData.Count == operationsList.Count)
             {
                 return cachedData;
             }
+
+            await _cacheRepository
+                .CacheLargeDataAsync($"all_operations_{query.paginationSettings.PageNumber}" +
+                $"_{query.paginationSettings.PageSize}", operationsList);
 
             return operationsList;
         }

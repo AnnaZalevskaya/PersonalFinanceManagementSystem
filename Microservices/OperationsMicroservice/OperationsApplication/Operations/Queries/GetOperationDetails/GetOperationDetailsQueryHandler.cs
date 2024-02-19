@@ -22,7 +22,7 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
         public async Task<OperationModel> Handle(GetOperationDetailsQuery query, 
             CancellationToken cancellationToken)
         {
-            var cachedObj = await _cacheRepository.GetDataCacheAsync<OperationModel>(query.Id);
+            var cachedObj = await _cacheRepository.GetCachedDataAsync<OperationModel>(query.Id);
 
             if (cachedObj != null)
             {

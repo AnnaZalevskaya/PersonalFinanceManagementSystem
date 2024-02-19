@@ -36,7 +36,7 @@ namespace Operations.Application.Operations.Commands.DeleteOperation
 
             await _unitOfWork.Operations.DeleteAsync(command.Id, cancellationToken);
 
-            await _cacheRepository.RemoveDataCacheAsync(command.Id);
+            await _cacheRepository.RemoveCachedDataAsync(command.Id);
         }
     }
 }

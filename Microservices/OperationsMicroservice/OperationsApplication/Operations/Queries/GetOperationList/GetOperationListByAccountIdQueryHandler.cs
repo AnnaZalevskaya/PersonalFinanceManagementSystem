@@ -26,32 +26,29 @@ namespace Operations.Application.Operations.Queries.GetOperationList
         public async Task<List<OperationModel>> Handle(GetOperationListByAccountIdQuery query,
             CancellationToken cancellationToken)
         {
-            int id = _consumer.ConsumeMessage(query.AccountId);
+            //int id = _consumer.ConsumeMessage(query.AccountId);
 
-            if (id == 0)
+            //if (id == 0)
+            //{
+            //    throw new Exception("The user's account was not found");
+            //}
+
+            var cachedOperations = await _cacheRepository
+                .GetCachedLargeDataAsync<OperationModel>($"all_account_operations_{query.AccountId}" +
+                $"_{query.paginationSettings.PageNumber}_{query.paginationSettings.PageSize}");
+
+            if (cachedOperations.Count != 0)
             {
-                throw new Exception("The user's account was not found");
+                return cachedOperations;
             }
 
             var entities = await _unitOfWork.Operations
                 .GetByAccountIdAsync(query.AccountId, query.paginationSettings, cancellationToken);
             var operationsList = _mapper.Map<List<OperationModel>>(entities);
-            var cachedData = new List<OperationModel>();
 
-            foreach (var operation in operationsList)
-            {
-                var cachedObj = await _cacheRepository.GetDataCacheAsync<OperationModel>(operation.Id);
-
-                if (cachedObj != null)
-                {
-                    cachedData.Add(cachedObj);
-                }          
-            }
-
-            if (cachedData.Count == operationsList.Count)
-            {
-                return cachedData;
-            }
+            await _cacheRepository
+                .CacheLargeDataAsync($"all_account_operations_{query.AccountId}_{query.paginationSettings.PageNumber}" +
+                $"_{query.paginationSettings.PageSize}", operationsList);
 
             return operationsList;
         }

@@ -102,6 +102,7 @@ namespace Operations.API.Extensions
       
         public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
             services.AddDistributedMemoryCache();
             services.AddStackExchangeRedisCache(options => 
             {

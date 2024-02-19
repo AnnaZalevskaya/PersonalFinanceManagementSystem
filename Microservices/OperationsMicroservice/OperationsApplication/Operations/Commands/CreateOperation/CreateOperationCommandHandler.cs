@@ -35,7 +35,7 @@ namespace Operations.Application.Operations.Commands.CreateOperation
 
             await _unitOfWork.Operations.CreateAsync(entity, cancellationToken);
 
-            await _cacheRepository.SetDataCacheAsync(entity.Id, command.Model);
+            await _cacheRepository.CacheDataAsync(entity.Id, command.Model);
         }
     }
 }
