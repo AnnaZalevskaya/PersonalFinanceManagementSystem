@@ -5,6 +5,7 @@ using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Repositories.Interfaces;
+using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using FluentValidation.AspNetCore;
 using Grpc.Net.Client.Web;
@@ -105,6 +106,7 @@ namespace Accounts.Presentation.Extensions
       
         public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
             services.AddDistributedMemoryCache();
             services.AddStackExchangeRedisCache(options => 
             {

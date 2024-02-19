@@ -48,7 +48,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
            
             await _unitOfWork.SaveChangesAsync();
 
-            await _cacheRepository.SetDataCacheAsync(account.Id, account);
+            await _cacheRepository.CacheDataAsync(account.Id, account);
         }
 
         public async Task DeleteAsync(int userId, int id, CancellationToken cancellationToken)
@@ -71,30 +71,23 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _unitOfWork.SaveChangesAsync();
 
-            await _cacheRepository.RemoveDataCacheAsync(id);
+            await _cacheRepository.RemoveCachedDataAsync(id);
         }
 
         public async Task<List<FinancialAccountModel>> GetAllAsync(PaginationSettings paginationSettings, 
             CancellationToken cancellationToken)
         {
+            var cachedAccounts = await _cacheRepository
+                .GetCachedLargeDataAsync<FinancialAccountModel>($"all_accounts_{paginationSettings.PageNumber}" +
+                $"_{paginationSettings.PageSize}");
+
+            if (cachedAccounts.Count != 0)
+            {
+                return cachedAccounts;
+            }
+
             var accounts = await _unitOfWork.FinancialAccounts.GetAllAsync(paginationSettings, cancellationToken);  
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
-            var cachedData = new List<FinancialAccountModel>();
-
-            foreach (var account in accountsList)
-            {
-                var cachedElement = await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(account.Id);
-
-                if (cachedElement != null)
-                {
-                    cachedData.Add(cachedElement);
-                }            
-            }
-
-            if (cachedData.Count == accountsList.Count)
-            {
-                return cachedData;
-            }
 
             foreach (var account in accountsList)
             {
@@ -113,6 +106,9 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
                 account.Balance = accountBalanceResponse.Balance;
             }
+
+            await _cacheRepository
+                .CacheLargeDataAsync($"all_accounts_{paginationSettings.PageNumber}_{paginationSettings.PageSize}", accountsList);
 
             return accountsList;
         }
@@ -127,25 +123,18 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 throw new Exception("The user is not logged in");
             }
 
+            var cachedAccounts = await _cacheRepository
+                .GetCachedLargeDataAsync<FinancialAccountModel>($"all_user_accounts_{userId}_{paginationSettings.PageNumber}" +
+                $"_{paginationSettings.PageSize}");
+
+            if (cachedAccounts.Count != 0)
+            {
+                return cachedAccounts;
+            }
+
             var accounts = await _unitOfWork.FinancialAccounts
-                .GetAccountsByUserIdAsync(id, paginationSettings, cancellationToken);
+                .GetAccountsByUserIdAsync(userId, paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
-            var cachedData = new List<FinancialAccountModel>();
-
-            foreach (var account in accountsList)
-            {
-                var cachedElement = await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(account.Id);
-
-                if (cachedElement != null)
-                {
-                    cachedData.Add(cachedElement);
-                }
-            }
-
-            if (cachedData.Count == accountsList.Count)
-            {
-                return cachedData;
-            }
 
             foreach (var account in accountsList)
             {
@@ -165,14 +154,18 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 account.Balance = accountBalanceResponse.Balance;
             }
 
-            _producer.SendMessages(accountsList);   
+            _producer.SendMessages(accountsList);
+
+            await _cacheRepository
+                .CacheLargeDataAsync($"all_user_accounts_{userId}_{paginationSettings.PageNumber}_{paginationSettings.PageSize}", 
+                accountsList);
 
             return accountsList;
         }
 
         public async Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var cachedObj = await _cacheRepository.GetDataCacheAsync<FinancialAccountModel>(id);
+            var cachedObj = await _cacheRepository.GetCachedDataAsync<FinancialAccountModel>(id);
 
             if (cachedObj != null)
             {
@@ -203,6 +196,8 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             accountModel.Balance = accountBalanceResponse.Balance;
 
+            await _cacheRepository.CacheDataAsync(id, accountModel);
+
             return accountModel;
         }
 
@@ -230,7 +225,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _unitOfWork.SaveChangesAsync();
 
-            await _cacheRepository.UpdateDataCacheAsync(id, updateModel);
+            await _cacheRepository.CacheDataAsync(id, updateModel);
         }
     }
 }
