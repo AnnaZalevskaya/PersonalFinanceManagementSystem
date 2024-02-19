@@ -55,13 +55,6 @@ namespace Auth.Application.Services
 
             _producer.SendMessage(response);
 
-            var cachedObj = await _cacheRepository.GetDataCacheAsync<UserModel>(user.Id);
-
-            if (cachedObj != null)
-            {
-                throw new Exception("There is no relevant object in the cache");
-            }
-
             return response;
         }
 
@@ -93,24 +86,18 @@ namespace Auth.Application.Services
         public async Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {
+            var cachedUsers = await _cacheRepository
+                .GetCachedLargeDataAsync<UserModel>($"all_users_{paginationSettings.PageNumber}_{paginationSettings.PageSize}");
+
+            if (cachedUsers.Count != 0)
+            {
+                return cachedUsers;
+            }
+
             var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
             var usersList = _mapper.Map<List<UserModel>>(users);
-            var cachedData = new List<UserModel>();
 
-            foreach (var user in usersList)
-            {
-                var cachedElement = await _cacheRepository.GetDataCacheAsync<UserModel>(user.Id);
-
-                if (cachedElement != null)
-                {
-                    cachedData.Add(cachedElement);
-                }
-            }
-
-            if (cachedData.Count == usersList.Count)
-            {
-                return cachedData;
-            }
+            await _cacheRepository.CacheLargeDataAsync($"all_users_{paginationSettings.PageNumber}_{paginationSettings.PageSize}", usersList);
 
             return usersList;
         }

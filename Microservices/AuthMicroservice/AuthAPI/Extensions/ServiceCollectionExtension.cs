@@ -5,6 +5,7 @@ using Auth.Application.Settings;
 using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
 using Auth.Infrastructure.Repositories;
+using Auth.Infrastructure.Settings;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -183,6 +184,7 @@ namespace Auth.API.Extensions
 
         public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
             services.AddDistributedMemoryCache();
             services.AddStackExchangeRedisCache(options => {
                 options.Configuration = configuration.GetSection("Redis:Host").Value;
