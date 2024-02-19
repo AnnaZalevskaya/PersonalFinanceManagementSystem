@@ -22,8 +22,7 @@ namespace Operations.Application.Operations.Queries.GetOperationList
             CancellationToken cancellationToken)
         {
             var cachedOperations = await _cacheRepository
-                .GetCachedLargeDataAsync<OperationModel>($"all_operations_{query.paginationSettings.PageNumber}" +
-                $"_{query.paginationSettings.PageSize}");
+                .GetCachedLargeDataAsync<OperationModel>(query.paginationSettings);
 
             if (cachedOperations.Count != 0)
             {
@@ -40,9 +39,7 @@ namespace Operations.Application.Operations.Queries.GetOperationList
                 return cachedData;
             }
 
-            await _cacheRepository
-                .CacheLargeDataAsync($"all_operations_{query.paginationSettings.PageNumber}" +
-                $"_{query.paginationSettings.PageSize}", operationsList);
+            await _cacheRepository.CacheLargeDataAsync(query.paginationSettings, operationsList);
 
             return operationsList;
         }

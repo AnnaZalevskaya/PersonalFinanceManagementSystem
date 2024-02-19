@@ -77,9 +77,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
         public async Task<List<FinancialAccountModel>> GetAllAsync(PaginationSettings paginationSettings, 
             CancellationToken cancellationToken)
         {
-            var cachedAccounts = await _cacheRepository
-                .GetCachedLargeDataAsync<FinancialAccountModel>($"all_accounts_{paginationSettings.PageNumber}" +
-                $"_{paginationSettings.PageSize}");
+            var cachedAccounts = await _cacheRepository.GetCachedLargeDataAsync<FinancialAccountModel>(paginationSettings);
 
             if (cachedAccounts.Count != 0)
             {
@@ -107,8 +105,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 account.Balance = accountBalanceResponse.Balance;
             }
 
-            await _cacheRepository
-                .CacheLargeDataAsync($"all_accounts_{paginationSettings.PageNumber}_{paginationSettings.PageSize}", accountsList);
+            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList);
 
             return accountsList;
         }
@@ -124,8 +121,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             }
 
             var cachedAccounts = await _cacheRepository
-                .GetCachedLargeDataAsync<FinancialAccountModel>($"all_user_accounts_{userId}_{paginationSettings.PageNumber}" +
-                $"_{paginationSettings.PageSize}");
+                .GetCachedLargeDataAsync<FinancialAccountModel>(paginationSettings, userId.ToString());
 
             if (cachedAccounts.Count != 0)
             {
@@ -156,9 +152,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             _producer.SendMessages(accountsList);
 
-            await _cacheRepository
-                .CacheLargeDataAsync($"all_user_accounts_{userId}_{paginationSettings.PageNumber}_{paginationSettings.PageSize}", 
-                accountsList);
+            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList, userId.ToString());
 
             return accountsList;
         }

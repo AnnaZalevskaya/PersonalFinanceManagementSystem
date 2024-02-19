@@ -87,7 +87,7 @@ namespace Auth.Application.Services
             CancellationToken cancellationToken)
         {
             var cachedUsers = await _cacheRepository
-                .GetCachedLargeDataAsync<UserModel>($"all_users_{paginationSettings.PageNumber}_{paginationSettings.PageSize}");
+                .GetCachedLargeDataAsync<UserModel>(paginationSettings);
 
             if (cachedUsers.Count != 0)
             {
@@ -97,7 +97,7 @@ namespace Auth.Application.Services
             var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
             var usersList = _mapper.Map<List<UserModel>>(users);
 
-            await _cacheRepository.CacheLargeDataAsync($"all_users_{paginationSettings.PageNumber}_{paginationSettings.PageSize}", usersList);
+            await _cacheRepository.CacheLargeDataAsync(paginationSettings, usersList);
 
             return usersList;
         }

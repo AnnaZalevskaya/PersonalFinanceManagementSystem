@@ -10,12 +10,12 @@ namespace Accounts.DataAccess.Repositories.Implementations
     public class CacheRepository : ICacheRepository
     {
         private readonly IDistributedCache _distributedCache;
-        private readonly IOptions<CacheSettings> _cacheOptions;
+        private readonly CacheSettings _cacheOptions;
 
         public CacheRepository(IDistributedCache distributedCache, IOptions<CacheSettings> cacheOptions)
         {
             _distributedCache = distributedCache;
-            _cacheOptions = cacheOptions;
+            _cacheOptions = cacheOptions.Value;
         }
 
         public async Task CacheDataAsync<T>(int id, T value)
@@ -24,8 +24,8 @@ namespace Accounts.DataAccess.Repositories.Implementations
 
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = _cacheOptions.Value.AbsoluteExpirationRelativeToNow,
-                SlidingExpiration = _cacheOptions.Value.SlidingExpiration
+                AbsoluteExpirationRelativeToNow = _cacheOptions.AbsoluteExpirationRelativeToNow,
+                SlidingExpiration = _cacheOptions.SlidingExpiration
             };
 
             var jsonData = JsonSerializer.Serialize(value);
@@ -49,70 +49,35 @@ namespace Accounts.DataAccess.Repositories.Implementations
             }
         }
 
-        public async Task CacheLargeDataAsync<T>(string id, List<T> data)
+        public async Task CacheLargeDataAsync<T>(PaginationSettings paginationSettings, List<T> data, string userId = "")
         {
-            var tasks = new List<Task>();
+            var cacheKey = GenerateCacheKey(paginationSettings, userId);
 
-            for (int i = 0; i < data.Count; i++)
+            var options = new DistributedCacheEntryOptions
             {
-                string cacheKey = $"{id}_{i}";
+                AbsoluteExpirationRelativeToNow = _cacheOptions.AbsoluteExpirationRelativeToNow,
+                SlidingExpiration = _cacheOptions.SlidingExpiration
+            };
 
-                var options = new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = _cacheOptions.Value.AbsoluteExpirationRelativeToNow,
-                    SlidingExpiration = _cacheOptions.Value.SlidingExpiration
-                };
-
-                var jsonData = JsonSerializer.Serialize(data[i]);
-                tasks.Add(_distributedCache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(jsonData), options));
-            }
-
-            var indexKey = $"index_{id}";
-            var indexData = data.Select((_, i) => $"{id}_{i}").ToArray();
-            var indexJsonData = JsonSerializer.Serialize(indexData);
-            await _distributedCache.SetAsync(indexKey, Encoding.UTF8.GetBytes(indexJsonData));
-
-            await Task.WhenAll(tasks);
+            var jsonData = JsonSerializer.Serialize(data);
+            await _distributedCache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(jsonData), options);
         }
 
-        public async Task<List<T>> GetCachedLargeDataAsync<T>(string id)
+        public async Task<List<T>> GetCachedLargeDataAsync<T>(PaginationSettings paginationSettings, string userId = "")
         {
-            var indexKey = $"index_{id}";
-            var indexBytes = await _distributedCache.GetAsync(indexKey);
+            var cacheKey = GenerateCacheKey(paginationSettings, userId);
 
-            if (indexBytes == null)
+            var dataBytes = await _distributedCache.GetAsync(cacheKey);
+
+            if (dataBytes == null)
             {
                 return new List<T>();
             }
 
-            var indexJsonData = Encoding.UTF8.GetString(indexBytes);
-            var indexData = JsonSerializer.Deserialize<string[]>(indexJsonData);
+            var jsonData = Encoding.UTF8.GetString(dataBytes);
+            var data = JsonSerializer.Deserialize<List<T>>(jsonData);
 
-            var tasks = new List<Task<byte[]>>();
-            var results = new List<T>();
-
-            foreach (var key in indexData)
-            {
-                tasks.Add(_distributedCache.GetAsync(key));
-            }
-
-            await Task.WhenAll(tasks);
-
-            foreach (var task in tasks)
-            {
-                var bytes = await task;
-
-                if (bytes == null)
-                {
-                    continue;
-                }
-
-                var jsonData = Encoding.UTF8.GetString(bytes);
-                var item = JsonSerializer.Deserialize<T>(jsonData);
-                results.Add(item);
-            }
-
-            return results;
+            return data;
         }
 
         public async Task RemoveCachedDataAsync(int id)
@@ -124,6 +89,11 @@ namespace Accounts.DataAccess.Repositories.Implementations
             {
                 await _distributedCache.RemoveAsync(cacheKey);
             }
+        }
+
+        private string GenerateCacheKey(PaginationSettings paginationSettings, string userId)
+        {
+            return $"{_cacheOptions.KeyPrefix}_{userId}_{paginationSettings.PageNumber}_{paginationSettings.PageSize}";
         }
     }
 }
