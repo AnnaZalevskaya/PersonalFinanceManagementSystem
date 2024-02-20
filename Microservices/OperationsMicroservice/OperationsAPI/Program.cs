@@ -19,6 +19,7 @@ namespace Operations.Api
                 .ConfigureMapperProfiles()
                 .ConfigureValidation()
                 .ConfigureControllers()
+                .ConfigureRedis(builder.Configuration)
                 .ConfigureEndpointsApiExplorer();
 
             var app = builder.Build();

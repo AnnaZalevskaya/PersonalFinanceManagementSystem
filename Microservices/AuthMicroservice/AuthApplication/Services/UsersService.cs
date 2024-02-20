@@ -16,15 +16,17 @@ namespace Auth.Application.Services
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IMessageProducer _producer;
+        private readonly ICacheRepository _cacheRepository;
 
-        public UsersService(ITokenService tokenService, IUnitOfWork unitOfWork,
-            UserManager<AppUser> userManager, IMapper mapper, IMessageProducer producer)
+        public UsersService(ITokenService tokenService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, 
+            IMapper mapper, IMessageProducer producer, ICacheRepository cacheRepository)
         {
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _mapper = mapper;
             _producer = producer;
+            _cacheRepository = cacheRepository;
         }
 
         public async Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken)
@@ -69,7 +71,8 @@ namespace Auth.Application.Services
 
             var result = await _userManager.CreateAsync(user, request.Password);     
 
-            if (!result.Succeeded) {
+            if (!result.Succeeded) 
+            {
                 throw new Exception("Error! The user has not been created.");
             }
 
@@ -83,13 +86,18 @@ namespace Auth.Application.Services
         public async Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {
-            var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
-            var usersList = new List<UserModel>();
+            var cachedUsers = await _cacheRepository
+                .GetCachedLargeDataAsync<UserModel>(paginationSettings);
 
-            foreach (var user in users)
+            if (cachedUsers.Count != 0)
             {
-                usersList.Add(_mapper.Map<UserModel>(user));
+                return cachedUsers;
             }
+
+            var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
+            var usersList = _mapper.Map<List<UserModel>>(users);
+
+            await _cacheRepository.CacheLargeDataAsync(paginationSettings, usersList);
 
             return usersList;
         }

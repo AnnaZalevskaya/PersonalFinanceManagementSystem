@@ -47,6 +47,7 @@ namespace Operations.API.Extensions
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IOperationsGrpcRepository, OperationsGrpcRepository>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
 
             return services;
         }
@@ -94,6 +95,19 @@ namespace Operations.API.Extensions
             services.AddGrpc(options =>
             {
                 options.EnableDetailedErrors = true; 
+            });
+
+            return services;
+        }
+      
+        public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
+            services.AddDistributedMemoryCache();
+            services.AddStackExchangeRedisCache(options => 
+            {
+                options.Configuration = configuration.GetSection("Redis:Host").Value;
+                options.InstanceName = configuration.GetSection("Redis:Instance").Value;
             });
 
             return services;

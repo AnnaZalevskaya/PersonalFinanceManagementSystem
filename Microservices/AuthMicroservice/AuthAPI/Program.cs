@@ -22,6 +22,7 @@ namespace Auth.API
                 .ConfigureValidation()
                 .ConfigureControllers()
                 .ConfigureCORS()
+                .ConfigureRedis(builder.Configuration)
                 .ConfigureEndpointsApiExplorer();
 
             var app = builder.Build();

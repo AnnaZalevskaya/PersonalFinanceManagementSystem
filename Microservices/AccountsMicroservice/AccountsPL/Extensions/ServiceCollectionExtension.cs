@@ -3,6 +3,9 @@ using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Implementations;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Data;
+using Accounts.DataAccess.Repositories.Implementations;
+using Accounts.DataAccess.Repositories.Interfaces;
+using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using FluentValidation.AspNetCore;
 using Grpc.Net.Client.Web;
@@ -47,6 +50,7 @@ namespace Accounts.Presentation.Extensions
         public static IServiceCollection ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
 
             return services;
         }
@@ -97,6 +101,19 @@ namespace Accounts.Presentation.Extensions
                 options.Address = new Uri(configuration.GetSection("GRPC:ServerURI").Value))
                 .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(new HttpClientHandler())); 
 
+            return services;
+        }
+      
+        public static IServiceCollection ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
+            services.AddDistributedMemoryCache();
+            services.AddStackExchangeRedisCache(options => 
+            {
+                options.Configuration = configuration.GetSection("Redis:Host").Value;
+                options.InstanceName = configuration.GetSection("Redis:Instance").Value;
+            });
+        
             return services;
         }
     }

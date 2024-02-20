@@ -18,6 +18,7 @@ services:
       - 8001:80
     depends_on:
       - sqlserver
+      - redis_accounts 
 
   postgresql:
     image: postgres:latest
@@ -37,6 +38,7 @@ services:
       - 8002:80
     depends_on:
       - postgresql
+      - redis_users
 
   mongodb:
     image: mongo:latest
@@ -52,6 +54,7 @@ services:
       - 8003:80
     depends_on:
       - mongodb
+      - redis_operations
 
   rabbitmq:
     image: rabbitmq:latest
@@ -59,6 +62,19 @@ services:
       - 5672:5672
       - 15672:15672
 
+  redis_accounts:
+    image: redis
+    ports:
+      - "6379:6379"
+  redis_operations:
+    image: redis
+    ports:
+      - "6380:6379"
+  redis_users:
+    image: redis
+    ports:
+      - "6390:6379"
+      
   ocelotapigateway:
     image: ocelotapigateway
     build:

@@ -6,7 +6,8 @@ namespace Operations.Application.MappConfigs
 {
     public class CategoryTypeMappConfig : Profile
     {
-        public CategoryTypeMappConfig() {
+        public CategoryTypeMappConfig() 
+        {
             CreateMap<CategoryType, CategoryTypeModel>().ReverseMap();
         }
     }

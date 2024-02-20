@@ -9,11 +9,13 @@ namespace Operations.Application.Operations.Commands.DeleteOperation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMessageConsumer _consumer;
+        private readonly ICacheRepository _cacheRepository;
 
-        public DeleteOperationCommandHandler(IUnitOfWork unitOfWork, IMessageConsumer consumer)
+        public DeleteOperationCommandHandler(IUnitOfWork unitOfWork, IMessageConsumer consumer, ICacheRepository cacheRepository)
         {
             _unitOfWork = unitOfWork;
             _consumer = consumer;
+            _cacheRepository = cacheRepository;
         }
 
         public async Task Handle(DeleteOperationCommand command, CancellationToken cancellationToken)
@@ -33,6 +35,8 @@ namespace Operations.Application.Operations.Commands.DeleteOperation
             }
 
             await _unitOfWork.Operations.DeleteAsync(command.Id, cancellationToken);
+
+            await _cacheRepository.RemoveCachedDataAsync(command.Id);
         }
     }
 }
