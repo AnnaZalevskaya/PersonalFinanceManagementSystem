@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Auth.API.Middleware;
 
 namespace Auth.API.Extensions
 {
@@ -6,7 +6,7 @@ namespace Auth.API.Extensions
     {
         public static void UseExceptionHandlerMiddleware(this IApplicationBuilder app)
         {
-            app.UseMiddleware<ExceptionHandlerMiddleware>();
+            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
         }
     }
 }

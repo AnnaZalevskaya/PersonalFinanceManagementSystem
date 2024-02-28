@@ -1,14 +1,12 @@
-﻿using Auth.Application.Interfaces;
-using Auth.Application.Models.Extensions;
+﻿using Accounts.BusinessLogic.Models.Extensions;
 using SendGrid.Helpers.Errors.Model;
 using System.Net;
 
-namespace Auth.API.Middleware
+namespace Accounts.Presentation.Middleware
 {
-    public class GlobalErrorHandlerMiddleware : IGlobalErrorHandlerMiddleware
+    public class GlobalErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-
         public GlobalErrorHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
