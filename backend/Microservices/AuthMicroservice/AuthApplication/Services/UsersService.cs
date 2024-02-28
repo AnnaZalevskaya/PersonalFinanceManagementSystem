@@ -53,6 +53,8 @@ namespace Auth.Application.Services
             var response = _mapper.Map<AuthResponse>(user);
             response.Token = accessToken;
 
+            await _userManager.UpdateAsync(user);
+
             _producer.SendMessage(response);
 
             return response;
@@ -95,7 +97,15 @@ namespace Auth.Application.Services
             }
 
             var users = await _unitOfWork.Users.GetAllAsync(paginationSettings, cancellationToken);
-            var usersList = _mapper.Map<List<UserModel>>(users);
+            var usersList = new List<UserModel>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var model = _mapper.Map<UserModel>(user);
+                model.Role = roles.FirstOrDefault();
+                usersList.Add(model);
+            }       
 
             await _cacheRepository.CacheLargeDataAsync(paginationSettings, usersList);
 

@@ -30,11 +30,27 @@ namespace Auth.Application.Services
         public string GetToken(AppUser user, List<IdentityRole<long>> roles)
         {
             var accessToken = CreateToken(user, roles);
-            user.RefreshToken = JwtExtention.GenerateRefreshToken();
-            user.RefreshTokenExpiryTime = DateTime.UtcNow
-                .AddDays(int.Parse(_options.Value.RefreshTokenValidityInDays));
 
-            return accessToken;
+            if (accessToken.ValidateToken(_options))
+            {
+                RefreshToken(user);
+
+                return accessToken;
+            }
+            else
+            {
+                throw new Exception("The token isn't valid");
+            }
+        }
+
+        private void RefreshToken(AppUser user)
+        {
+            if (user.RefreshToken == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                user.RefreshToken = JwtExtention.GenerateRefreshToken();
+                user.RefreshTokenExpiryTime = DateTime.UtcNow
+                    .AddDays(int.Parse(_options.Value.RefreshTokenValidityInDays));
+            }
         }
     }
 }

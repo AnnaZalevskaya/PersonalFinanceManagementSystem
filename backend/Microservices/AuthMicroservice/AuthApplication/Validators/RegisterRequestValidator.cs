@@ -8,23 +8,23 @@ namespace Auth.Application.Validators
     {
         public RegisterRequestValidator()
         {
-            RuleFor(req => req.Email)
+            RuleFor(request => request.Email)
                 .NotEmpty()
                 .EmailAddress();
 
-            RuleFor(req => req.Username)
+            RuleFor(request => request.Username)
                 .NotEmpty();
 
-            RuleFor(req => req.PhoneNumber)
+            RuleFor(request => request.PhoneNumber)
                 .NotEmpty()
                 .Length(13)
                 .Matches(new Regex(@"^\+375(17|29|33|44)[0-9]{7}$"));
 
-            RuleFor(req => req.Password)
+            RuleFor(request => request.Password)
                 .NotEmpty()
                 .MinimumLength(8);
 
-            RuleFor(req => req.PasswordConfirm)
+            RuleFor(request => request.PasswordConfirm)
                 .Equal(req => req.Password);
         }
     }
