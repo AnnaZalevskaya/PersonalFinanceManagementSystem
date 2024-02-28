@@ -19,6 +19,7 @@ namespace Operations.Api
                 .ConfigureMapperProfiles()
                 .ConfigureValidation()
                 .ConfigureControllers()
+                .ConfigureCORS()
                 .ConfigureRedis(builder.Configuration)
                 .ConfigureEndpointsApiExplorer();
 
@@ -30,8 +31,11 @@ namespace Operations.Api
                 app.UseSwaggerUI();
             }
 
+            app.ConfigureCustomExceptionMiddleware();
+
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors("AllowSpecificOrigins");
             app.UseGrpcWeb();
 
             app.UseAuthorization();

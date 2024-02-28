@@ -64,6 +64,19 @@ namespace Accounts.Presentation.Extensions
             return services;
         }
 
+        public static IServiceCollection ConfigureCORS(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins",
+                    policy => policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureControllers(this IServiceCollection services)
         {
             services.AddControllers();

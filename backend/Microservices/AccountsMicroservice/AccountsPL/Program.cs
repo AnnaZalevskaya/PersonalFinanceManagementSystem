@@ -18,6 +18,7 @@ namespace Accounts.Presentation
                 .ConfigureMapperProfiles()
                 .ConfigureValidation()
                 .ConfigureControllers()  
+                .ConfigureCORS()
                 .ConfigureRedis(builder.Configuration)
                 .ConfigureEndpointsApiExplorer();
 
@@ -29,8 +30,11 @@ namespace Accounts.Presentation
                 app.UseSwaggerUI();
             }
 
+            app.ConfigureCustomExceptionMiddleware();
+
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors("AllowSpecificOrigins");
 
             app.UseAuthorization();
 

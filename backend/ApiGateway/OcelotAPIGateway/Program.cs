@@ -9,10 +9,12 @@ namespace OcelotAPIGateway
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Configuration.AddJsonFile("Configuration/ocelot.json");
+            builder.Configuration
+                .AddJsonFile("Configuration/ocelot.json");
 
             builder.Services
                 .ConfigureOcelot(builder.Configuration)
+                .ConfigureCORS()
                 .ConfigureEndpointsApiExplorer();
 
             var app = builder.Build();
@@ -26,13 +28,10 @@ namespace OcelotAPIGateway
 
             app.UseStaticFiles();
 
-            app.UseSwaggerForOcelotUI(opt =>
-            {
-                opt.DownstreamSwaggerEndPointBasePath = "/gateway/swagger/docs";
-                opt.PathToSwaggerGenerator = "/swagger/docs";
-            });
+            app.UseCORSConfiguration();
 
-            app.UseOcelot().Wait();
+            app.UseOcelotSwagger(builder.Services);
+            app.UseOcelot().Wait();  
 
             app.Run();
         }

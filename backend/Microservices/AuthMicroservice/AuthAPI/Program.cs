@@ -1,5 +1,4 @@
 using Auth.API.Extensions;
-using Auth.API.Middleware;
 
 namespace Auth.API
 {
@@ -12,12 +11,12 @@ namespace Auth.API
             builder.Services               
                 .ConfigureSQLServer(builder.Configuration)
                 .ConfigureRepositoryWrapper()
-                .ConfigureAuthentication()
+                .ConfigureAuthentication(builder.Configuration)
                 .ConfigureAuthorization()
                 .ConfigureIdentity()
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
-                .ConfigureAppServices(builder.Configuration)
+                .ConfigureAppServices()
                 .ConfigureMapperProfiles()               
                 .ConfigureValidation()
                 .ConfigureControllers()
@@ -35,7 +34,7 @@ namespace Auth.API
                 app.UseSwaggerUI();
             }
 
-            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
+            app.UseExceptionHandlerMiddleware();
 
             app.UseHttpsRedirection();
             app.UseRouting();

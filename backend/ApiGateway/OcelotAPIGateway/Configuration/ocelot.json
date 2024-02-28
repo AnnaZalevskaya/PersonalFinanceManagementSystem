@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/auth/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UpstreamHttpMethod": [ "Get", "Post", "Delete" ],
       "SwaggerKey": "auth-api"
     },
 
@@ -77,6 +77,11 @@
   ],
 
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost"
+    "BaseUrl": "http://localhost:44313",
+    "CorsOptions": {
+      "AllowedOrigins": [ "http://localhost:4200" ],
+      "AllowedMethods": [ "GET", "POST", "PUT", "DELETE" ],
+      "AllowedHeaders": [ "Content-Type" ]
+    }
   }
 }

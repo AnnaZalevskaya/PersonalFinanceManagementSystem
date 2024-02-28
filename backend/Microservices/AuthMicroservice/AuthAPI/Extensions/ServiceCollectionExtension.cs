@@ -51,7 +51,7 @@ namespace Auth.API.Extensions
                                 Id = "Bearer"
                             }
                         },
-                        new List<string>(){ }
+                        new List<string>()
                     }
                 });
             });
@@ -83,29 +83,25 @@ namespace Auth.API.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureAppServices(this IServiceCollection services, 
-            IConfiguration configuration)
+        public static IServiceCollection ConfigureAppServices(this IServiceCollection services)
         {
-            services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }
 
-        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services)
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             var jwtOptions = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>();
 
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                 .AddJwtBearer(options =>
                 {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -114,7 +110,7 @@ namespace Auth.API.Extensions
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtOptions.Value.Issuer,
                         ValidAudience = jwtOptions.Value.Audience,
-                        IssuerSigningKey = 
+                        IssuerSigningKey =
                             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Secret))
                     };
                 });
@@ -148,13 +144,10 @@ namespace Auth.API.Extensions
         {
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigins", 
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
+                options.AddPolicy("AllowSpecificOrigins",
+                    policy => policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
             });
 
             return services;
