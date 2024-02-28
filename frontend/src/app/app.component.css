@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+}
+
+.layuot {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+hr {
+    width: 100%;
+    border: none;
+    border-top: 5px solid #2A2929;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.router-outlet-wrapper {
+    flex: 1; 
+    background-color: #D8D6D0; 
+}
