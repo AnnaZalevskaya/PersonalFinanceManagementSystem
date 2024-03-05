@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2017-latest
+    image: mcr.microsoft.com/mssql/server
     environment:
       SA_PASSWORD: 12345
       ACCEPT_EULA: Y
@@ -18,7 +18,7 @@ services:
       - 8001:80
     depends_on:
       - sqlserver
-      - redis_accounts 
+      - redis_users 
 
   postgresql:
     image: postgres:latest
@@ -38,7 +38,7 @@ services:
       - 8002:80
     depends_on:
       - postgresql
-      - redis_users
+      - redis_accounts
 
   mongodb:
     image: mongo:latest
