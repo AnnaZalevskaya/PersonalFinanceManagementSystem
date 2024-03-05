@@ -38,6 +38,7 @@ namespace Operations.Api
             app.UseCors("AllowSpecificOrigins");
             app.UseGrpcWeb();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapGrpcService<AccountBalanceGrpcCommandHandler>().EnableGrpcWeb();

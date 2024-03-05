@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-namespace Operations.Application.Models
+﻿namespace Operations.Application.Models
 {
     public class OperationModel
     {

@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using System.Reflection.Emit;
-
-namespace Operations.Application.Models
+﻿namespace Operations.Application.Models
 {
     public class CreateOperationModel
     {

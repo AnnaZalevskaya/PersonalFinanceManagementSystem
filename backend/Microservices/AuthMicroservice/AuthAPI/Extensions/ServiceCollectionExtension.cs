@@ -31,6 +31,11 @@ namespace Auth.API.Extensions
         {
             services.AddSwaggerGen(options =>
             {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Auth API"
+                });
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -147,7 +152,7 @@ namespace Auth.API.Extensions
                 options.AddPolicy("AllowSpecificOrigins",
                     policy => policy.WithOrigins("http://localhost:4200")
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader());          
             });
 
             return services;

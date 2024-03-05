@@ -31,7 +31,7 @@ namespace Auth.Application.Services
 
         public async Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email.ToUpper());
+            var user = await _userManager.FindByEmailAsync(request.Email.Normalize());
 
             if (user == null)
             {
@@ -51,6 +51,8 @@ namespace Auth.Application.Services
             var accessToken = _tokenService.GetToken(user, roles);
 
             var response = _mapper.Map<AuthResponse>(user);
+            var rolesStr = await _userManager.GetRolesAsync(user);
+            response.Role = rolesStr.FirstOrDefault();
             response.Token = accessToken;
 
             await _userManager.UpdateAsync(user);

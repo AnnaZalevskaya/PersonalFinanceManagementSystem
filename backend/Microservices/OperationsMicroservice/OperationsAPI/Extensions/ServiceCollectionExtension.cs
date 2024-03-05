@@ -1,13 +1,19 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Operations.Application.Consumers;
 using Operations.Application.Interfaces;
 using Operations.Application.Interfaces.gRPC;
 using Operations.Application.Operations.Queries.GetCategoryDetails;
+using Operations.Application.Settings;
 using Operations.Infrastructure.Data;
 using Operations.Infrastructure.Repositories;
 using Operations.Infrastructure.Repositories.gRPC;
 using Operations.Infrastructure.Settings;
+using System.Text;
 
 namespace Operations.API.Extensions
 {
@@ -38,7 +44,68 @@ namespace Operations.API.Extensions
                     Version = "v1",
                     Title = "Account operations API"
                 });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
             });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
+            var jwtOptions = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>();
+
+            services.AddAuthentication(opt => {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtOptions.Value.Issuer,
+                        ValidAudience = jwtOptions.Value.Audience,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Secret))
+                    };
+                });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(options => options.DefaultPolicy =
+                new AuthorizationPolicyBuilder
+                    (JwtBearerDefaults.AuthenticationScheme)
+                        .RequireAuthenticatedUser()
+                        .Build());
 
             return services;
         }

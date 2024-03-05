@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Operations.Application.Models;
 using Operations.Application.Operations.Commands.CreateOperation;
-using Operations.Application.Operations.Commands.DeleteOperation;
 using Operations.Application.Operations.Queries.GetOperationDetails;
 using Operations.Application.Operations.Queries.GetOperationList;
 using Operations.Application.Settings;
@@ -50,14 +49,6 @@ namespace Operations.API.Controllers
         public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
             await _mediator.Send(new CreateOperationCommand(model));
-
-            return NoContent();
-        }
-
-        [HttpDelete("{accountId}/{operationId}")]
-        public async Task<IActionResult> DeleteFromHistoryAsync(int accountId, string operationId)
-        {
-            await _mediator.Send(new DeleteOperationCommand(accountId, operationId));
 
             return NoContent();
         }
