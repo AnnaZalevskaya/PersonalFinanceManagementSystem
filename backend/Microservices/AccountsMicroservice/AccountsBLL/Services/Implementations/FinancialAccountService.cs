@@ -9,6 +9,7 @@ using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using gRPC.Protos.Client;
+using Hangfire;
 using static gRPC.Protos.Client.AccountBalance;
 
 namespace Accounts.BusinessLogic.Services.Implementations
@@ -21,10 +22,12 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly IMessageProducer _producer;
         private readonly AccountBalanceClient _balanceClient;
         private readonly ICacheRepository _cacheRepository;
-        
+        private readonly INotificationService _notificationService;
+
         public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
             IMessageConsumer consumer, IMessageProducer producer,
-            AccountBalanceClient balanceClient, ICacheRepository cacheRepository)
+            AccountBalanceClient balanceClient, ICacheRepository cacheRepository,
+            INotificationService notificationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -32,6 +35,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             _producer = producer;
             _balanceClient = balanceClient;
             _cacheRepository = cacheRepository;
+            _notificationService = notificationService;
         }
 
         public async Task AddAsync(FinancialAccountActionModel addModel, CancellationToken cancellationToken)
@@ -49,6 +53,9 @@ namespace Accounts.BusinessLogic.Services.Implementations
             await _unitOfWork.SaveChangesAsync();
 
             await _cacheRepository.CacheDataAsync(account.Id, account);
+
+            BackgroundJob.Enqueue(() => _notificationService
+                .SendNotificationAsync(account.UserId.ToString(), "New account has been added successfully"));
         }
 
         public async Task DeleteAsync(int userId, int id, CancellationToken cancellationToken)
@@ -83,8 +90,8 @@ namespace Accounts.BusinessLogic.Services.Implementations
             {
                 return cachedAccounts;
             }
-
-            var accounts = await _unitOfWork.FinancialAccounts.GetAllAsync(paginationSettings, cancellationToken);  
+ 
+            var accounts = await _unitOfWork.FinancialAccounts.GetFullAccounts(paginationSettings, cancellationToken);
             var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
             foreach (var account in accountsList)
@@ -166,7 +173,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 return cachedObj;
             }
 
-            var account = await _unitOfWork.FinancialAccounts.GetByIdAsync(id, cancellationToken);
+            var account = await _unitOfWork.FinancialAccounts.GetFullAccountByIdAsync(id, cancellationToken);
 
             if (account == null)
             {

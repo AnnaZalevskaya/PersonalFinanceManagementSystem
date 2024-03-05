@@ -1,4 +1,5 @@
-﻿using Accounts.Presentation.Extensions;
+﻿using Accounts.BusinessLogic.Services.SignalR;
+using Accounts.Presentation.Extensions;
 
 namespace Accounts.Presentation
 {
@@ -17,6 +18,8 @@ namespace Accounts.Presentation
                 .ConfigureGrpc(builder.Configuration)
                 .ConfigureMapperProfiles()
                 .ConfigureValidation()
+                .ConfigureSignalR()
+                .ConfigureHangfire(builder.Configuration)
                 .ConfigureControllers()  
                 .ConfigureCORS()
                 .ConfigureRedis(builder.Configuration)
@@ -36,8 +39,10 @@ namespace Accounts.Presentation
             app.UseRouting();
             app.UseCors("AllowSpecificOrigins");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapHub<NotificationsHub>("/notifications");
             app.MapControllers();
 
             app.Run();

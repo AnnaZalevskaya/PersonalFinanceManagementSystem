@@ -2,6 +2,7 @@
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Implementations;
 using Accounts.BusinessLogic.Services.Interfaces;
+using Accounts.BusinessLogic.Settings;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Repositories.Interfaces;
@@ -9,8 +10,15 @@ using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using FluentValidation.AspNetCore;
 using Grpc.Net.Client.Web;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using static gRPC.Protos.Client.AccountBalance;
 
 namespace Accounts.Presentation.Extensions
@@ -33,7 +41,68 @@ namespace Accounts.Presentation.Extensions
                     Version = "v1",
                     Title = "Financial accounts API"
                 });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
             });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
+            var jwtOptions = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>();
+
+            services.AddAuthentication(opt => {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtOptions.Value.Issuer,
+                        ValidAudience = jwtOptions.Value.Audience,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Secret))
+                    };
+                });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(options => options.DefaultPolicy =
+                new AuthorizationPolicyBuilder
+                    (JwtBearerDefaults.AuthenticationScheme)
+                        .RequireAuthenticatedUser()
+                        .Build());
 
             return services;
         }
@@ -60,6 +129,7 @@ namespace Accounts.Presentation.Extensions
             services.AddScoped<IFinancialAccountService, FinancialAccountService>();
             services.AddScoped<IFinancialAccountTypeService, FinancialAccountTypeService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             return services;
         }
@@ -127,6 +197,22 @@ namespace Accounts.Presentation.Extensions
                 options.InstanceName = configuration.GetSection("Redis:Instance").Value;
             });
         
+            return services;
+        }
+
+        public static IServiceCollection ConfigureSignalR(this IServiceCollection services)
+        {
+            services.AddSignalR();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHangfire(config => 
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection")));
+            services.AddHangfireServer();
+
             return services;
         }
     }
