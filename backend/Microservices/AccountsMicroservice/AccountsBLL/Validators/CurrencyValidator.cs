@@ -7,7 +7,7 @@ namespace Accounts.BusinessLogic.Validators
     {
         public CurrencyValidator()
         {
-            RuleFor(type => type.Id)
+            RuleFor(currency => currency.Id)
                 .NotEmpty()
                 .Must((type, id) => id == type.Id)
                 .WithMessage("Id must not be changed!");

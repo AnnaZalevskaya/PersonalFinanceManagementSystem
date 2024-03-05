@@ -13,10 +13,27 @@ namespace Accounts.DataAccess.Repositories.Implementations
 
         }
 
+        public async Task<IEnumerable<FinancialAccount>> GetFullAccounts(PaginationSettings paginationSettings, 
+            CancellationToken cancellationToken)
+        {
+            var accounts = await _context.FinancialAccounts
+                .Include(account => account.AccountType)
+                .Include(account => account.Currency)
+                .OrderBy(e => e.Id)
+                .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
+                .Take(paginationSettings.PageSize)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
+            return accounts;
+        }
+
         public async Task<IEnumerable<FinancialAccount>> GetAccountsByUserIdAsync(int userId, 
             PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
             var userAccounts = await _context.FinancialAccounts
+                .Include(account => account.AccountType)
+                .Include(account => account.Currency)
                 .Where(account => account.UserId == userId)
                 .OrderBy(e => e.Id)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
@@ -25,6 +42,14 @@ namespace Accounts.DataAccess.Repositories.Implementations
                 .ToListAsync(cancellationToken);
 
             return userAccounts;
+        }
+
+        public async Task<FinancialAccount> GetFullAccountByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.FinancialAccounts
+                .Include(account => account.AccountType)
+                .Include(account => account.Currency)
+                .FirstOrDefaultAsync(account => account.Id == id, cancellationToken);
         }
     }
 }

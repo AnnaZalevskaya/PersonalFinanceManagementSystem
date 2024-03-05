@@ -7,9 +7,9 @@ namespace Accounts.BusinessLogic.Validators
     {
         public FinancialAccountValidator() 
         {
-            RuleFor(type => type.Id)
+            RuleFor(account => account.Id)
                 .NotEmpty()
-                .Must((type, id) => id == type.Id)
+                .Must((account, id) => id == account.Id)
                 .WithMessage("Id must not be changed!");
 
             RuleFor(account => account.Name)
