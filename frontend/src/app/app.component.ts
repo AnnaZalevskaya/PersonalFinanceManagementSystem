@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./components/header/header.component";
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FinancialAccountsService } from './services/financial-accounts.service';
 import { AuthService } from './services/auth.service';
 import { OperationsService } from './services/operations.service';
@@ -10,6 +10,11 @@ import { CurrencyService } from './services/currency.service';
 import { TokenService } from './services/token.service';
 import { UsersService } from './services/users.service';
 import { OperationCategoriesService } from './services/operation-categories.service';
+import { AuthInterceptor } from './extensions/auth.interceptor';
+import { AuthGuard } from './extensions/auth.guard';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { SignalRService } from './services/signal-r.service';
+import { UserNotificationsService } from './services/user-notifications.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +22,8 @@ import { OperationCategoriesService } from './services/operation-categories.serv
   imports: [
     RouterOutlet, 
     HeaderComponent, 
-    HttpClientModule
+    HttpClientModule,
+    NgxPaginationModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css', 
@@ -29,7 +35,15 @@ import { OperationCategoriesService } from './services/operation-categories.serv
     AccountTypesService,
     CurrencyService,
     OperationsService, 
-    OperationCategoriesService
+    OperationCategoriesService,
+    SignalRService,
+    UserNotificationsService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    AuthGuard
   ]
 })
 export class AppComponent {
