@@ -1,0 +1,43 @@
+<main>
+  <div class="account-info" *ngIf="isLoadingForm">
+    <h1>
+      Account information    
+    </h1>
+    <div class="account-details">
+      <div class="account-summary">
+        <h2>{{ account.name }}</h2>
+        <p>ID: {{ account.id }}</p>
+        <p>Balance: {{ account.balance }}</p>
+        <p>Currency: {{ account.currency.name }} ({{ account.currency.abbreviation }})</p>
+        <p>Account Type: {{ account.type.name }}</p>
+        <div class="account-card-footer">
+          <button class="close-button" routerLink="../account/:id/delete-account">Close</button>
+          <button class="edit-button" routerLink="../account/:id/update-account">Edit</button>
+        </div>
+      </div>
+      <div class="operations-list">
+        <h3>Recent operations</h3>
+        <button class="add-button">Добавить</button>
+        <ng-container *ngIf="account.operations.length > 0; else noOperationsMessage">
+          <div class="operation-card" *ngFor="let operation of account.operations">
+            {{ operation.id }} -> {{ operation.date | date: 'dd.MM.yyyy HH:mm' }} 
+            <br><br>
+            <b>Description:</b>
+            <table class="description-table">
+              <tr *ngFor="let item of operation.description | keyvalue">
+                <td class="key-field">{{ item.key }}</td>
+                <td class="value-field">{{ item.value }}</td>
+              </tr>
+            </table>
+          </div>
+        </ng-container>
+        <ng-template #noOperationsMessage>
+          <div class="message">
+            This account does not contain any operations yet
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>
+</main>

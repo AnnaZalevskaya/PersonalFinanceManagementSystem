@@ -1,0 +1,11 @@
+<h1>Notifications</h1>
+<ng-container>
+    <div *ngFor="let notification of notifications; else noNotificationsMessage">
+        {{ notification.message }}
+    </div>
+</ng-container>
+<ng-template #noNotificationsMessage>
+    <div class="message">
+      This user has not created accounts yet
+    </div>
+</ng-template>
