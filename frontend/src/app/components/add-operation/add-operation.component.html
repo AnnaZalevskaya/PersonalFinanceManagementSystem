@@ -1,15 +1,26 @@
-<form (submit)="addOperation()">
-    <div>
-      <label for="accountId">Account ID:</label>
-      <input type="number" id="accountId" [(ngModel)]="accountId" required>
+<form class="operation-form" (ngSubmit)="addOperation()" *ngIf="isLoadingForm">
+  <h2>Create Operation</h2>
+  
+  <div class="form-group">
+    <label for="category">Category:</label>
+    <select id="category" name="category" [(ngModel)]="category" required>
+      <option *ngFor="let cat of categories" [ngValue]="cat">{{ category.name }}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" [(ngModel)]="amount" name="amount" required>
+  </div>
+  <label for="description">Description:</label> 
+  <button type="button" class="add-field" (click)="addField()">+</button>
+  <br><br>
+  <div class="form-group" *ngFor="let field of fields; let i = index">
+    <div class="input-group">
+      <input type="text" [(ngModel)]="field.key" [name]="'key' + i" placeholder="Key" required>
+      <input type="text" [(ngModel)]="field.value" [name]="'value' + i" placeholder="Value" required>
+      <button type="button" class="delete-field" (click)="removeField(i)">-</button>
     </div>
-    <div>
-      <label for="account">Account:</label>
-      <input type="text" id="account" [(ngModel)]="account" required>
-    </div>
-    <div>
-      <label for="description">Description:</label>
-      <input type="text" id="description" [(ngModel)]="description" required>
-    </div>
-    <button type="submit">Add Operation</button>
-  </form>
+  </div> 
+  <button type="submit">Add Operation</button>
+</form>
+<app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>

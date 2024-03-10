@@ -37,13 +37,7 @@ import { UserNotificationsService } from './services/user-notifications.service'
     OperationsService, 
     OperationCategoriesService,
     SignalRService,
-    UserNotificationsService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    },
-    AuthGuard
+    UserNotificationsService
   ]
 })
 export class AppComponent {

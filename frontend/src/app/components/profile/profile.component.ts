@@ -7,7 +7,6 @@ import { AuthResponse } from '../../models/auth.model';
 import { LoadingIndicatorComponent } from "../loading-indicator/loading-indicator.component";
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { SignalRService } from '../../services/signal-r.service';
 
 @Component({
     selector: 'app-profile',
@@ -30,12 +29,14 @@ export class ProfileComponent implements OnInit {
 
   constructor(private router: Router,
     private authService: AuthService,
-    private accountService: FinancialAccountsService,
-    private signalRService: SignalRService) { }
+    private accountService: FinancialAccountsService) { }
 
   ngOnInit(): void {
-  //  this.signalRService.startConnection();
-  
+    this.loadData();
+    this.isLoadingForm = true;
+  }
+
+  loadData() {
     this.user = this.authService.getCurrentUser(); 
     console.log(this.user);
     this.accountService.getAccountsByUser(this.user.id.toString()).subscribe(
@@ -46,19 +47,11 @@ export class ProfileComponent implements OnInit {
         console.error('Error retrieving accounts:', error);
       }
     );
-    this.isLoadingForm = true;
-    this.sendNotification();
   }
 
   redirectToNewAccountPage() {
     const userId = this.user.id;
-//    this.sendNotification();
 
     this.router.navigate([`/profile/${ userId }/add-account`]); 
-  }
-
-  sendNotification() {
-    const message = "You're authorized";
-  //  this.signalRService.sendNotification(message);
   }
 }

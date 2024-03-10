@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Account } from '../../models/account.model';
 import { DatePipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FinancialAccountsService } from '../../services/financial-accounts.service';
 import { OperationsService } from '../../services/operations.service';
@@ -14,6 +14,7 @@ import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicato
   imports: [
     CommonModule,
     HttpClientModule,
+    RouterModule,
     LoadingIndicatorComponent
   ],
   templateUrl: './account.component.html',
@@ -50,8 +51,8 @@ export class AccountComponent implements OnInit {
      else {
       (error: any) => {
         console.error('Error during getting id:', error);
-      };
-      this.isLoadingForm = true;
+      };      
     }
+    this.isLoadingForm = true;
   }
 }

@@ -1,12 +1,18 @@
-<div class="close-account-modal">
+<div class="close-account-modal" *ngIf="!showSuccessMessage">
     <h2>Closing an account</h2>
     <p>Make sure again, do you want to delete <b>this account</b>?</p>
     <div class="account-info">
-
+      <span>
+        {{account.name}}: {{account.balance}} {{account.currency.abbreviation}}
+      </span>
     </div>
   
     <div class="modal-buttons">
-      <button (click)="closeAccount()">Close the account</button>
-      <button routerLink="../">Cancel</button>
+      <button class="close-modal-button" (click)="closeAccount()">Close the account</button>
+      <button class="cancel-modal-button" routerLink="../">Cancel</button>
     </div>
-  </div>
+</div>
+<div *ngIf="showSuccessMessage" class="success-message">
+  <p>The account has been successfully deleted!</p>
+  <a routerLink="../../../">Back</a>
+</div>

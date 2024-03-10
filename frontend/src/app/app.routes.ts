@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MainComponent } from './components/main/main.component';
 import { AuthComponent } from './components/auth/auth.component';
@@ -18,6 +18,8 @@ import { DeleteAccountComponent } from './components/delete-account/delete-accou
 import { AddOperationComponent } from './components/add-operation/add-operation.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { AuthInterceptor } from './extensions/auth.interceptor';
+import { AccountStructureComponent } from './components/account-structure/account-structure.component';
 
 export const routes: Routes = [
     { 
@@ -44,8 +46,12 @@ export const routes: Routes = [
             },
             { 
                 path: 'account/:id', 
-                component: AccountComponent,
+                component: AccountStructureComponent, 
                 children:[
+                    {
+                        path: '', 
+                        component: AccountComponent,
+                    },
                     { 
                         path: 'update-account', 
                         component: UpdateAccountComponent
@@ -94,10 +100,18 @@ export const routes: Routes = [
 @NgModule({
     imports: [
         RouterModule.forRoot(routes), 
+        HttpClientModule,
         BrowserModule,
-        HttpClientModule, 
         FormsModule
     ],
-    exports: [RouterModule]
+    exports: [RouterModule],
+    providers: [
+        {
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptor,
+        multi: true
+      },
+      AuthGuard
+    ]
   })
   export class AppRoutingModule { }

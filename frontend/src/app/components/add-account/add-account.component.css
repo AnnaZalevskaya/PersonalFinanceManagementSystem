@@ -1,10 +1,13 @@
 .account-form {
   width: 300px;
-  margin: 50px auto;
+  margin: 0 auto; 
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f4f4f4;
+  position: relative; 
+  top: 50%;
+  transform: translateY(30%); 
 }
   
 .account-form h2 {
@@ -12,7 +15,7 @@
 }
   
 .account-form .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
   
 .account-form label {

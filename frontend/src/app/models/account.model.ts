@@ -8,7 +8,7 @@ export interface Account {
     name: string;
     balance: number;
     accountTypeId: number; 
-    type: AccountType;
+    accountType: AccountType;
     currencyId: number;
     currency: Currency;
     user: User;

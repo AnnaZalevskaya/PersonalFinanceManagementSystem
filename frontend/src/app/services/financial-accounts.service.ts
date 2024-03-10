@@ -1,10 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Account } from '../models/account.model';
 import { AccountAction } from '../models/account-action.model';
-import { CurrencyService } from './currency.service';
-import { AccountTypesService } from './account-types.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +11,7 @@ export class FinancialAccountsService {
   private backendUrl = 'https://localhost:44313/api/accounts/financial-accounts';
 
   constructor(
-    private http: HttpClient,
-    private typeServive: AccountTypesService, 
-    private currencyService: CurrencyService) { }
+    private http: HttpClient) { }
 
   getAccounts(): Observable<Account[]> {
     const url = this.backendUrl;

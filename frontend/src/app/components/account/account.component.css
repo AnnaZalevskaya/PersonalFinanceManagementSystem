@@ -12,20 +12,13 @@ h1 {
   justify-content: center;
   align-items: center;
 }
-  
-.account-info {
-  margin: 20px;
+
+.account-details {
+  display: flex;
+  justify-content: space-between;
+
 }
-  
-.account-summary {
-  float: left;
-  margin-right: 20px;
-}
-  
-.operations-list {
-  overflow: hidden;
-}
-  
+
 .account-details h2 {
   font-size: 24px;
 }
@@ -37,6 +30,21 @@ h1 {
 .account-details h3 {
   margin-top: 20px;
 }
+
+.account-summary {
+  width: 50%;
+  float: left;
+  margin-right: 20px;
+}
+
+.operations-list {
+  width: 50%;
+  overflow: hidden;
+}
+  
+.account-info {
+  margin: 20px;
+}
   
 .operation-card {
   margin-bottom: 5px;
@@ -47,7 +55,7 @@ h1 {
 }
   
 .description-table {
-  width: 20%;
+  width: 100%;
   border-collapse: collapse;
 }
   
@@ -57,11 +65,11 @@ h1 {
 }
   
 .description-table .key-field {
-  width: 60%;
+  width: 40%;
 }
   
 .description-table .value-field {
-width: 40%;
+width: 60%;
 }
   
 .message {
@@ -71,7 +79,7 @@ width: 40%;
 
 .account-card-footer {
   display: flex;
-  justify-content: center;
+  justify-content:last baseline;
   margin-top: 10px; 
 }
   
@@ -98,5 +106,6 @@ button {
 
 .add-button {
   margin-left: 10px;
+  margin-bottom: 15px;
   background-color: #498B6D; 
 }

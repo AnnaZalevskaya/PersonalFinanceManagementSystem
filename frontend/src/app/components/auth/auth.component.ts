@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { AuthRequest } from '../../models/auth.model';
 import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicator.component';
 import { RegisterRequest } from '../../models/register.model';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthGuard } from '../../extensions/auth.guard';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +15,7 @@ import { RegisterRequest } from '../../models/register.model';
   imports: [
     CommonModule, 
     FormsModule,
+    HttpClientModule,
     LoadingIndicatorComponent
   ],
   templateUrl: './auth.component.html',
@@ -42,7 +45,6 @@ export class AuthComponent {
     };
     this.authService.register(model).subscribe(
       response => {
-        console.log("response: " + response.email + "; " + response.username + "; " + response.phoneNumber);
         this.isRegistrationSuccessful = true;
       }
     )  

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FinancialAccountsService } from '../../services/financial-accounts.service';
 import { AccountTypesService } from '../../services/account-types.service';
 import { CurrencyService } from '../../services/currency.service';
@@ -8,21 +8,24 @@ import { Currency } from '../../models/currency.model';
 import { AccountAction } from '../../models/account-action.model';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { AuthGuard } from '../../extensions/auth.guard';
 import { SignalRService } from '../../services/signal-r.service';
+import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicator.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-account',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    LoadingIndicatorComponent
   ],
   templateUrl: './add-account.component.html',
   styleUrl: './add-account.component.css'
 })
-export class AddAccountComponent {
+export class AddAccountComponent implements OnInit {
   userId: number = 0;
+  isLoadingForm: boolean = false;
 
   accountName: string = '';
   accountType!: AccountType;
@@ -32,6 +35,7 @@ export class AddAccountComponent {
   currencies: Currency[] = [];
 
   constructor(
+    private router: Router,
     private authService: AuthService,
     private accountsService: FinancialAccountsService,
     private typeService: AccountTypesService,
@@ -39,11 +43,12 @@ export class AddAccountComponent {
     private signalRService: SignalRService
   ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
       this.signalRService.startConnection();
       this.signalRService.startNotificationsListener();
       this.loadAccountTypes();
       this.loadCurrencies();
+      this.isLoadingForm = true;
     }
   
     loadAccountTypes() {
@@ -69,11 +74,12 @@ export class AddAccountComponent {
         currency: this.currency,
         userId: this.userId,
       };
-      this.signalRService.sendNotification(this.userId.toString(), "New account has been added successfully");
 
-      console.log(newAccount)
+      this.signalRService.sendNotification(this.userId.toString(), "New account has been added successfully");
   
-      this.accountsService.addAccount(newAccount);
+    //  this.accountsService.addAccount(newAccount);
+
+    this.router.navigate(['./']);
     }
 
     ngOnDestroy() {
