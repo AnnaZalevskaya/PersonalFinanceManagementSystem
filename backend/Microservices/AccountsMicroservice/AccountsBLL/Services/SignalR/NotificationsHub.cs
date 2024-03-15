@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Accounts.BusinessLogic.Models.Consts;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Accounts.BusinessLogic.Services.SignalR
 {
@@ -6,7 +7,7 @@ namespace Accounts.BusinessLogic.Services.SignalR
     {
         public async Task SendNotificationToUser(string userId, string message)
         {
-            await Clients.User(userId).SendAsync("ReceiveNotification", message);
+            await Clients.User(userId).SendAsync(NotificationSettingsConsts.MethodName, message);
         }
     }
 }

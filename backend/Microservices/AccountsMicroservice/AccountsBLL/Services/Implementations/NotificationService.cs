@@ -1,4 +1,5 @@
-﻿using Accounts.BusinessLogic.Services.Interfaces;
+﻿using Accounts.BusinessLogic.Models.Consts;
+using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.BusinessLogic.Services.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
@@ -15,7 +16,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
         public async Task SendNotificationAsync(string userId, string message)
         {
-            await _notificationsHubContext.Clients.User(userId).SendAsync("ReceiveNotification", message);
+            await _notificationsHubContext.Clients.User(userId).SendAsync(NotificationSettingsConsts.MethodName, message);
         }
     }
 
