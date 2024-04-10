@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Auth.Application.Validators
 {
-    public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
+    public class RegisterRequestValidator : AbstractValidator<RegisterRequestModel>
     {
         public RegisterRequestValidator()
         {

@@ -1,9 +1,9 @@
-﻿using Accounts.DataAccess.Entities;
+﻿using Accounts.BusinessLogic.Models;
 using FluentValidation;
 
 namespace Accounts.BusinessLogic.Validators
 {
-    public class CurrencyValidator : AbstractValidator<Currency>
+    public class CurrencyValidator : AbstractValidator<CurrencyModel>
     {
         public CurrencyValidator()
         {

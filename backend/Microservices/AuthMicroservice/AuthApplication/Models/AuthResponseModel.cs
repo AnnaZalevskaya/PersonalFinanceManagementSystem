@@ -1,6 +1,6 @@
 ﻿namespace Auth.Application.Models
 {
-    public class AuthResponse
+    public class AuthResponseModel
     {
         public int Id { get; set; }
         public string Role { get; set; }
