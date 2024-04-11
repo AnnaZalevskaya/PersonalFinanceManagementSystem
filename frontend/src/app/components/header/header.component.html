@@ -9,10 +9,9 @@
               </a>
             </div>
         </div>
-        <a routerLink="profile/{{ this.userId }}/notifications">
-          <button class="notifications" [disabled]="!isAuthenticated || !isClient()">
-            <img src="assets/images/icon-notification.png">
-          </button>
-        </a>
+        <button class="notifications" [disabled]="!isAuthenticated || !isClient()" (click)="toggleNotificationPanel()">
+          <img src="assets/images/icon-notification.png">
+        </button>
     </div>
 </header>
+<app-notification-panel *ngIf="showNotificationPanel()"></app-notification-panel>
