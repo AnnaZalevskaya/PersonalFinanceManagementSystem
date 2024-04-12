@@ -15,6 +15,7 @@ import { AuthGuard } from './extensions/auth.guard';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SignalRService } from './services/signal-r.service';
 import { UserNotificationsService } from './services/user-notifications.service';
+import { NotificationPanelService } from './services/notification-panel.service';
 
 @Component({
   selector: 'app-root',
@@ -37,6 +38,7 @@ import { UserNotificationsService } from './services/user-notifications.service'
     OperationsService, 
     OperationCategoriesService,
     SignalRService,
+    NotificationPanelService,
     UserNotificationsService
   ]
 })
