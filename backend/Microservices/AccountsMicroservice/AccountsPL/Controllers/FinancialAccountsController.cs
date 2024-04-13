@@ -1,6 +1,8 @@
 ﻿using Accounts.BusinessLogic.Models;
+using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Settings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Accounts.Presentation.Controllers
@@ -17,6 +19,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<ActionResult> CreateNewAccountAsync([FromBody] FinancialAccountActionModel model,
             CancellationToken cancellationToken)
         {
@@ -26,6 +29,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpDelete("{userId}/{accountId}")]
+        [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<IActionResult> CloseAccountAsync(int userId, int accountId, 
             CancellationToken cancellationToken)
         {
@@ -35,6 +39,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpPut("{accountId}")]
+        [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
             [FromBody] FinancialAccountActionModel model, CancellationToken cancellationToken)
         {
@@ -44,6 +49,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, 
             CancellationToken cancellationToken)
         {
@@ -51,6 +57,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<ActionResult<List<FinancialAccountModel>>> GetUserAccountsAsync(int userId,
             [FromQuery] PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
@@ -58,6 +65,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = AuthPolicyConsts.AdminOnly)]
         public async Task<ActionResult<List<FinancialAccountModel>>> GetAllAccountsAsync([FromQuery] PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {

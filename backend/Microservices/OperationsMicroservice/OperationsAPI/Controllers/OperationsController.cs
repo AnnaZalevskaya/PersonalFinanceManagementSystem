@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Operations.Application.Models;
+using Operations.Application.Models.Consts;
 using Operations.Application.Operations.Commands.CreateOperation;
 using Operations.Application.Operations.Queries.GetOperationDetails;
 using Operations.Application.Operations.Queries.GetOperationList;
@@ -20,6 +22,7 @@ namespace Operations.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = AuthPolicyConsts.AdminOnly)]
         public async Task<ActionResult> GetAllAsync([FromQuery] PaginationSettings paginationSettings)
         {
             var operations = await _mediator.Send(new GetOperationListQuery(paginationSettings));
@@ -28,6 +31,7 @@ namespace Operations.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<OperationModel>> GetByIdAsync(string id)
         {
             var operation = await _mediator.Send(new GetOperationDetailsQuery(id));
@@ -36,6 +40,7 @@ namespace Operations.API.Controllers
         }
 
         [HttpGet("account/{accountId}")]
+        [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<ActionResult<List<OperationModel>>> GetByAccountIdAsync(int accountId,
             [FromQuery] PaginationSettings paginationSettings)
         {
@@ -46,6 +51,7 @@ namespace Operations.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
             await _mediator.Send(new CreateOperationCommand(model));

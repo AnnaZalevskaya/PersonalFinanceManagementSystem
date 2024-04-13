@@ -12,6 +12,8 @@ namespace Accounts.Presentation
             builder.Services
                 .ConfigurePostgreSQL(builder.Configuration)
                 .ConfigureRepositoryWrapper()
+                .ConfigureAuthentication(builder.Configuration)
+                .ConfigureAuthorization()
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
                 .ConfigureAppServices()
@@ -27,6 +29,8 @@ namespace Accounts.Presentation
 
             var app = builder.Build();
 
+            app.MigrateDatabase();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -34,9 +38,11 @@ namespace Accounts.Presentation
             }
 
             app.ConfigureCustomExceptionMiddleware();
-
+      
             app.UseHttpsRedirection();
+            app.UseWebSockets();
             app.UseRouting();
+
             app.UseCors("AllowSpecificOrigins");
 
             app.UseAuthentication();

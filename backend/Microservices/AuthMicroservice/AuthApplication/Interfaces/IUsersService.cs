@@ -5,8 +5,8 @@ namespace Auth.Application.Interfaces
 {
     public interface IUsersService
     {
-        Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);
-        Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken);
+        Task<RegisterResponseModel> RegisterAsync(RegisterRequestModel request, CancellationToken cancellationToken);
+        Task<AuthResponseModel> AuthenticateAsync(AuthRequestModel request, CancellationToken cancellationToken);
         Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken);
     }
 }
