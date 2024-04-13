@@ -8,6 +8,6 @@ namespace Accounts.DataAccess.UnitOfWork
         IFinancialAccountTypeRepository FinancialAccountTypes { get; }
         ICurrencyRepository Currencies { get; }
 
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
