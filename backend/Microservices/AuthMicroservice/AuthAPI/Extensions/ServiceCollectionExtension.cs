@@ -1,4 +1,5 @@
 ﻿using Auth.Application.Interfaces;
+using Auth.Application.Models.Consts;
 using Auth.Application.Producers;
 using Auth.Application.Services;
 using Auth.Application.Settings;
@@ -8,7 +9,6 @@ using Auth.Infrastructure.Repositories;
 using Auth.Infrastructure.Settings;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -64,7 +64,7 @@ namespace Auth.API.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureSQLServer(this IServiceCollection services, 
+        public static IServiceCollection ConfigureSQLServer(this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddDbContext<AuthDbContext>(options
@@ -125,11 +125,18 @@ namespace Auth.API.Extensions
 
         public static IServiceCollection ConfigureAuthorization(this IServiceCollection services)
         {
-            services.AddAuthorization(options => options.DefaultPolicy =
-                new AuthorizationPolicyBuilder
-                    (JwtBearerDefaults.AuthenticationScheme)
-                        .RequireAuthenticatedUser()
-                        .Build());
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthPolicyConsts.ClientOnly, policy =>
+                {
+                    policy.RequireRole(RoleConsts.Client); 
+                });
+
+                options.AddPolicy(AuthPolicyConsts.AdminOnly, policy =>
+                {
+                    policy.RequireRole(RoleConsts.Admin);
+                });
+            });  
 
             return services;
         }
@@ -152,7 +159,7 @@ namespace Auth.API.Extensions
                 options.AddPolicy("AllowSpecificOrigins",
                     policy => policy.WithOrigins("http://localhost:4200")
                         .AllowAnyMethod()
-                        .AllowAnyHeader());          
+                        .AllowAnyHeader());
             });
 
             return services;

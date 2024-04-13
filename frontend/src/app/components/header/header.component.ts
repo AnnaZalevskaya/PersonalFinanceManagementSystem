@@ -3,14 +3,16 @@ import { AuthService } from '../../services/auth.service';
 import { NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { UserNotificationsService } from '../../services/user-notifications.service';
+import { NotificationPanelComponent } from '../notification-panel/notification-panel.component';
+import { NotificationPanelService } from '../../services/notification-panel.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule, 
+    NotificationPanelComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
@@ -26,7 +28,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,  
     private authService: AuthService, 
-    private notificationsService: UserNotificationsService
+    private panelService: NotificationPanelService
   ) { 
     
   }
@@ -61,5 +63,13 @@ export class HeaderComponent implements OnInit {
     else {
       return false;
     }
+  }
+
+  toggleNotificationPanel() {
+    this.panelService.openPanel();
+  }
+
+  showNotificationPanel() {
+    return this.panelService.getStatus();
   }
 }

@@ -7,12 +7,14 @@ import { FinancialAccountsService } from '../../services/financial-accounts.serv
 import { OperationsService } from '../../services/operations.service';
 import { HttpClientModule } from '@angular/common/http';
 import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicator.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-account',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     HttpClientModule,
     RouterModule,
     LoadingIndicatorComponent
@@ -37,9 +39,10 @@ export class AccountComponent implements OnInit {
       this.accountService.getAccountById(id).subscribe(
         account => {
           this.account = account; 
+          this.account.operations = [];
           this.operationsService.getOperationsByAccount(account.id.toString()).subscribe(
             operations =>{
-              account.operations = operations;
+              this.account.operations = operations;
             }
           )
         },

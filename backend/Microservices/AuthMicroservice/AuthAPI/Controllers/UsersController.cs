@@ -1,5 +1,6 @@
 ﻿using Auth.Application.Interfaces;
 using Auth.Application.Models;
+using Auth.Application.Models.Consts;
 using Auth.Application.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<ActionResult<AuthResponse>> AuthenticateAsync([FromBody] AuthRequest model,
+        public async Task<ActionResult<AuthResponseModel>> AuthenticateAsync([FromBody] AuthRequestModel model,
             CancellationToken cancellationToken)
         {
             var response = await _usersService.AuthenticateAsync(model, cancellationToken);
@@ -27,7 +28,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<RegisterResponse>> RegisterAsync([FromBody] RegisterRequest model,
+        public async Task<ActionResult<RegisterResponseModel>> RegisterAsync([FromBody] RegisterRequestModel model,
             CancellationToken cancellationToken)
         {
             var response = await _usersService.RegisterAsync(model, cancellationToken);
@@ -36,7 +37,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpGet("all-users")]
-        [Authorize]
+        [Authorize(Policy = AuthPolicyConsts.AdminOnly)]
         public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {

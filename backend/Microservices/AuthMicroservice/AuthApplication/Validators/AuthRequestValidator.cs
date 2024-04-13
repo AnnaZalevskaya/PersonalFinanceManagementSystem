@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Auth.Application.Validators
 {
-    public class AuthRequestValidator : AbstractValidator<AuthRequest>
+    public class AuthRequestValidator : AbstractValidator<AuthRequestModel>
     {
         public AuthRequestValidator()
         {
