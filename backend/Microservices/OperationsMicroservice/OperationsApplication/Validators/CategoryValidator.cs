@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Operations.Core.Entities;
+using Operations.Application.Models;
 
 namespace Operations.Application.Validators
 {
-    public class CategoryValidator : AbstractValidator<Category>
+    public class CategoryValidator : AbstractValidator<CategoryModel>
     {
         public CategoryValidator()
         {

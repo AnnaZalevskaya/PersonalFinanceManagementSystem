@@ -22,6 +22,7 @@ namespace Accounts.DataAccess.UnitOfWork
             get
             {
                 _financialAccountRepository ??= new FinancialAccountRepository(_context);
+
                 return _financialAccountRepository;
             }
         }
@@ -31,6 +32,7 @@ namespace Accounts.DataAccess.UnitOfWork
             get
             {
                 _financialAccountTypeRepository ??= new FinancialAccountTypeRepository(_context);
+
                 return _financialAccountTypeRepository;
             }
         }
@@ -40,13 +42,14 @@ namespace Accounts.DataAccess.UnitOfWork
             get
             {
                 _currencyRepository ??= new CurrencyRepository(_context);
+
                 return _currencyRepository;
             }
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

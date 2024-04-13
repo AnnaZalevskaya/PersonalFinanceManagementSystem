@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Operations.Core.Entities;
+using Operations.Application.Models;
 
 namespace Operations.Application.Validators
 {
-    public class OperationValidator : AbstractValidator<Operation>
+    public class OperationValidator : AbstractValidator<OperationModel>
     {
         public OperationValidator() 
         {

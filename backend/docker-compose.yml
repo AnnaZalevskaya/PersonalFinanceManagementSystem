@@ -74,7 +74,31 @@ services:
     image: redis
     ports:
       - "6390:6379"
-      
+     
+  elastic:
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:6.2.3'
+    volumes:
+        - esdata:/usr/share/elasticsearch/data
+    ports:
+        - 9200:9200
+        - 9300:9300
+ 
+  kibana:
+    image: 'docker.elastic.co/kibana/kibana:6.2.3'
+    environment:
+      ELASTICSEARCH_URL: http://elastic:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elastic
+ 
+  logstash:
+    image: logstash-eh
+    environment:
+      XPACK_MONITORING_ELASTICSEARCH_URL: http://elastic:9200
+    depends_on:
+      - elastic
+
   ocelotapigateway:
     image: ocelotapigateway
     build:

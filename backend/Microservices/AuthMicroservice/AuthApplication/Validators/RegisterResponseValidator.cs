@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Auth.Application.Validators
 {
-    public class RegisterResponseValidator : AbstractValidator<RegisterResponse>
+    public class RegisterResponseValidator : AbstractValidator<RegisterResponseModel>
     {
         public RegisterResponseValidator() {
             RuleFor(response => response.Email)

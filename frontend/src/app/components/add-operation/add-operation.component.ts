@@ -25,7 +25,10 @@ export class AddOperationComponent implements OnInit {
   account!:  Account;
   description!: {};
 
-  constructor(private operationsService: OperationsService, private categoryService: OperationCategoriesService) {}
+  constructor(
+    private operationsService: OperationsService, 
+    private categoryService: OperationCategoriesService
+  ) {}
 
   fields: { key: string, value: string }[] = [];
   categories: OperationCategory[] = [];

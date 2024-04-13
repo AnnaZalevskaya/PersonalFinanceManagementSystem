@@ -8,7 +8,7 @@ namespace Auth.Application.MappConfigs
     {
         public AuthResponseMappConfig()
         {
-            CreateMap<AuthResponse, AppUser>().ReverseMap();
+            CreateMap<AuthResponseModel, AppUser>().ReverseMap();
         }
     }
 }

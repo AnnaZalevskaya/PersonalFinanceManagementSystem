@@ -1,12 +1,12 @@
 ﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Operations.Application.Consumers;
 using Operations.Application.Interfaces;
 using Operations.Application.Interfaces.gRPC;
+using Operations.Application.Models.Consts;
 using Operations.Application.Operations.Queries.GetCategoryDetails;
 using Operations.Application.Settings;
 using Operations.Infrastructure.Data;
@@ -101,11 +101,18 @@ namespace Operations.API.Extensions
 
         public static IServiceCollection ConfigureAuthorization(this IServiceCollection services)
         {
-            services.AddAuthorization(options => options.DefaultPolicy =
-                new AuthorizationPolicyBuilder
-                    (JwtBearerDefaults.AuthenticationScheme)
-                        .RequireAuthenticatedUser()
-                        .Build());
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthPolicyConsts.ClientOnly, policy =>
+                {
+                    policy.RequireRole(RoleConsts.Client);
+                });
+
+                options.AddPolicy(AuthPolicyConsts.AdminOnly, policy =>
+                {
+                    policy.RequireRole(RoleConsts.Admin);
+                });
+            });
 
             return services;
         }
