@@ -29,7 +29,7 @@ namespace Auth.Application.Services
             _cacheRepository = cacheRepository;
         }
 
-        public async Task<AuthResponse> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken)
+        public async Task<AuthResponseModel> AuthenticateAsync(AuthRequestModel request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByEmailAsync(request.Email.Normalize());
 
@@ -50,7 +50,7 @@ namespace Auth.Application.Services
 
             var accessToken = _tokenService.GetToken(user, roles);
 
-            var response = _mapper.Map<AuthResponse>(user);
+            var response = _mapper.Map<AuthResponseModel>(user);
             var rolesStr = await _userManager.GetRolesAsync(user);
             response.Role = rolesStr.FirstOrDefault();
             response.Token = accessToken;
@@ -62,7 +62,8 @@ namespace Auth.Application.Services
             return response;
         }
 
-        public async Task<RegisterResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
+        public async Task<RegisterResponseModel> RegisterAsync(RegisterRequestModel request, 
+            CancellationToken cancellationToken)
         {
             var user = _mapper.Map<AppUser>(request);
 
@@ -82,7 +83,7 @@ namespace Auth.Application.Services
 
             await _userManager.AddToRoleAsync(user, RoleConsts.Client);
 
-            var response = _mapper.Map<RegisterResponse>(user);
+            var response = _mapper.Map<RegisterResponseModel>(user);
 
             return response;
         }
