@@ -1,5 +1,5 @@
-<main>
-    <div class="container" *ngIf="isLoadingForm">
+<main *ngIf="isLoadingForm">
+    <div class="container">
       <input type="checkbox" id="check">
       <div class="login form">
         <header>Login</header>
@@ -35,5 +35,5 @@
         </div>
       </div>
     </div>
-    <app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>
   </main>
+  <app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>

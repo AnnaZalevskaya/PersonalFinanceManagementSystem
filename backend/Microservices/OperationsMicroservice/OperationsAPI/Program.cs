@@ -12,6 +12,8 @@ namespace Operations.Api
             builder.Services
                 .ConfigureMongoDB(builder.Configuration)
                 .ConfigureRepositoryWrapper()
+                .ConfigureAuthentication(builder.Configuration)
+                .ConfigureAuthorization()
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
                 .ConfigureMediatR()

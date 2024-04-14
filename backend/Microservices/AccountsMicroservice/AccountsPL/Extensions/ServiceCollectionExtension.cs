@@ -1,4 +1,5 @@
 ﻿using Accounts.BusinessLogic.Consumers;
+using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Implementations;
 using Accounts.BusinessLogic.Services.Interfaces;
@@ -13,7 +14,6 @@ using Grpc.Net.Client.Web;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -69,7 +69,8 @@ namespace Accounts.Presentation.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, 
+            IConfiguration configuration)
         {
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             var jwtOptions = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>();
@@ -98,11 +99,18 @@ namespace Accounts.Presentation.Extensions
 
         public static IServiceCollection ConfigureAuthorization(this IServiceCollection services)
         {
-            services.AddAuthorization(options => options.DefaultPolicy =
-                new AuthorizationPolicyBuilder
-                    (JwtBearerDefaults.AuthenticationScheme)
-                        .RequireAuthenticatedUser()
-                        .Build());
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthPolicyConsts.ClientOnly, policy =>
+                {
+                    policy.RequireRole(RoleConsts.Client);
+                });
+
+                options.AddPolicy(AuthPolicyConsts.AdminOnly, policy =>
+                {
+                    policy.RequireRole(RoleConsts.Admin);
+                });
+            });
 
             return services;
         }
@@ -140,6 +148,7 @@ namespace Accounts.Presentation.Extensions
             {
                 options.AddPolicy("AllowSpecificOrigins",
                     policy => policy.WithOrigins("http://localhost:4200")
+                        .AllowCredentials()
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
@@ -207,7 +216,8 @@ namespace Accounts.Presentation.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureHangfire(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureHangfire(this IServiceCollection services, 
+            IConfiguration configuration)
         {
             services.AddHangfire(config => 
                 config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection")));

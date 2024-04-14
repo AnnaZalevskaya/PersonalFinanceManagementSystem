@@ -26,6 +26,7 @@
 .account-form input[type="text"],
 .account-form select{
   width: 100%;
+  box-sizing: border-box;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;

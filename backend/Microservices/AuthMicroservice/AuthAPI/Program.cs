@@ -11,9 +11,9 @@ namespace Auth.API
             builder.Services               
                 .ConfigureSQLServer(builder.Configuration)
                 .ConfigureRepositoryWrapper()
+                .ConfigureIdentity()
                 .ConfigureAuthentication(builder.Configuration)
                 .ConfigureAuthorization()
-                .ConfigureIdentity()
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
                 .ConfigureAppServices()

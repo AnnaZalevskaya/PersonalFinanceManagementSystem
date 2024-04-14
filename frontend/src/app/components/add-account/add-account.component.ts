@@ -75,6 +75,8 @@ export class AddAccountComponent implements OnInit {
         userId: this.userId,
       };
 
+      console.log(newAccount);
+
       this.signalRService.sendNotification(this.userId.toString(), "New account has been added successfully");
   
     //  this.accountsService.addAccount(newAccount);

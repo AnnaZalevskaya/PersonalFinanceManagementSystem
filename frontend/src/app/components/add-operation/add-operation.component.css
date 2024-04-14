@@ -1,3 +1,8 @@
+.container {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
 .operation-form {
   width: 300px;
   margin: 0 auto; 
@@ -24,6 +29,7 @@
 .operation-form #amount,
 .operation-form select{
   width: 100%;
+  box-sizing: border-box;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;

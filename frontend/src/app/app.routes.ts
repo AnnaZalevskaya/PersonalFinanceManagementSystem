@@ -16,7 +16,6 @@ import { ProfileStructureComponent } from './components/profile-structure/profil
 import { UpdateAccountComponent } from './components/update-account/update-account.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
 import { AddOperationComponent } from './components/add-operation/add-operation.component';
-import { NotificationsComponent } from './components/notifications/notifications.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { AuthInterceptor } from './extensions/auth.interceptor';
 import { AccountStructureComponent } from './components/account-structure/account-structure.component';
@@ -70,10 +69,6 @@ export const routes: Routes = [
                 path: 'add-account', 
                 component: AddAccountComponent, 
             },
-            {
-                path: 'notifications',
-                component: NotificationsComponent
-            }
         ] 
     },  
     {

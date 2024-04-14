@@ -1,9 +1,9 @@
-﻿using Accounts.DataAccess.Entities;
+﻿using Accounts.BusinessLogic.Models;
 using FluentValidation;
 
 namespace Accounts.BusinessLogic.Validators
 {
-    public class FinancialAccountTypeValidator : AbstractValidator<FinancialAccountType>
+    public class FinancialAccountTypeValidator : AbstractValidator<FinancialAccountTypeModel>
     {
         public FinancialAccountTypeValidator()
         {
