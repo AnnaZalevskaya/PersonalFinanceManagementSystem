@@ -50,7 +50,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             var account = _mapper.Map<FinancialAccount>(addModel);
             await _unitOfWork.FinancialAccounts.AddAsync(account, cancellationToken);
            
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _cacheRepository.CacheDataAsync(account.Id, account);
 
@@ -76,7 +76,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _unitOfWork.FinancialAccounts.DeleteAsync(id, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _cacheRepository.RemoveCachedDataAsync(id);
         }
@@ -224,7 +224,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _unitOfWork.FinancialAccounts.UpdateAsync(id, updateAccount, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _cacheRepository.CacheDataAsync(id, updateModel);
         }
