@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Services\gRPC\Protos\accountBalance.proto" />
+    <None Remove="Operations\Commands\gRPC\Protos\accountBalance.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,19 +21,21 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Hangfire.Core" Version="1.8.11" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.39" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.38" />
+    <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AccountsDAL\Accounts.DataAccess.csproj" />
+    <ProjectReference Include="..\Operations.Core\Operations.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Services\gRPC\Protos\accountBalance.proto" GrpcServices="Client" />
+    <Protobuf Include="Operations\Commands\gRPC\Protos\accountBalance.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

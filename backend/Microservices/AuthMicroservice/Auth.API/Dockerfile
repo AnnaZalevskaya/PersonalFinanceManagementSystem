@@ -6,13 +6,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["AuthInfrastructure/Auth.Infrastructure.csproj", "AuthInfrastructure/"]
-COPY ["AuthCore/Auth.Core.csproj", "AuthCore/"]
-COPY ["AuthApplication/Auth.Application.csproj", "AuthApplication/"]
-COPY ["AuthAPI/Auth.API.csproj", "AuthAPI/"]
-RUN dotnet restore "./AuthAPI/./Auth.API.csproj"
+COPY ["Auth.Infrastructure/Auth.Infrastructure.csproj", "Auth.Infrastructure/"]
+COPY ["Auth.Core/Auth.Core.csproj", "Auth.Core/"]
+COPY ["Auth.Application/Auth.Application.csproj", "Auth.Application/"]
+COPY ["Auth.API/Auth.API.csproj", "AuthAPI/"]
+RUN dotnet restore "./Auth.API/./Auth.API.csproj"
 COPY . .
-WORKDIR "/src/AuthAPI"
+WORKDIR "/src/Auth.API"
 RUN dotnet build "./Auth.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

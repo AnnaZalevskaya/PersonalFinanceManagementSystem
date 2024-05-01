@@ -7,31 +7,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AccountsMicroservice", "AccountsMicroservice", "{3C9ADE6B-9E66-46D3-AE41-5D74686F03C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accounts.Presentation", "Microservices\AccountsMicroservice\AccountsPL\Accounts.Presentation.csproj", "{5BACAACE-37C7-47DE-B137-F14F7221E12F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accounts.Presentation", "Microservices\AccountsMicroservice\Accounts.Presentation\Accounts.Presentation.csproj", "{5BACAACE-37C7-47DE-B137-F14F7221E12F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accounts.BusinessLogic", "Microservices\AccountsMicroservice\AccountsBLL\Accounts.BusinessLogic.csproj", "{F75CC4D8-D7BD-461D-AE52-5F32D63CDFF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accounts.BusinessLogic", "Microservices\AccountsMicroservice\Accounts.BusinessLogic\Accounts.BusinessLogic.csproj", "{F75CC4D8-D7BD-461D-AE52-5F32D63CDFF0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accounts.DataAccess", "Microservices\AccountsMicroservice\AccountsDAL\Accounts.DataAccess.csproj", "{CC5631EC-F31C-462B-96A9-FCE1245E57B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Accounts.DataAccess", "Microservices\AccountsMicroservice\Accounts.DataAccess\Accounts.DataAccess.csproj", "{CC5631EC-F31C-462B-96A9-FCE1245E57B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OperationsMicroservice", "OperationsMicroservice", "{D68BB333-516F-4B05-B1BE-3E9ECC5EE1A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.API", "Microservices\OperationsMicroservice\OperationsAPI\Operations.API.csproj", "{DC5C1729-C7F9-45AA-A874-DA18CB8E2F9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.API", "Microservices\OperationsMicroservice\Operations.API\Operations.API.csproj", "{DC5C1729-C7F9-45AA-A874-DA18CB8E2F9C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.Application", "Microservices\OperationsMicroservice\OperationsApplication\Operations.Application.csproj", "{E0FDEACD-BE6B-4184-A9FA-89BB02ED0AEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.Application", "Microservices\OperationsMicroservice\Operations.Application\Operations.Application.csproj", "{E0FDEACD-BE6B-4184-A9FA-89BB02ED0AEA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.Core", "Microservices\OperationsMicroservice\OperationsCore\Operations.Core.csproj", "{88F61241-FEDC-487C-B5F1-8C9A0A45AEC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.Core", "Microservices\OperationsMicroservice\Operations.Core\Operations.Core.csproj", "{88F61241-FEDC-487C-B5F1-8C9A0A45AEC0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.Infrastructure", "Microservices\OperationsMicroservice\OperationsInfrastructure\Operations.Infrastructure.csproj", "{1864466F-97A4-4028-A612-F147C4E59234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operations.Infrastructure", "Microservices\OperationsMicroservice\Operations.Infrastructure\Operations.Infrastructure.csproj", "{1864466F-97A4-4028-A612-F147C4E59234}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthMicroservice", "AuthMicroservice", "{7F499FC9-5255-4B7E-9BF8-0738A4B4492E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.API", "Microservices\AuthMicroservice\AuthAPI\Auth.API.csproj", "{88575B53-BEAF-496F-864D-BE1FC707F996}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.API", "Microservices\AuthMicroservice\Auth.API\Auth.API.csproj", "{88575B53-BEAF-496F-864D-BE1FC707F996}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Application", "Microservices\AuthMicroservice\AuthApplication\Auth.Application.csproj", "{C5669D9C-8F2F-4A8F-B38E-2987152A7650}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Application", "Microservices\AuthMicroservice\Auth.Application\Auth.Application.csproj", "{C5669D9C-8F2F-4A8F-B38E-2987152A7650}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Core", "Microservices\AuthMicroservice\AuthCore\Auth.Core.csproj", "{4E4744C7-4BC8-43F8-849E-60A320D2C6F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Core", "Microservices\AuthMicroservice\Auth.Core\Auth.Core.csproj", "{4E4744C7-4BC8-43F8-849E-60A320D2C6F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Infrastructure", "Microservices\AuthMicroservice\AuthInfrastructure\Auth.Infrastructure.csproj", "{D463F3A4-0988-4512-AE4A-50C01F599074}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Infrastructure", "Microservices\AuthMicroservice\Auth.Infrastructure\Auth.Infrastructure.csproj", "{D463F3A4-0988-4512-AE4A-50C01F599074}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{9B033842-B82D-4945-A4D0-355BF0302233}"
 EndProject

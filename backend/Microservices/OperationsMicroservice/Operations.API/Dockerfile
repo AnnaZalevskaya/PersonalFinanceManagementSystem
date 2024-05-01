@@ -6,13 +6,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["OperationsApplication/Operations.Application.csproj", "OperationsApplication/"]
-COPY ["OperationsCore/Operations.Core.csproj", "OperationsCore/"]
-COPY ["OperationsInfrastructure/Operations.Infrastructure.csproj", "OperationsInfrastructure/"]
-COPY ["OperationsAPI/Operations.API.csproj", "OperationsAPI/"]
-RUN dotnet restore "./OperationsAPI/./OperationsAPI.csproj"
+COPY ["Operations.Application/Operations.Application.csproj", "Operations.Application/"]
+COPY ["Operations.Core/Operations.Core.csproj", "Operations.Core/"]
+COPY ["Operations.Infrastructure/Operations.Infrastructure.csproj", "Operations.Infrastructure/"]
+COPY ["Operations.API/Operations.API.csproj", "Operations.API/"]
+RUN dotnet restore "./Operations.API/./OperationsAPI.csproj"
 COPY . .
-WORKDIR "/src/OperationsAPI"
+WORKDIR "/src/Operations.API"
 RUN dotnet build "./Operations.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

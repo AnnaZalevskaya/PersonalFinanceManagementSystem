@@ -6,13 +6,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["AccountsBLL/Accounts.BusinessLogic.csproj", "AccountsBLL/"]
-COPY ["AccountsDAL/Accounts.DataAccess.csproj", "AccountsDAL/"]
-COPY ["AccountsPL/Accounts.Presentation.csproj", "AccountsPL/"]
+COPY ["Accounts.BusinessLogic/Accounts.BusinessLogic.csproj", "Accounts.BusinessLogic/"]
+COPY ["Accounts.DataAccess/Accounts.DataAccess.csproj", "Accounts.DataAccess/"]
+COPY ["Accounts.Presentation/Accounts.Presentation.csproj", "Accounts.Presentation/"]
 RUN dotnet restore "./AccountsPL/./Accounts.Presentation.csproj"
 COPY . .
-WORKDIR "/src/AccountsPL"
-RUN dotnet build "./AccountsPL.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Accounts.Presentation"
+RUN dotnet build "./Accounts.Presentation.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

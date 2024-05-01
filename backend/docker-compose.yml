@@ -13,7 +13,7 @@ services:
     image: authapi
     build:
       context: .
-      dockerfile: Microservices/AuthMicroservice/AuthAPI/Dockerfile
+      dockerfile: Microservices/AuthMicroservice/Auth.API/Dockerfile
     ports:
       - 8001:80
     depends_on:
@@ -33,7 +33,7 @@ services:
     image: accountspresentation
     build:
       context: .
-      dockerfile: Microservices/AccountsMicroservice/AccountsPL/Dockerfile
+      dockerfile: Microservices/AccountsMicroservice/Accounts.Presentation/Dockerfile
     ports:
       - 8002:80
     depends_on:
@@ -49,7 +49,7 @@ services:
     image: operationsapi
     build:
       context: .
-      dockerfile: Microservices/OperationsMicroservice/OperationsAPI/Dockerfile
+      dockerfile: Microservices/OperationsMicroservice/Operations.API/Dockerfile
     ports:
       - 8003:80
     depends_on:

@@ -35,8 +35,8 @@
 </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AccountsBLL\Accounts.BusinessLogic.csproj" />
-    <ProjectReference Include="..\AccountsDAL\Accounts.DataAccess.csproj" />
+    <ProjectReference Include="..\Accounts.BusinessLogic\Accounts.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Accounts.DataAccess\Accounts.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
