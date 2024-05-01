@@ -1,8 +1,8 @@
-﻿using Abp.Domain.Entities;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Operations.Application.Interfaces;
 using Operations.Application.Models;
+using Operations.Core.Exceptions;
 
 namespace Operations.Application.Operations.Queries.GetOperationDetails
 {
@@ -33,7 +33,7 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
 
             if (operation == null)
             {
-                throw new EntityNotFoundException("Operation not found");
+                throw new EntityNotFoundException();
             }
 
             return _mapper.Map<OperationModel>(operation);

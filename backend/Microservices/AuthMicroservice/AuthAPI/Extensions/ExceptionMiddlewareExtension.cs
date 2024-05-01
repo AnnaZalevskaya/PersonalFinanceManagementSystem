@@ -2,7 +2,7 @@
 
 namespace Auth.API.Extensions
 {
-    public static class ExceptionHandlerMiddlewareExtension
+    public static class ExceptionMiddlewareExtension
     {
         public static void UseExceptionHandlerMiddleware(this IApplicationBuilder app)
         {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Operations.Application.Consumers;
+using Operations.Application.Exceptions;
 using Operations.Application.Interfaces;
 using Operations.Core.Entities;
 
@@ -28,7 +29,7 @@ namespace Operations.Application.Operations.Commands.CreateOperation
 
             if (userId == 0)
             {
-                throw new Exception("The user's account was not found");
+                throw new UserUnauthorizedException();
             }
 
             var entity = _mapper.Map<Operation>(command.Model);

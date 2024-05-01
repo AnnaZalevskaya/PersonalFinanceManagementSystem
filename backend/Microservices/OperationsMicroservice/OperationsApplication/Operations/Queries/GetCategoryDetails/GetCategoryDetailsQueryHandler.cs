@@ -1,8 +1,8 @@
-﻿using Abp.Domain.Entities;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Operations.Application.Interfaces;
 using Operations.Application.Models;
+using Operations.Core.Exceptions;
 
 namespace Operations.Application.Operations.Queries.GetCategoryDetails
 {
@@ -24,7 +24,7 @@ namespace Operations.Application.Operations.Queries.GetCategoryDetails
 
             if (category == null)
             {
-                throw new EntityNotFoundException("Category not found");
+                throw new EntityNotFoundException();
             }
 
             return _mapper.Map<CategoryModel>(category);

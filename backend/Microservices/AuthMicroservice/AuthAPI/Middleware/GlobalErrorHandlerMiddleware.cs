@@ -1,5 +1,6 @@
-﻿using Auth.Application.Models.Extensions;
-using SendGrid.Helpers.Errors.Model;
+﻿using Auth.Application.Exceptions;
+using Auth.Application.Models.Extensions;
+using Auth.Core.Exceptions;
 using System.Net;
 
 namespace Auth.API.Middleware
@@ -28,20 +29,28 @@ namespace Auth.API.Middleware
             HttpStatusCode statusCode;
             string message;
 
-            if (exception is NotFoundException)
+            switch (exception)
             {
-                statusCode = HttpStatusCode.NotFound;
-                message = "The requested resource was not found.";
-            }
-            else if (exception is UnauthorizedException)
-            {
-                statusCode = HttpStatusCode.Unauthorized;
-                message = "Access is denied.";
-            }
-            else
-            {
-                statusCode = HttpStatusCode.InternalServerError;
-                message = "A server error has occurred.";
+                case NotValidTokenException:
+                    statusCode = HttpStatusCode.Unauthorized;
+                    message = "The token isn't valid.";
+                    break;
+                case DatabaseNotFoundException:
+                    statusCode = HttpStatusCode.ServiceUnavailable;
+                    message = "Database connection not found.";
+                    break;
+                case EntityNotFoundException:
+                    statusCode = HttpStatusCode.NotFound;
+                    message = "Entity not found";
+                    break;
+                case EntityAlreadyExistsException:
+                    statusCode = HttpStatusCode.Conflict;
+                    message = "Entity is already exists";
+                    break;
+                default:
+                    statusCode = HttpStatusCode.InternalServerError;
+                    message = "Internal server error";
+                    break;
             }
 
             context.Response.ContentType = "application/json";

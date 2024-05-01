@@ -13,6 +13,16 @@ namespace Accounts.DataAccess.Repositories.Implementations
 
         }
 
+        public async Task<FinancialAccount> FindAccountByNameAsync(string name, CancellationToken cancellationToken)
+        {
+            var account = await _context.FinancialAccounts
+                .Where(account => account.Name == name)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return account;
+        }
+
         public async Task<IEnumerable<FinancialAccount>> GetFullAccounts(PaginationSettings paginationSettings, 
             CancellationToken cancellationToken)
         {

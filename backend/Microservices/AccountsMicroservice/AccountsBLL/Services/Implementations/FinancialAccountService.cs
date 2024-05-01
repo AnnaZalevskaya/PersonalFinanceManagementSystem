@@ -1,9 +1,10 @@
-﻿using Abp.Domain.Entities;
-using Accounts.BusinessLogic.Consumers;
+﻿using Accounts.BusinessLogic.Consumers;
+using Accounts.BusinessLogic.Exceptions;
 using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Entities;
+using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Repositories.Interfaces;
 using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
@@ -44,7 +45,14 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             if (userId == 0)
             {
-                throw new Exception("The user is not logged in");
+                throw new UserUnauthorizedException();
+            }
+
+            var findAccount = await _unitOfWork.FinancialAccounts.FindAccountByNameAsync(addModel.Name, cancellationToken);
+
+            if (findAccount != null)
+            {
+                throw new EntityAlreadyExistsException();
             }
 
             var account = _mapper.Map<FinancialAccount>(addModel);
@@ -64,14 +72,14 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             if (account == null)
             {
-                throw new EntityNotFoundException("Account not found");
+                throw new EntityNotFoundException();
             }
 
             int receivedUserId = _consumer.ConsumeMessage(account.UserId);
 
             if (receivedUserId == 0 || userId != receivedUserId)
             {
-                throw new Exception("The user is not logged in");
+                throw new UserUnauthorizedException();
             }
 
             await _unitOfWork.FinancialAccounts.DeleteAsync(id, cancellationToken);
@@ -106,7 +114,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
                 if (accountBalanceResponse == null)
                 {
-                    throw new Exception("Response is null");
+                    throw new GetBalanceException();
                 }
 
                 account.Balance = accountBalanceResponse.Balance;
@@ -124,7 +132,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             if (id == 0)
             {
-                throw new Exception("The user is not logged in");
+                throw new UserUnauthorizedException();
             }
 
             var cachedAccounts = await _cacheRepository
@@ -151,7 +159,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
                 if (accountBalanceResponse == null)
                 {
-                    throw new Exception("Response is null");
+                    throw new GetBalanceException();
                 }
 
                 account.Balance = accountBalanceResponse.Balance;
@@ -177,7 +185,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             if (account == null)
             {
-                throw new EntityNotFoundException("Account not found");
+                throw new EntityNotFoundException();
             }
 
             var accountModel = _mapper.Map<FinancialAccountModel>(account);
@@ -192,7 +200,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             if (accountBalanceResponse == null)
             {
-                throw new Exception("Response is null");
+                throw new GetBalanceException();
             }
 
             accountModel.Balance = accountBalanceResponse.Balance;
@@ -209,14 +217,14 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             if (account == null)
             {
-                throw new EntityNotFoundException("Account not found");
+                throw new EntityNotFoundException();
             }
 
             int receivedUserId = _consumer.ConsumeMessage(account.UserId);
 
             if (receivedUserId == 0 || userId != receivedUserId)
             {
-                throw new Exception("The user is not logged in");
+                throw new UserUnauthorizedException();
             }
 
             var updateAccount = _mapper.Map<FinancialAccount>(updateModel);

@@ -1,6 +1,6 @@
-﻿using Abp.Domain.Entities;
-using Accounts.BusinessLogic.Models;
+﻿using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Services.Interfaces;
+using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;

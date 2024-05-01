@@ -5,6 +5,7 @@ namespace Accounts.DataAccess.Repositories.Interfaces
 {
     public interface IFinancialAccountRepository : IBaseRepository<FinancialAccount>
     {
+        Task<FinancialAccount> FindAccountByNameAsync(string name, CancellationToken cancellationToken);
         Task<IEnumerable<FinancialAccount>> GetFullAccounts(PaginationSettings paginationSettings,
             CancellationToken cancellationToken);
         Task<IEnumerable<FinancialAccount>> GetAccountsByUserIdAsync(int userId, 

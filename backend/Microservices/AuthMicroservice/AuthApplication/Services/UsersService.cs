@@ -6,6 +6,8 @@ using AutoMapper;
 using Auth.Application.Settings;
 using Auth.Application.Producers;
 using Auth.Application.Models.Consts;
+using Auth.Application.Exceptions;
+using Auth.Core.Exceptions;
 
 namespace Auth.Application.Services
 {
@@ -35,14 +37,14 @@ namespace Auth.Application.Services
 
             if (user == null)
             {
-                throw new KeyNotFoundException("User is not found!");
+                throw new EntityNotFoundException();
             }
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 
             if (!isPasswordValid)
             {
-                throw new ArgumentException("Invalid password!");
+                throw new BadCredentialsException();
             }
 
             var roleIds = await _unitOfWork.UserRoles.GetRoleIdsAsync(user, cancellationToken);
@@ -71,14 +73,14 @@ namespace Auth.Application.Services
 
             if (findUser != null)
             {
-                throw new Exception($"User {request.Email} already exists");
+                throw new EntityAlreadyExistsException();
             }
 
             var result = await _userManager.CreateAsync(user, request.Password);     
 
             if (!result.Succeeded) 
             {
-                throw new Exception("Error! The user has not been created.");
+                throw new BadCredentialsException();
             }
 
             await _userManager.AddToRoleAsync(user, RoleConsts.Client);

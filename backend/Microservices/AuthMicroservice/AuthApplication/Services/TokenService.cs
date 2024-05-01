@@ -1,4 +1,5 @@
-﻿using Auth.Application.Extensions;
+﻿using Auth.Application.Exceptions;
+using Auth.Application.Extensions;
 using Auth.Application.Interfaces;
 using Auth.Application.Settings;
 using Auth.Core.Entities;
@@ -39,7 +40,7 @@ namespace Auth.Application.Services
             }
             else
             {
-                throw new Exception("The token isn't valid");
+                throw new NotValidTokenException();
             }
         }
 
@@ -49,7 +50,7 @@ namespace Auth.Application.Services
             {
                 user.RefreshToken = JwtExtention.GenerateRefreshToken();
                 user.RefreshTokenExpiryTime = DateTime.UtcNow
-                    .AddDays(int.Parse(_options.Value.RefreshTokenValidityInDays));
+                    .AddDays(_options.Value.RefreshTokenValidityInDays);
             }
         }
     }

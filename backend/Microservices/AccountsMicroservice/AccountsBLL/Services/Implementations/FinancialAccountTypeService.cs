@@ -1,6 +1,6 @@
-﻿using Abp.Domain.Entities;
-using Accounts.BusinessLogic.Models;
+﻿using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Services.Interfaces;
+using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
@@ -32,7 +32,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             if (type == null)
             {
-                throw new EntityNotFoundException("Type not found");
+                throw new EntityNotFoundException();
             }
 
             var typeModel = _mapper.Map<FinancialAccountTypeModel>(type);

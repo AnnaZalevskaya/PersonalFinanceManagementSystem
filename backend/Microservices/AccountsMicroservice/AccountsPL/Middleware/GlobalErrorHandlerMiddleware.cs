@@ -1,5 +1,6 @@
-﻿using Accounts.BusinessLogic.Models.Extensions;
-using SendGrid.Helpers.Errors.Model;
+﻿using Accounts.BusinessLogic.Exceptions;
+using Accounts.BusinessLogic.Models.Extensions;
+using Accounts.DataAccess.Exceptions;
 using System.Net;
 
 namespace Accounts.Presentation.Middleware
@@ -27,20 +28,32 @@ namespace Accounts.Presentation.Middleware
             HttpStatusCode statusCode;
             string message;
 
-            if (exception is NotFoundException)
+            switch (exception)
             {
-                statusCode = HttpStatusCode.NotFound;
-                message = "The requested resource was not found.";
-            }
-            else if (exception is UnauthorizedException)
-            {
-                statusCode = HttpStatusCode.Unauthorized;
-                message = "Access is denied.";
-            }
-            else
-            {
-                statusCode = HttpStatusCode.InternalServerError;
-                message = "A server error has occurred.";
+                case UserUnauthorizedException:
+                    statusCode = HttpStatusCode.Forbidden;
+                    message = "The user is not logged in. Access is denied.";
+                    break;
+                case DatabaseNotFoundException:
+                    statusCode = HttpStatusCode.ServiceUnavailable;
+                    message = "Database connection not found.";
+                    break;
+                case EntityNotFoundException:
+                    statusCode = HttpStatusCode.NotFound;
+                    message = "Entity not found";
+                    break;
+                case EntityAlreadyExistsException:
+                    statusCode = HttpStatusCode.Conflict;
+                    message = "Entity is already exists";
+                    break;
+                case GetBalanceException:
+                    statusCode = HttpStatusCode.NotFound;
+                    message = "Error when getting the balance";
+                    break;
+                default:
+                    statusCode = HttpStatusCode.InternalServerError;
+                    message = "Internal server error";
+                    break;
             }
 
             context.Response.ContentType = "application/json";
