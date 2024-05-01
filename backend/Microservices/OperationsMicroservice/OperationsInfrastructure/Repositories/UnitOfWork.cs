@@ -1,5 +1,6 @@
 ﻿using Operations.Application.Interfaces;
 using Operations.Infrastructure.Data;
+using Operations.Core.Exceptions;
 
 namespace Operations.Infrastructure.Repositories
 {
@@ -9,7 +10,7 @@ namespace Operations.Infrastructure.Repositories
 
         public UnitOfWork(OperationsDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new DatabaseNotFoundException();
         }
 
         public ICategoryRepository Categories

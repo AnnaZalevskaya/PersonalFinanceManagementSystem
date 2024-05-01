@@ -1,4 +1,5 @@
 ﻿using Accounts.DataAccess.Data;
+using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Repositories.Interfaces;
 
@@ -14,7 +15,7 @@ namespace Accounts.DataAccess.UnitOfWork
 
         public UnitOfWork(FinancialAccountsDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new DatabaseNotFoundException();
         }
 
         public IFinancialAccountRepository FinancialAccounts

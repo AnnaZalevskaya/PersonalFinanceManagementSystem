@@ -1,6 +1,7 @@
 ﻿using Auth.Application.Interfaces;
 using Auth.Core.Entities;
 using Auth.Infrastructure.Data;
+using Auth.Core.Exceptions;
 using Microsoft.AspNetCore.Identity;
 
 namespace Auth.Infrastructure.Repositories
@@ -15,7 +16,7 @@ namespace Auth.Infrastructure.Repositories
 
         public UnitOfWork(AuthDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new DatabaseNotFoundException();
         }
 
         public IAppUserRepository<AppUser> Users
