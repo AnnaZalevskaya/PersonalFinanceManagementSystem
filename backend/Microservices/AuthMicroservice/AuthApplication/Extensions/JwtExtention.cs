@@ -32,14 +32,14 @@ namespace Auth.Application.Extensions
         public static SigningCredentials CreateSigningCredentials(this IOptions<JwtSettings> options)
         {
             return new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.Secret!)),
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecretKey!)),
                 SecurityAlgorithms.HmacSha256
             );
         }
 
         public static JwtSecurityToken CreateJwtToken(this IEnumerable<Claim> claims, IOptions<JwtSettings> options)
         {
-            var expire = int.Parse(options.Value.Expire);
+            var expire = options.Value.Expire;
             var jwtToken = new JwtSecurityToken(
                 issuer: options.Value.Issuer,
                 audience: options.Value.Audience,
@@ -66,7 +66,7 @@ namespace Auth.Application.Extensions
         public static bool ValidateToken(this string token, IOptions<JwtSettings> options)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.Secret));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecretKey));
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
