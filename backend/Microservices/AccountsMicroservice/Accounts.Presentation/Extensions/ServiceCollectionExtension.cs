@@ -118,8 +118,11 @@ namespace Accounts.Presentation.Extensions
         public static IServiceCollection ConfigurePostgreSQL(this IServiceCollection services, 
             IConfiguration configuration)
         {
+            services.Configure<ConnectionStrings>(configuration.GetSection(nameof(ConnectionStrings)));
+            var connStrings = services.BuildServiceProvider().GetRequiredService<IOptions<ConnectionStrings>>();
+
             services.AddDbContext<FinancialAccountsDbContext>(options
-                 => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+                 => options.UseNpgsql(connStrings.Value.DefaultConnection));
 
             return services;
         }
@@ -219,8 +222,10 @@ namespace Accounts.Presentation.Extensions
         public static IServiceCollection ConfigureHangfire(this IServiceCollection services, 
             IConfiguration configuration)
         {
+            var connStrings = services.BuildServiceProvider().GetRequiredService<IOptions<ConnectionStrings>>();
+
             services.AddHangfire(config => 
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection")));
+                config.UsePostgreSqlStorage(connStrings.Value.HangfireConnection));
             services.AddHangfireServer();
 
             return services;
