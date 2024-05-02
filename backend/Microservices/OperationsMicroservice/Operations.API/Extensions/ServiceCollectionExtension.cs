@@ -72,7 +72,8 @@ namespace Operations.API.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, 
+            IConfiguration configuration)
         {
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             var jwtOptions = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>();
@@ -92,7 +93,7 @@ namespace Operations.API.Extensions
                         ValidIssuer = jwtOptions.Value.Issuer,
                         ValidAudience = jwtOptions.Value.Audience,
                         IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Secret))
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey))
                     };
                 });
 

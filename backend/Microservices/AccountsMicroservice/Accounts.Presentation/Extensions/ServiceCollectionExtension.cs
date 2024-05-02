@@ -90,7 +90,7 @@ namespace Accounts.Presentation.Extensions
                         ValidIssuer = jwtOptions.Value.Issuer,
                         ValidAudience = jwtOptions.Value.Audience,
                         IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Secret))
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey))
                     };
                 });
 
