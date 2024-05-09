@@ -34,14 +34,12 @@ export class AuthService {
     if (user) {
       return JSON.parse(user);
     }
-    console.log("model " + {})
 
     return {};
   }
 
   isLoggedIn(): boolean {
     const token = this.tokenService.getToken();
-    console.log("token " + token)
 
     return !!token;   
   }
