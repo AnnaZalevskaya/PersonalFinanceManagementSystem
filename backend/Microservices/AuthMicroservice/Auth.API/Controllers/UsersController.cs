@@ -45,5 +45,14 @@ namespace Auth.API.Controllers
 
             return Ok(users);
         }
+
+        [HttpGet("user-info/{id}")]
+        [Authorize]
+        public async Task<ActionResult<List<UserModel>>> GetUserByIdAsync(long id, CancellationToken cancellationToken)
+        {
+            var user = await _usersService.GetUserByIdAsync(id, cancellationToken);
+
+            return Ok(user);
+        }
     }
 }
