@@ -45,7 +45,7 @@ export class AddAccountComponent implements OnInit {
 
     ngOnInit(): void {
       this.signalRService.startConnection();
-      this.signalRService.startNotificationsListener();
+      
       this.loadAccountTypes();
       this.loadCurrencies();
       this.isLoadingForm = true;
@@ -64,6 +64,7 @@ export class AddAccountComponent implements OnInit {
     }
 
     Add() {
+      this.signalRService.startNotificationsListener();
       this.userId = this.authService.getCurrentUser()['id'];
 
       const newAccount: AccountAction = {

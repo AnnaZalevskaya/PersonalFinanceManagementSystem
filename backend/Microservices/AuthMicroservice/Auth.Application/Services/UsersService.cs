@@ -116,5 +116,16 @@ namespace Auth.Application.Services
 
             return usersList;
         }
+
+        public async Task<UserModel> GetUserByIdAsync(long id, CancellationToken cancellationToken)
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(id, cancellationToken);
+            var userModel = _mapper.Map<UserModel>(user);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            userModel.Role = roles.FirstOrDefault();
+
+            return userModel;
+        }
     }
 }

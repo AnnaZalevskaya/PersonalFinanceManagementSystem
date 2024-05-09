@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MainComponent } from './components/main/main.component';
 import { AuthComponent } from './components/auth/auth.component';
@@ -17,8 +17,8 @@ import { UpdateAccountComponent } from './components/update-account/update-accou
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
 import { AddOperationComponent } from './components/add-operation/add-operation.component';
 import { AdminComponent } from './components/admin/admin.component';
-import { AuthInterceptor } from './extensions/auth.interceptor';
 import { AccountStructureComponent } from './components/account-structure/account-structure.component';
+import { AdminStructureComponent } from './components/admin-structure/admin-structure.component';
 
 export const routes: Routes = [
     { 
@@ -73,9 +73,13 @@ export const routes: Routes = [
     },  
     {
         path: 'admin',
-        component: AdminComponent,
+        component: AdminStructureComponent,
         canActivate: [AuthGuard],
         children: [
+            {
+                path: '', 
+                component: AdminComponent,
+            },
             { 
                 path: 'all-accounts', 
                 component: AllAccountsComponent 
@@ -99,14 +103,6 @@ export const routes: Routes = [
         BrowserModule,
         FormsModule
     ],
-    exports: [RouterModule],
-    providers: [
-        {
-        provide: HTTP_INTERCEPTORS,
-        useClass: AuthInterceptor,
-        multi: true
-      },
-      AuthGuard
-    ]
+    exports: [RouterModule]
   })
   export class AppRoutingModule { }
