@@ -214,7 +214,9 @@ namespace Accounts.Presentation.Extensions
 
         public static IServiceCollection ConfigureSignalR(this IServiceCollection services)
         {
-            services.AddSignalR();
+            services.AddSignalR(options => {
+                options.EnableDetailedErrors = true;
+            });
 
             return services;
         }
