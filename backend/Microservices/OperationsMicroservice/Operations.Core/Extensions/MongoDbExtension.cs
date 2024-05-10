@@ -4,7 +4,7 @@ namespace Operations.Core.Extensions
 {
     public static class MongoDbExtension
     {
-        public static string GetAsName<T>(this MongoDBRef mongoDBRef)
+        public static string? GetAsName<T>(this MongoDBRef mongoDBRef)
         {
             var client = new MongoClient();
             var database = client.GetDatabase(mongoDBRef.DatabaseName);

@@ -7,7 +7,7 @@ namespace Accounts.BusinessLogic.Services.SignalR
     {
         public async Task SendNotificationToUser(string userId, string message)
         {
-            await Clients.User(userId).SendAsync(NotificationSettingsConsts.MethodName, message);
+            await Clients.Client(this.Context.ConnectionId).SendAsync(NotificationSettingsConsts.MethodName, message);
         }
     }
 }

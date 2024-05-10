@@ -6,7 +6,7 @@ const TOKEN_KEY = 'auth_token';
   providedIn: 'root'
 })
 export class TokenService {
-
+  
   constructor() { }
 
   saveToken(token: string) {

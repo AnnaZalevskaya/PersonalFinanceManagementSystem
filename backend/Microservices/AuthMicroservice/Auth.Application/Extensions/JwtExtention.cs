@@ -20,9 +20,6 @@ namespace Auth.Application.Extensions
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new(ClaimTypes.Name, user.UserName!),
-                new(ClaimTypes.Email, user.Email!),
-                new(ClaimTypes.MobilePhone, user.PhoneNumber!),
                 new(ClaimTypes.Role, string.Join(" ", roles.Select(x => x.Name))),
             };
 
