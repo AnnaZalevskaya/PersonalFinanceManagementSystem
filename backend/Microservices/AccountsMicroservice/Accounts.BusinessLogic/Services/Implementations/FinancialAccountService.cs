@@ -43,10 +43,10 @@ namespace Accounts.BusinessLogic.Services.Implementations
         {
             int userId = _consumer.ConsumeMessage(addModel.UserId);
 
-            if (userId == 0)
-            {
-                throw new UserUnauthorizedException();
-            }
+            //if (userId == 0)
+            //{
+            //    throw new UserUnauthorizedException();
+            //}
 
             var findAccount = await _unitOfWork.FinancialAccounts.FindAccountByNameAsync(addModel.Name, cancellationToken);
 
@@ -130,10 +130,10 @@ namespace Accounts.BusinessLogic.Services.Implementations
         {
             int id = _consumer.ConsumeMessage(userId);
 
-            if (id == 0)
-            {
-                throw new UserUnauthorizedException();
-            }
+            //if (id == 0)
+            //{
+            //    throw new UserUnauthorizedException();
+            //}
 
             var cachedAccounts = await _cacheRepository
                 .GetCachedLargeDataAsync<FinancialAccountModel>(paginationSettings, userId.ToString());

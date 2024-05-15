@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
 import { SignalRService } from '../../services/signal-r.service';
 import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicator.component';
 import { Router } from '@angular/router';
+import { PaginationSettings } from '../../settings/pagination-settings';
 
 @Component({
   selector: 'app-add-account',
@@ -34,6 +35,9 @@ export class AddAccountComponent implements OnInit {
   accountTypes: AccountType[] = [];
   currencies: Currency[] = [];
 
+  currPaginationSettings: PaginationSettings = new PaginationSettings();
+  typePaginationSettings: PaginationSettings = new PaginationSettings();
+
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -43,49 +47,50 @@ export class AddAccountComponent implements OnInit {
     private signalRService: SignalRService
   ) {}
 
-    ngOnInit(): void {
-      this.signalRService.startConnection();
-      
-      this.loadAccountTypes();
-      this.loadCurrencies();
-      this.isLoadingForm = true;
-    }
+  ngOnInit(): void {
+    this.signalRService.startConnection();
+     
+    this.loadAccountTypes();
+    this.loadCurrencies();
+
+    this.isLoadingForm = true;
+  }
   
-    loadAccountTypes() {
-      this.typeService.getTypes().subscribe((types: AccountType[]) => {
-        this.accountTypes = types;
-      });
-    }
+  loadAccountTypes() {
+    this.typeService.getTypes(this.typePaginationSettings).subscribe((types: AccountType[]) => {
+      this.accountTypes = types;
+    });
+  }
   
-    loadCurrencies() {
-      this.currencyService.getCurrencies().subscribe((currencies: Currency[]) => {
-        this.currencies = currencies;
-      });
-    }
+  loadCurrencies() {
+    this.currencyService.getCurrencies(this.currPaginationSettings).subscribe((currencies: Currency[]) => {
+      this.currencies = currencies;
+    });
+  }
 
-    Add() {
-      this.signalRService.startNotificationsListener();
-      this.userId = this.authService.getCurrentUser()['id'];
+  AddAccount() {
+    this.signalRService.startNotificationsListener();
+    this.userId = this.authService.getCurrentUser()['id'];
 
-      const newAccount: AccountAction = {
-        name: this.accountName,
-        accountTypeId: this.accountType.id,
-        type: this.accountType,
-        currencyId: this.currency.id,
-        currency: this.currency,
-        userId: this.userId,
-      };
+    const newAccount: AccountAction = {
+      name: this.accountName,
+      accountTypeId: this.accountType.id,
+      type: this.accountType,
+      currencyId: this.currency.id,
+      currency: this.currency,
+      userId: this.userId,
+    };
 
-      console.log(newAccount);
+    console.log(newAccount);
 
-      this.signalRService.sendNotification(this.userId.toString(), "New account has been added successfully");
+    this.signalRService.sendNotification(this.userId.toString(), "New account has been added successfully");
   
-    //  this.accountsService.addAccount(newAccount);
+  //  this.accountsService.addAccount(newAccount);
 
     this.router.navigate(['./']);
-    }
+  }
 
-    ngOnDestroy() {
-      this.signalRService.stopConnection();
-    }
+  ngOnDestroy() {
+    this.signalRService.stopConnection();
+  }
 }

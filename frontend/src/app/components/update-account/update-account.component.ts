@@ -9,6 +9,7 @@ import { Currency } from '../../models/currency.model';
 import { AccountType } from '../../models/account-type.model';
 import { AuthService } from '../../services/auth.service';
 import { AccountAction } from '../../models/account-action.model';
+import { PaginationSettings } from '../../settings/pagination-settings';
 
 @Component({
   selector: 'app-update-account',
@@ -32,6 +33,9 @@ export class UpdateAccountComponent implements OnInit {
   userId: number = 0;
   accountId!: string;
 
+  currPaginationSettings: PaginationSettings = new PaginationSettings();
+  typePaginationSettings: PaginationSettings = new PaginationSettings();
+
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
@@ -50,13 +54,13 @@ export class UpdateAccountComponent implements OnInit {
   }
 
   loadAccountTypes() {
-    this.typeService.getTypes().subscribe((types: AccountType[]) => {
+    this.typeService.getTypes(this.typePaginationSettings).subscribe((types: AccountType[]) => {
       this.accountTypes = types;
     });
   }
 
   loadCurrencies() {
-    this.currencyService.getCurrencies().subscribe((currencies: Currency[]) => {
+    this.currencyService.getCurrencies(this.currPaginationSettings).subscribe((currencies: Currency[]) => {
       this.currencies = currencies;
     });
   }
@@ -73,6 +77,6 @@ export class UpdateAccountComponent implements OnInit {
         userId: this.userId,
       };
 
-    this.accountService.updateAccount(this.accountId.toString(), updateAccount)
+    this.accountService.updateAccount(this.userId.toString(), this.accountId.toString(), updateAccount)
   }
 }

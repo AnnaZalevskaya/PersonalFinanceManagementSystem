@@ -1,53 +1,57 @@
 .close-account-modal {
-    width: 300px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f4f4f4;
-  }
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f4f4f4;
+}
   
-  .close-account-modal h2 {
-    text-align: center;
-  }
+.close-account-modal h2 {
+  text-align: center;
+}
   
-  .close-account-modal p {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+.close-account-modal p {
+  text-align: center;
+  margin-bottom: 20px;
+}
   
-  .close-account-modal .account-info {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 20px;
-  }
+.close-account-modal .account-info {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
   
-  .close-account-modal .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-  }
+.close-account-modal .modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
   
-  .close-account-modal button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;   
-    color: #fff;
-    cursor: pointer;
-  }
+.close-account-modal button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;   
+  color: #fff;
+  cursor: pointer;
+}
 
-  .close-modal-button {
-    background-color: #33576E;
-  }
+.close-modal-button {
+  background-color: #B6000F;
+}
 
-  .cancel-modal-button {
-    background-color: #444342;
-  }
-  
-  .close-account-modal button:hover {
-    background-color: #387158;
-  }
+.close-modal-button:hover {
+  background-color: #33576E;
+}
+
+.cancel-modal-button {
+  background-color: #253343;
+}
+
+.cancel-modal-button:hover {
+  background-color: #33576E;
+}
 
 .success-message p{
   font-style: italic;

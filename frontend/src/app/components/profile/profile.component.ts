@@ -7,6 +7,7 @@ import { AuthResponse } from '../../models/auth.model';
 import { LoadingIndicatorComponent } from "../loading-indicator/loading-indicator.component";
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { PaginationSettings } from '../../settings/pagination-settings';
 
 @Component({
     selector: 'app-profile',
@@ -27,6 +28,8 @@ export class ProfileComponent implements OnInit {
   accounts: Account[] = [];
   user!: AuthResponse;
 
+  paginationSettings: PaginationSettings = new PaginationSettings();
+
   constructor(private router: Router,
     private authService: AuthService,
     private accountService: FinancialAccountsService) { }
@@ -38,8 +41,8 @@ export class ProfileComponent implements OnInit {
 
   loadData() {
     this.user = this.authService.getCurrentUser(); 
-    console.log(this.user);
-    this.accountService.getAccountsByUser(this.user.id.toString()).subscribe(
+
+    this.accountService.getAccountsByUser(this.user.id.toString(), this.paginationSettings).subscribe(
       accounts => {
         this.accounts = accounts; 
       },
@@ -53,5 +56,17 @@ export class ProfileComponent implements OnInit {
     const userId = this.user.id;
 
     this.router.navigate([`/profile/${ userId }/add-account`]); 
+  }
+
+  goToPreviousPage(): void {
+    if (this.paginationSettings.pageNumber > 1) {
+      this.paginationSettings.pageNumber--;
+      this.loadData();
+    }
+  }
+
+  goToNextPage(): void {
+    this.paginationSettings.pageNumber++;
+    this.loadData();
   }
 }
