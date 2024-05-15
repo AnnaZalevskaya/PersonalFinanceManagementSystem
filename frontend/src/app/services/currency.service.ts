@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Currency } from '../models/currency.model';
+import { PaginationSettings } from '../settings/pagination-settings';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,14 @@ export class CurrencyService {
 
   constructor(private http: HttpClient) { }
 
-  getCurrencies(): Observable<Currency[]> {
+  getCurrencies(paginationSettings: PaginationSettings): Observable<Currency[]> {
     const url = this.backendUrl;
 
-    return this.http.get<Currency[]>(url);
+    const params = new HttpParams()
+      .set('pageNumber', paginationSettings.pageNumber.toString())
+      .set('pageSize', paginationSettings.pageSize.toString());
+
+    return this.http.get<Currency[]>(url, { params });
   }
 
   getCurrencyById(id: string): Observable<Currency> {
