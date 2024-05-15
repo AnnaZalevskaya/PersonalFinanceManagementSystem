@@ -1,12 +1,12 @@
 main {
   background-color: #D8D6D0;
-  flex-grow: 1;
-  font-family: Arial, sans-serif;
-  margin: 0;
+  font-family: "Nunito Sans", sans-serif;
+  margin-top: -22px;
   padding: 0;
 }
   
 h1 {
+  padding-top: 25px;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -47,11 +47,12 @@ h1 {
 }
   
 .operation-card {
+  font-family:'Courier New', Courier, monospace;
   margin-bottom: 5px;
   border: 3px solid #fff;
   padding: 10px;
   border-radius: 5px;
-  width: 60%;
+  width: 90%;
 }
   
 .description-table {
@@ -69,7 +70,7 @@ h1 {
 }
   
 .description-table .value-field {
-width: 60%;
+  width: 60%;
 }
   
 .message {
@@ -89,15 +90,22 @@ width: 60%;
 
 button {
   color: white;
-  padding: 8px 15px;
+  background-color: #2A2929;
+  padding: 4px 8px;
   font-size: 16px;
   border-radius: 8px;
   border: 2px solid white; 
   cursor: pointer;
 }
+
+button:disabled {
+  color: #444342;
+  background-color: transparent;
+  cursor: not-allowed;
+}
   
 .close-button {
-  background-color: #33576E;
+  background-color: #B6000F;
 }
   
 .edit-button {
@@ -108,4 +116,15 @@ button {
   margin-left: 10px;
   margin-bottom: 15px;
   background-color: #498B6D; 
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px;
+}
+
+.pagination button {
+  margin: 0 5px; 
 }

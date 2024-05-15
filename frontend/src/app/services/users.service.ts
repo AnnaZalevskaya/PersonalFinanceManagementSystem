@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { Observable } from 'rxjs';
+import { PaginationSettings } from '../settings/pagination-settings';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,19 @@ export class UsersService {
 
   constructor(private http: HttpClient) { }
 
-  getUsers(): Observable<User[]> {
+  getUsers(paginationSettings: PaginationSettings): Observable<User[]> {
     const url = `${this.backendUrl}/all-users`;
 
-    return this.http.get<User[]>(url);
+    const params = new HttpParams()
+      .set('pageNumber', paginationSettings.pageNumber.toString())
+      .set('pageSize', paginationSettings.pageSize.toString());
+
+    return this.http.get<User[]>(url, { params });
+  }
+
+  getUserById(id: string): Observable<User> {
+    const url = `${this.backendUrl}/user-info/${id}`;
+
+    return this.http.get<User>(url);
   }
 }

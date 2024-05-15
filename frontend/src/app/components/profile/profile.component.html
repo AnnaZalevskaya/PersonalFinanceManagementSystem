@@ -16,7 +16,7 @@
         <h2>User accounts</h2>
         <div id="account-cards-container">
           <ng-container *ngIf="accounts.length > 0; else noAccountsMessage">
-            <div *ngFor="let account of accounts" class="account-card">
+            <div *ngFor="let account of accounts" class="account-card" [ngClass]="{'negative-balance': account.balance < 0}">
               <div class="account-card-header">
                 <h3>
                   <a routerLink="/profile/{{ user.id }}/account/{{ account.id }}" routerLinkActive="active-link">
@@ -31,12 +31,17 @@
                 <p>Account Type: {{ account.accountType.name }}</p>
               </div>
             </div>
+            <div class="pagination">
+              <button (click)="goToPreviousPage()" [disabled]="paginationSettings.pageNumber === 1">Previous</button>
+              <span>Page {{ paginationSettings.pageNumber }}</span>
+              <button (click)="goToNextPage()" [disabled]="this.accounts.length < 5">Next</button>
+            </div>
           </ng-container>
           <ng-template #noAccountsMessage>
             <div class="message">
               This user has not created accounts yet
             </div>
-          </ng-template>
+          </ng-template>      
         </div>
       </div>
     </div>

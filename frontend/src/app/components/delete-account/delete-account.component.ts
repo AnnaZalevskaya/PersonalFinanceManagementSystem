@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user.model';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Account } from '../../models/account.model';
+import { OperationsService } from '../../services/operations.service';
 
 @Component({
   selector: 'app-delete-account',
@@ -27,7 +28,8 @@ export class DeleteAccountComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private accountService: FinancialAccountsService
+    private accountService: FinancialAccountsService,
+    private operationsService: OperationsService
   ) {}
 
   ngOnInit(): void {
@@ -47,12 +49,10 @@ export class DeleteAccountComponent implements OnInit {
     const userId = this.user.id.toString();
     console.log(this.user + " " + userId);
 
-   /* if (this.accountId) {
-      this.accountService.deleteAccount(userId, this.accountId).subscribe(
-        response => {*/
-          this.showSuccessMessage = true;
-   /*     }
-      );
-    };   */
+    if (this.accountId) {
+      this.accountService.deleteAccount(userId, this.accountId).subscribe();
+      this.operationsService.deleteAccountOperations(Number.parseInt(this.accountId)).subscribe();
+      this.showSuccessMessage = true;
+    };   
   }
 }

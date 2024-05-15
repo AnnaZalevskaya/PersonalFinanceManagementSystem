@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Account } from '../models/account.model';
 import { AccountAction } from '../models/account-action.model';
+import { PaginationSettings } from '../settings/pagination-settings';
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +14,24 @@ export class FinancialAccountsService {
   constructor(
     private http: HttpClient) { }
 
-  getAccounts(): Observable<Account[]> {
+  getAccounts(paginationSettings: PaginationSettings): Observable<Account[]> {
     const url = this.backendUrl;
 
-    return this.http.get<Account[]>(url);
+    const params = new HttpParams()
+      .set('pageNumber', paginationSettings.pageNumber.toString())
+      .set('pageSize', paginationSettings.pageSize.toString());
+
+    return this.http.get<Account[]>(url, { params });
   }
 
-  getAccountsByUser(userId: string): Observable<Account[]> {
+  getAccountsByUser(userId: string, paginationSettings: PaginationSettings): Observable<Account[]> {
     const url = `${this.backendUrl}/user/${userId}`;
 
-    return this.http.get<Account[]>(url);
+    const params = new HttpParams()
+      .set('pageNumber', paginationSettings.pageNumber.toString())
+      .set('pageSize', paginationSettings.pageSize.toString());
+
+    return this.http.get<Account[]>(url, { params });
   }
 
   getAccountById(id: string): Observable<Account> {
@@ -38,13 +47,13 @@ export class FinancialAccountsService {
   }
 
   deleteAccount(userId: string, accountId: string): Observable<any> {
-    const url = `${this.backendUrl}/${userId}/${accountId}`;
+    const url = `${this.backendUrl}/user/${userId}/account/${accountId}`;
     
     return this.http.delete(url);
   }
 
-  updateAccount(accountId: string, model: AccountAction): Observable<any> {
-    const url = `${this.backendUrl}/${accountId}`;
+  updateAccount(userId: string, accountId: string, model: AccountAction): Observable<any> {
+    const url = `${this.backendUrl}/user/${userId}/account/${accountId}`;
 
     return this.http.put(url, model);
   }

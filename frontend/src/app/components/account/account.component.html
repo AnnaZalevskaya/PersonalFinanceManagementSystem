@@ -30,12 +30,17 @@
               </tr>
             </table>
           </div>
+          <div class="pagination">
+            <button (click)="goToPreviousPage()" [disabled]="paginationSettings.pageNumber === 1">Previous</button>
+            <span>Page {{ paginationSettings.pageNumber }}</span>
+            <button (click)="goToNextPage()" [disabled]="this.account.operations.length < 5">Next</button>
+          </div>
         </ng-container>
         <ng-template #noOperationsMessage>
           <div class="message">
             This account does not contain any operations yet
           </div>
-        </ng-template>
+        </ng-template>   
       </div>
     </div>
   </div>
