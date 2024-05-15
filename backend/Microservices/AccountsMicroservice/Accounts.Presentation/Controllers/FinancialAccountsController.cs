@@ -28,7 +28,7 @@ namespace Accounts.Presentation.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{userId}/{accountId}")]
+        [HttpDelete("user/{userId}/account/{accountId}")]
         [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<IActionResult> CloseAccountAsync(int userId, int accountId, 
             CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ namespace Accounts.Presentation.Controllers
             return NoContent();
         }
 
-        [HttpPut("{accountId}")]
+        [HttpPut("user/{userId}/account/{accountId}")]
         [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
             [FromBody] FinancialAccountActionModel model, CancellationToken cancellationToken)

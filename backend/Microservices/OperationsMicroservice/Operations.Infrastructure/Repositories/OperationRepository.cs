@@ -20,9 +20,9 @@ namespace Operations.Infrastructure.Repositories
             await _context.Operations.InsertOneAsync(operation, cancellationToken);
         }
 
-        public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task DeleteByAccountIdAsync(int accountId, CancellationToken cancellationToken)
         {
-            await _context.Operations.DeleteOneAsync(c => c.Id == id, cancellationToken);
+            await _context.Operations.DeleteManyAsync(c => c.AccountId == accountId, cancellationToken);
         }
 
         public async Task<Operation> GetAsync(string id, CancellationToken cancellationToken)

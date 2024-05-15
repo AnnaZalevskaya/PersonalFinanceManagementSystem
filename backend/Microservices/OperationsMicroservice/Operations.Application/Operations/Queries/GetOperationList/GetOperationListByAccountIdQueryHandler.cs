@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Operations.Application.Consumers;
+using Operations.Application.Exceptions;
 using Operations.Application.Interfaces;
 using Operations.Application.Models;
 
@@ -28,10 +29,10 @@ namespace Operations.Application.Operations.Queries.GetOperationList
         {
             int id = _consumer.ConsumeMessage(query.AccountId);
 
-            if (id == 0)
-            {
-                throw new Exception("The user's account was not found");
-            }
+            //if (id == 0)
+            //{
+            //    throw new UserUnauthorizedException();
+            //}
 
             var cachedOperations = await _cacheRepository
                 .GetCachedLargeDataAsync<OperationModel>(query.paginationSettings, query.AccountId.ToString());
