@@ -7,6 +7,7 @@ import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicato
 import { CommonModule } from '@angular/common';
 import { OperationCategoriesService } from '../../services/operation-categories.service';
 import { OperationCategory } from '../../models/operation-category.model';
+import { PaginationSettings } from '../../settings/pagination-settings';
 
 @Component({
   selector: 'app-add-operation',
@@ -21,9 +22,12 @@ import { OperationCategory } from '../../models/operation-category.model';
 })
 export class AddOperationComponent implements OnInit {
   isLoadingForm: boolean = false;
+
   accountId: number = 0;
   account!:  Account;
   description!: {};
+
+  paginationSettings: PaginationSettings = new PaginationSettings();
 
   constructor(
     private operationsService: OperationsService, 
@@ -42,7 +46,7 @@ export class AddOperationComponent implements OnInit {
   }
 
   loadCategories() {
-    this.categoryService.getTypes().subscribe(
+    this.categoryService.getCategories(this.paginationSettings).subscribe(
       categories => {
         this.categories = categories;
       }
