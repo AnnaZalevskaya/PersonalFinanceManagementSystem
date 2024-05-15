@@ -1,5 +1,6 @@
 <main>
-  <div id="account-cards-container">
+  <h1>All user financial accounts</h1>
+  <div id="account-cards-container" *ngIf="isLoadingForm">
     <div *ngFor="let account of accounts" class="account-card" [ngClass]="{'negative-balance': account.balance < 0}">
       <div class="account-card-header">
         <h3><a href="/account/{{account.id}}">{{ account.name }}</a></h3>
@@ -11,5 +12,11 @@
         <p>Account Type: {{ account.accountType.name }}</p>
       </div>
     </div>
+  </div>
+  <app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>
+  <div class="pagination">
+    <button (click)="goToPreviousPage()" [disabled]="paginationSettings.pageNumber === 1">Previous</button>
+    <span>Page {{ paginationSettings.pageNumber }}</span>
+    <button (click)="goToNextPage()" [disabled]="this.accounts.length < 5">Next</button>
   </div>
 </main>
