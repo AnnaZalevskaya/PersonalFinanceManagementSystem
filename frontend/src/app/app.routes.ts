@@ -19,6 +19,8 @@ import { AddOperationComponent } from './components/add-operation/add-operation.
 import { AdminComponent } from './components/admin/admin.component';
 import { AccountStructureComponent } from './components/account-structure/account-structure.component';
 import { AdminStructureComponent } from './components/admin-structure/admin-structure.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
 
 export const routes: Routes = [
     { 
@@ -101,6 +103,7 @@ export const routes: Routes = [
         RouterModule.forRoot(routes), 
         HttpClientModule,
         BrowserModule,
+        BrowserAnimationsModule,
         FormsModule
     ],
     exports: [RouterModule]

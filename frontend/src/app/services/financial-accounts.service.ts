@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Account } from '../models/account.model';
 import { AccountAction } from '../models/account-action.model';
 import { PaginationSettings } from '../settings/pagination-settings';

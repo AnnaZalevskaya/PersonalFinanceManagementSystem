@@ -14,6 +14,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { SignalRService } from './services/signal-r.service';
 import { UserNotificationsService } from './services/user-notifications.service';
 import { NotificationPanelService } from './services/notification-panel.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-root',
