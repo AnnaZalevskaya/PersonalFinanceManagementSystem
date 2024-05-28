@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CreateOperation } from '../../models/create-operation.model';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Account } from '../../models/account.model';
 import { OperationsService } from '../../services/operations.service';
 import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicator.component';
@@ -8,13 +8,20 @@ import { CommonModule } from '@angular/common';
 import { OperationCategoriesService } from '../../services/operation-categories.service';
 import { OperationCategory } from '../../models/operation-category.model';
 import { PaginationSettings } from '../../settings/pagination-settings';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-operation',
   standalone: true,
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     CommonModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatIconModule,
     LoadingIndicatorComponent
   ],
   templateUrl: './add-operation.component.html',
@@ -38,7 +45,6 @@ export class AddOperationComponent implements OnInit {
   categories: OperationCategory[] = [];
   category!: OperationCategory;
   amount: number = 0;
-  operationDictionary: { [key: string]: string | number } = {};
 
   ngOnInit(): void {
     this.loadCategories();
@@ -69,5 +75,32 @@ export class AddOperationComponent implements OnInit {
     };
 
     this.operationsService.addOperation(newOperation);
+  }
+
+  keywords: { value: string, status: string }[] = [];
+  formControl = new FormControl(['angular']);
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value.trim();
+
+    if (value) {
+      this.keywords.push({ value: value, status: 'active' });
+    }
+
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  removeKeyword(keyword: { value: string, status: string }): void {
+    const index = this.keywords.indexOf(keyword);
+    if (index >= 0) {
+      this.keywords.splice(index, 1);
+    }
+  }
+
+  trackByKeyword(index: number, keyword: { value: string, status: string }): string {
+    return keyword.value;
   }
 }

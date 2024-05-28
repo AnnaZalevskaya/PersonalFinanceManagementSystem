@@ -8,18 +8,24 @@ import { LoadingIndicatorComponent } from "../loading-indicator/loading-indicato
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { PaginationSettings } from '../../settings/pagination-settings';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @Component({
-    selector: 'app-profile',
-    standalone: true,
-    templateUrl: './profile.component.html',
-    styleUrl: './profile.component.css',
-    imports: [
-      CommonModule, 
-      FormsModule,
-      RouterModule,
-      LoadingIndicatorComponent
-    ]
+  selector: 'app-profile',
+  standalone: true,
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
+  imports: [
+    MatCardModule,
+    MatDividerModule,
+    MatGridListModule,
+    CommonModule, 
+    FormsModule,
+    RouterModule,
+    LoadingIndicatorComponent
+  ]
 })
 
 export class ProfileComponent implements OnInit {

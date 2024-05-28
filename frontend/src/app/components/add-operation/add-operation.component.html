@@ -14,10 +14,26 @@
   <label for="description">Description:</label> 
   <button type="button" class="add-field" (click)="addField()">+</button>
   <br><br>
+  <mat-form-field class="example-form-field">
+    <mat-label>Video keywords</mat-label>
+    <mat-chip-grid #chipGrid aria-label="Enter keywords" [formControl]="formControl">
+      <ng-container *ngFor="let keyword of keywords; trackBy: trackByKeyword">
+        <mat-chip-row (removed)="removeKeyword(keyword)">
+          {{ keyword.value }} ({{ keyword.status }})
+          <button matChipRemove aria-label="'remove ' + keyword.value">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </ng-container>
+    </mat-chip-grid>
+    <input placeholder="New keyword..."
+           [matChipInputFor]="chipGrid"
+           (matChipInputTokenEnd)="add($event)"/>
+  </mat-form-field>
   <div class="form-group" *ngFor="let field of fields; let i = index">
     <div class="input-group">
-      <input type="text" [(ngModel)]="field.key" [name]="field.key" placeholder="Key" required>
-      <input type="text" [(ngModel)]="field.value" [name]="field.value" placeholder="Value" required>
+      <input type="text" [(ngModel)]="field.key" name="field.key" placeholder="Key" required>
+      <input type="text" [(ngModel)]="field.value" name="field.value" placeholder="Value" required>
       <button type="button" class="delete-field" (click)="removeField(i)">-</button>
     </div>
   </div> 

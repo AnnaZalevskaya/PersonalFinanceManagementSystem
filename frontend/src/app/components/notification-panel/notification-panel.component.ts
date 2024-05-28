@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UserNotification } from '../../models/user-notification.model';
 import { NotificationPanelService } from '../../services/notification-panel.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-notification-panel',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    MatIconModule
   ],
   templateUrl: './notification-panel.component.html',
   styleUrl: './notification-panel.component.css'
