@@ -1,0 +1,26 @@
+<div class="login form">
+    <header>Login</header>
+    <form (submit)="login()">
+      <mat-form-field>
+        <mat-label>Enter your email</mat-label>
+        <mat-icon matIconSuffix>email</mat-icon>
+        <input matInput
+          placeholder="ex_name@example.com"
+          [formControl]="email"
+          (blur)="updateErrorMessage()">
+        @if (email.invalid) {
+          <mat-error>{{errorMessage}}</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Enter your password</mat-label>
+        <mat-icon  matIconSuffix (click)="togglePasswordVisibility()">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <input matInput 
+          [type]="hide ? 'password' : 'text'"
+          [formControl]="password">      
+      </mat-form-field>
+      <div class="mat-align mat-align-center">
+        <button mat-raised-button class="login-button" color="primary" type="submit">Login</button>
+      </div>
+    </form>
+</div>

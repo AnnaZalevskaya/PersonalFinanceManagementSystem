@@ -1,0 +1,45 @@
+<main *ngIf="isLoadingForm">
+    <div class="registration form">
+      <header>Signup</header>
+      <form (ngSubmit)="register()" *ngIf="!isRegistrationSuccessful">
+        <mat-form-field>
+          <mat-label>Enter your email</mat-label>
+          <mat-icon matIconSuffix>email</mat-icon>
+          <input matInput
+            placeholder="ex_name@example.com"
+            (blur)="updateErrorMessage()">
+          @if (email.invalid) {
+            <mat-error>{{errorMessage}}</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Enter your user name</mat-label>
+          <input matInput>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Enter your phone</mat-label>
+          <input matInput>
+          <mat-icon>phone</mat-icon>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Create a password</mat-label>
+          <mat-icon  matIconSuffix (click)="togglePasswordVisibility()">{{hidePass ? 'visibility_off' : 'visibility'}}</mat-icon>
+          <input matInput 
+            [type]="hidePass ? 'password' : 'text'">      
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Confirm your password</mat-label>
+          <mat-icon  matIconSuffix (click)="togglePasswordVisibility()">{{hideConfPass ? 'visibility_off' : 'visibility'}}</mat-icon>
+          <input matInput 
+            [type]="hideConfPass ? 'password' : 'text'">   
+        </mat-form-field>
+        <div class="mat-align mat-align-center">
+          <button mat-raised-button color="primary" type="submit">Signup</button>
+        </div>
+      </form>
+      <div *ngIf="isRegistrationSuccessful" class="success-message">
+        <p>Registration has been completed successfully! Now you can log in.</p>
+      </div>
+    </div>
+</main>
+<app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>

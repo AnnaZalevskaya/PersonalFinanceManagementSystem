@@ -1,39 +1,11 @@
 <main *ngIf="isLoadingForm">
-    <div class="container">
-      <input type="checkbox" id="check">
-      <div class="login form">
-        <header>Login</header>
-        <form (ngSubmit)="login()">
-          <input type="text" [(ngModel)]="email" name="email" placeholder="Enter your email" required>
-          <input type="password" [(ngModel)]="password" name="password" placeholder="Enter your password" required>
-          <input type="submit" class="button" value="Login">
-        </form>
-        <div class="signup">
-          <span class="signup">Not registered yet?
-           <label for="check">Signup</label>
-          </span>
-        </div>
-      </div>
-      <div class="registration form">
-        <header>Signup</header>
-        <form (ngSubmit)="register()" *ngIf="!isRegistrationSuccessful">
-          <input type="email" placeholder="Enter your email" [(ngModel)]="email" name="email" required>
-          <input type="text" placeholder="Enter your user name" [(ngModel)]="username" name="username" required>
-          <input type="tel" placeholder="Enter your phone number" [(ngModel)]="phone" name="phone" required>
-          <input type="password" placeholder="Create a password" [(ngModel)]="password" name="password" required>
-          <input type="password" placeholder="Confirm your password" [(ngModel)]="passwordConfirm" name="passwordConfirm" required>
-          <input type="submit" class="button" value="Signup">
-        </form>
-        <div *ngIf="isRegistrationSuccessful" class="success-message">
-          <p>Registration has been completed successfully!
-            Now you can log in.</p>
-        </div>
-        <div class="signup">
-          <span class="signup">Already have an account?
-           <label for="check">Login</label>
-          </span>
-        </div>
-      </div>
-    </div>
-  </main>
-  <app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>
+  <div class="container">
+    <mat-button-toggle-group name="Auth" aria-label="User Auth"  [(ngModel)]="selectedOption">
+      <mat-button-toggle value="login">Login</mat-button-toggle>
+      <mat-button-toggle value="register">Register</mat-button-toggle>
+    </mat-button-toggle-group>
+    <app-user-login *ngIf="selectedOption === 'login'"></app-user-login>
+    <app-register *ngIf="selectedOption === 'register'"></app-register>
+  </div>
+</main>
+<app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>
