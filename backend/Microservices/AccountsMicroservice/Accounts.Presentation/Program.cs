@@ -29,7 +29,7 @@ namespace Accounts.Presentation
 
             var app = builder.Build();
 
-          //  app.MigrateDatabase();
+            app.MigrateDatabase();
 
             if (app.Environment.IsDevelopment())
             {

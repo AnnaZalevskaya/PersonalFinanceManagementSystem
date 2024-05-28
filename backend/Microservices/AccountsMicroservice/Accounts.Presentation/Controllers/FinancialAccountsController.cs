@@ -30,7 +30,7 @@ namespace Accounts.Presentation.Controllers
 
         [HttpDelete("user/{userId}/account/{accountId}")]
         [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
-        public async Task<IActionResult> CloseAccountAsync(int userId, int accountId, 
+        public async Task<IActionResult> CloseAccountAsync(int userId, int accountId,
             CancellationToken cancellationToken)
         {
             await _service.DeleteAsync(userId, accountId, cancellationToken);
@@ -40,7 +40,7 @@ namespace Accounts.Presentation.Controllers
 
         [HttpPut("user/{userId}/account/{accountId}")]
         [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
-        public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
+        public async Task<IActionResult> EditAccountAsync(int userId, int accountId,
             [FromBody] FinancialAccountActionModel model, CancellationToken cancellationToken)
         {
             await _service.UpdateAsync(userId, accountId, model, cancellationToken);
@@ -49,8 +49,8 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, 
+      //  [Authorize]
+        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id,
             CancellationToken cancellationToken)
         {
             return Ok(await _service.GetByIdAsync(id, cancellationToken));
@@ -70,6 +70,31 @@ namespace Accounts.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));
+        }
+
+        [HttpPost("report/{accountId}")]
+        public async Task<ActionResult<string>> GeneratePdf([FromBody] FinancialAccountModel model)
+        {
+            byte[] pdfBytes = await _service.GenerateAccountReport(model);
+
+            string fileName = _service.SaveToFiles(pdfBytes);
+
+            return Ok(fileName);
+        }
+
+        [HttpGet("{fileName}")]
+        public IActionResult DownloadPdf(string fileName)
+        {
+            string filePath = Path.Combine("PDFs", fileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileBytes, "application/pdf", fileName);
         }
     }
 }

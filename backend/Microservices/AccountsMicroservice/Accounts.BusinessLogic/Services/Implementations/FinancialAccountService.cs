@@ -24,11 +24,12 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly AccountBalanceClient _balanceClient;
         private readonly ICacheRepository _cacheRepository;
         private readonly INotificationService _notificationService;
+        private readonly IAccountPdfReportService _reportService;
 
         public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
             IMessageConsumer consumer, IMessageProducer producer,
             AccountBalanceClient balanceClient, ICacheRepository cacheRepository,
-            INotificationService notificationService)
+            INotificationService notificationService, IAccountPdfReportService reportService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -37,6 +38,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             _balanceClient = balanceClient;
             _cacheRepository = cacheRepository;
             _notificationService = notificationService;
+            _reportService = reportService;
         }
 
         public async Task AddAsync(FinancialAccountActionModel addModel, CancellationToken cancellationToken)
@@ -235,6 +237,16 @@ namespace Accounts.BusinessLogic.Services.Implementations
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _cacheRepository.CacheDataAsync(id, updateModel);
+        }
+
+        public async Task<byte[]> GenerateAccountReport(FinancialAccountModel model)
+        {
+            return await _reportService.GeneratePdfReportFromModel(model);
+        }
+
+        public string SaveToFiles(byte[] pdfBytes)
+        {
+            return _reportService.SavePdfToFile(pdfBytes);
         }
     }
 }

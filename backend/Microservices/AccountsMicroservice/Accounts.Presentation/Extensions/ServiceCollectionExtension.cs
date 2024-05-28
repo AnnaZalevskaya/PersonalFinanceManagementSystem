@@ -141,6 +141,7 @@ namespace Accounts.Presentation.Extensions
             services.AddScoped<IFinancialAccountTypeService, FinancialAccountTypeService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IAccountPdfReportService, AccountPdfReportService>();
 
             return services;
         }
