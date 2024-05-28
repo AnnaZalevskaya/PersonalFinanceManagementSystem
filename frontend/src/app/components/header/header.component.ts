@@ -5,13 +5,21 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NotificationPanelComponent } from '../notification-panel/notification-panel.component';
 import { NotificationPanelService } from '../../services/notification-panel.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule, 
+    MatButtonModule, 
+    MatMenuModule, 
+    MatIconModule,
     NotificationPanelComponent
   ],
   templateUrl: './header.component.html',
@@ -53,7 +61,7 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserName() {
-    return 'Welcome, ' + this.username;
+    return this.username;
   }
 
   isClient() {

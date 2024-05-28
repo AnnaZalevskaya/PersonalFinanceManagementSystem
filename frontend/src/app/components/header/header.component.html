@@ -1,27 +1,50 @@
 <header> 
-  <div class="actions">   
-    <div class="left-group">
-      <div class="ico">
-        <a routerLink="">
-          <img src="assets/images/app-icon/app-icon.ico">
-        </a>  
-      </div>  
-    </div>  
-    <div class="right-group">
-      <div class="dropdown">
-        <button class="login"><img src="assets/images/icon-user.png"></button>
-        <div class="dropdown-content">
-          <a [routerLink]="isClient() ? '/profile/{{userId}}' : '/admin'" *ngIf="isAuthenticated">{{getUserName()}}</a>
-          <hr *ngIf="this.isAuthenticated">
-          <a (click)="this.isAuthenticated ? this.logout() : this.login()">   
-            {{ this.isAuthenticated ? 'Logout' : 'Login' }}
-          </a>
-        </div>
+  <div class="actions"> 
+    <div class="left-group"> 
+    <a routerLink="" class="elem-header">
+      <img src="assets/images/app-icon/app-icon.ico">
+    </a> 
+  </div> 
+  <div class="right-group">
+    <button mat-button [matMenuTriggerFor]="languageMenu">
+      <mat-icon class="but-icon">language</mat-icon>
+    </button>
+    <mat-menu #languageMenu="matMenu">
+      <button mat-menu-item>EN</button>
+      <button mat-menu-item>RU</button>
+    </mat-menu>
+    
+    <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #mainMenu="matMenu">
+      <div *ngIf="!isAuthenticated">
+        <button mat-menu-item routerLink="/auth">
+          <mat-icon>account_circle</mat-icon>
+          <span>Login</span>
+        </button>
       </div>
-      <button class="notifications" [disabled]="!isAuthenticated || !isClient()" (click)="toggleNotificationPanel()">
-        <img src="assets/images/icon-notification.png">
-      </button>
-    </div>
+      
+      <div *ngIf="isAuthenticated">
+        <button mat-menu-item [routerLink]="isClient() ? '/profile/{{userId}}' : '/admin'">
+          <mat-icon>how_to_reg</mat-icon>
+          <span>{{ getUserName() }}</span>
+        </button>
+        <button mat-menu-item [disabled]="!isClient()" (click)="toggleNotificationPanel()">
+          <mat-icon>notifications_none</mat-icon>
+          <span>Notifications</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>payment</mat-icon>
+          <span>Regular payments</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </div>   
+    </mat-menu>
+</div>
 </div>
 </header>
 <app-notification-panel *ngIf="showNotificationPanel()"></app-notification-panel>
