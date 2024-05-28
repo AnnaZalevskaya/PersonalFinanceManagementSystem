@@ -36,7 +36,7 @@ namespace Auth.Application.Extensions
 
         public static JwtSecurityToken CreateJwtToken(this IEnumerable<Claim> claims, IOptions<JwtSettings> options)
         {
-            var expire = options.Value.Expire;
+            var expire = options.Value.ExpirationTime;
             var jwtToken = new JwtSecurityToken(
                 issuer: options.Value.Issuer,
                 audience: options.Value.Audience,

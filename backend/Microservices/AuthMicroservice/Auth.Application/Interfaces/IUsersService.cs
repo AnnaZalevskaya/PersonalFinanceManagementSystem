@@ -7,6 +7,7 @@ namespace Auth.Application.Interfaces
     {
         Task<RegisterResponseModel> RegisterAsync(RegisterRequestModel request, CancellationToken cancellationToken);
         Task<AuthResponseModel> AuthenticateAsync(AuthRequestModel request, CancellationToken cancellationToken);
+        Task<TokenModel> RefreshAccessToken(TokenModel tokens);
         Task<List<UserModel>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken);
         Task<UserModel> GetUserByIdAsync(long id, CancellationToken cancellationToken);
     }

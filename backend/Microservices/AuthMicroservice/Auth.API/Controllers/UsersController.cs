@@ -54,5 +54,13 @@ namespace Auth.API.Controllers
 
             return Ok(user);
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<List<UserModel>>> RefreshAccessTokenAsync([FromBody] TokenModel model)
+        {
+            var tokens = await _usersService.RefreshAccessToken(model);
+
+            return Ok(tokens);
+        }
     }
 }
