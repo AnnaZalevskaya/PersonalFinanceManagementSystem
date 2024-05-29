@@ -1,6 +1,7 @@
 ﻿using Accounts.BusinessLogic.Consumers;
 using Accounts.BusinessLogic.Exceptions;
 using Accounts.BusinessLogic.Models;
+using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Entities;
@@ -11,6 +12,7 @@ using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using gRPC.Protos.Client;
 using Hangfire;
+using Polly;
 using static gRPC.Protos.Client.AccountBalance;
 
 namespace Accounts.BusinessLogic.Services.Implementations
@@ -25,6 +27,8 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly ICacheRepository _cacheRepository;
         private readonly INotificationService _notificationService;
         private readonly IAccountPdfReportService _reportService;
+        private readonly IAsyncPolicy _retryPolicy;
+        private readonly IAsyncPolicy<byte[]> _fallbackPolicy;
 
         public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
             IMessageConsumer consumer, IMessageProducer producer,
@@ -39,6 +43,17 @@ namespace Accounts.BusinessLogic.Services.Implementations
             _cacheRepository = cacheRepository;
             _notificationService = notificationService;
             _reportService = reportService;
+
+            _retryPolicy = Policy
+                .Handle<Exception>()
+                .RetryAsync(PollyConsts.MaxRetryAttempts);
+
+            _fallbackPolicy = Policy<byte[]>
+                .Handle<Exception>()
+                .FallbackAsync(async (cancellationToken) =>
+                {
+                    return new byte[0];
+                });
         }
 
         public async Task AddAsync(FinancialAccountActionModel addModel, CancellationToken cancellationToken)
@@ -100,31 +115,36 @@ namespace Accounts.BusinessLogic.Services.Implementations
             {
                 return cachedAccounts;
             }
- 
-            var accounts = await _unitOfWork.FinancialAccounts.GetFullAccounts(paginationSettings, cancellationToken);
-            var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
-            foreach (var account in accountsList)
+            var accounts = await _retryPolicy.ExecuteAsync(async () =>
             {
-                var request = new AccountIdRequest
-                {
-                    AccountId = account.Id
-                };
+                var accounts = await _unitOfWork.FinancialAccounts.GetFullAccounts(paginationSettings, cancellationToken);
+                var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
-                var accountBalanceResponse = await _balanceClient
-                    .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
-
-                if (accountBalanceResponse == null)
+                foreach (var account in accountsList)
                 {
-                    throw new GetBalanceException();
+                    var request = new AccountIdRequest
+                    {
+                        AccountId = account.Id
+                    };
+
+                    var accountBalanceResponse = await _balanceClient
+                        .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+                    if (accountBalanceResponse == null)
+                    {
+                        throw new GetBalanceException();
+                    }
+
+                    account.Balance = accountBalanceResponse.Balance;
                 }
 
-                account.Balance = accountBalanceResponse.Balance;
-            }
+                return accountsList;
+            });
 
-            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList);
+            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accounts);
 
-            return accountsList;
+            return accounts;
         }
 
         public async Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId,
@@ -241,7 +261,15 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
         public async Task<byte[]> GenerateAccountReport(FinancialAccountModel model)
         {
-            return await _reportService.GeneratePdfReportFromAccountModel(model);
+            var report = await _fallbackPolicy.ExecuteAsync(async () =>
+            {
+                return await _retryPolicy.ExecuteAsync(async () =>
+                {
+                    return await _reportService.GeneratePdfReportFromAccountModel(model);
+                });
+            });
+
+            return report;
         }
     }
 }
