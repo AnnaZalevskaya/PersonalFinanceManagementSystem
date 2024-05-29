@@ -5,9 +5,9 @@ using Operations.Application.Exceptions;
 using Operations.Application.Interfaces;
 using Operations.Application.Models;
 
-namespace Operations.Application.Operations.Queries.GetOperationList
+namespace Operations.Application.Operations.Queries.Lists.GetOperationList
 {
-    public class GetOperationListByAccountIdQueryHandler : IRequestHandler<GetOperationListByAccountIdQuery, 
+    public class GetOperationListByAccountIdQueryHandler : IRequestHandler<GetOperationListByAccountIdQuery,
         List<OperationModel>>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -15,7 +15,7 @@ namespace Operations.Application.Operations.Queries.GetOperationList
         private readonly IMessageConsumer _consumer;
         private readonly ICacheRepository _cacheRepository;
 
-        public GetOperationListByAccountIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, 
+        public GetOperationListByAccountIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper,
             IMessageConsumer consumer, ICacheRepository cacheRepository)
         {
             _unitOfWork = unitOfWork;

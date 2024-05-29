@@ -4,9 +4,9 @@ using Operations.Application.Interfaces;
 using Operations.Application.Models;
 using Operations.Core.Exceptions;
 
-namespace Operations.Application.Operations.Queries.GetCategoryTypeDetails
+namespace Operations.Application.Operations.Queries.Details.GetCategoryTypeDetails
 {
-    public class GetCategoryTypeDetailsQueryHandler 
+    public class GetCategoryTypeDetailsQueryHandler
         : IRequestHandler<GetCategoryTypeDetailsQuery, CategoryTypeModel>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,7 @@ namespace Operations.Application.Operations.Queries.GetCategoryTypeDetails
             _mapper = mapper;
         }
 
-        public async Task<CategoryTypeModel> Handle(GetCategoryTypeDetailsQuery query, 
+        public async Task<CategoryTypeModel> Handle(GetCategoryTypeDetailsQuery query,
             CancellationToken cancellationToken)
         {
             var type = await _unitOfWork.CategoryTypes.GetAsync(query.Id, cancellationToken);

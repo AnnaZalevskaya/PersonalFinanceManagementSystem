@@ -14,6 +14,5 @@ namespace Accounts.BusinessLogic.Services.Interfaces
         Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task UpdateAsync(int userId, int id, FinancialAccountActionModel updateModel, CancellationToken cancellationToken);
         Task<byte[]> GenerateAccountReport(FinancialAccountModel model);
-        string SaveToFiles(byte[] pdfBytes);
     }
 }

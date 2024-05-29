@@ -3,7 +3,7 @@ using MediatR;
 using Operations.Application.Interfaces;
 using Operations.Application.Models;
 
-namespace Operations.Application.Operations.Queries.GetCategoryList
+namespace Operations.Application.Operations.Queries.Lists.GetCategoryList
 {
     public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, List<CategoryModel>>
     {

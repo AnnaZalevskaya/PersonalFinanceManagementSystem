@@ -5,8 +5,8 @@ using Operations.Application.Models;
 using Operations.Application.Models.Consts;
 using Operations.Application.Operations.Commands.CreateOperation;
 using Operations.Application.Operations.Commands.DeleteAccountOperations;
-using Operations.Application.Operations.Queries.GetOperationDetails;
-using Operations.Application.Operations.Queries.GetOperationList;
+using Operations.Application.Operations.Queries.Details.GetOperationDetails;
+using Operations.Application.Operations.Queries.Lists.GetOperationList;
 using Operations.Application.Settings;
 
 namespace Operations.API.Controllers

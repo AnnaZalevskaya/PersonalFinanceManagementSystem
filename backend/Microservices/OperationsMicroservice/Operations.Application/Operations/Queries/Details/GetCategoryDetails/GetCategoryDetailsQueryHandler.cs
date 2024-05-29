@@ -4,7 +4,7 @@ using Operations.Application.Interfaces;
 using Operations.Application.Models;
 using Operations.Core.Exceptions;
 
-namespace Operations.Application.Operations.Queries.GetCategoryDetails
+namespace Operations.Application.Operations.Queries.Details.GetCategoryDetails
 {
     public class GetCategoryDetailsQueryHandler : IRequestHandler<GetCategoryDetailsQuery, CategoryModel>
     {

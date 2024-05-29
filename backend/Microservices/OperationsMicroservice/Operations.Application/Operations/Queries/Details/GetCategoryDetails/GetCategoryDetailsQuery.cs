@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Operations.Application.Models;
 
-namespace Operations.Application.Operations.Queries.GetCategoryDetails
+namespace Operations.Application.Operations.Queries.Details.GetCategoryDetails
 {
     public class GetCategoryDetailsQuery : IRequest<CategoryModel>
     {

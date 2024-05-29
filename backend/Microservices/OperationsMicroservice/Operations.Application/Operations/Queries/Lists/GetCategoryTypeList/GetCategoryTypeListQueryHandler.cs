@@ -3,9 +3,9 @@ using MediatR;
 using Operations.Application.Interfaces;
 using Operations.Application.Models;
 
-namespace Operations.Application.Operations.Queries.GetCategoryTypeList
+namespace Operations.Application.Operations.Queries.Lists.GetCategoryTypeList
 {
-    public class GetCategoryTypeListQueryHandler : IRequestHandler<GetCategoryTypeListQuery, 
+    public class GetCategoryTypeListQueryHandler : IRequestHandler<GetCategoryTypeListQuery,
         List<CategoryTypeModel>>
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -2,7 +2,7 @@
 using Operations.Application.Models;
 using Operations.Application.Settings;
 
-namespace Operations.Application.Operations.Queries.GetOperationList
+namespace Operations.Application.Operations.Queries.Lists.GetOperationList
 {
     public class GetOperationListByAccountIdQuery : IRequest<List<OperationModel>>
     {

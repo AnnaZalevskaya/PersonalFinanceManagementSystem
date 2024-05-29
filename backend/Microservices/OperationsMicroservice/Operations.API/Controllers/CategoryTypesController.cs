@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Operations.Application.Models;
-using Operations.Application.Operations.Queries.GetCategoryTypeDetails;
-using Operations.Application.Operations.Queries.GetCategoryTypeList;
+using Operations.Application.Operations.Queries.Details.GetCategoryTypeDetails;
+using Operations.Application.Operations.Queries.Lists.GetCategoryTypeList;
 using Operations.Application.Settings;
 
 namespace Operations.API.Controllers

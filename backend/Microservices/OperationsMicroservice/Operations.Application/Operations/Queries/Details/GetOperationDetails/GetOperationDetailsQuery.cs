@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Operations.Application.Models;
 
-namespace Operations.Application.Operations.Queries.GetOperationDetails
+namespace Operations.Application.Operations.Queries.Details.GetOperationDetails
 {
     public class GetOperationDetailsQuery : IRequest<OperationModel>
     {
@@ -9,7 +9,7 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
 
         public GetOperationDetailsQuery(string id)
         {
-             Id = id;
+            Id = id;
         }
     }
 }

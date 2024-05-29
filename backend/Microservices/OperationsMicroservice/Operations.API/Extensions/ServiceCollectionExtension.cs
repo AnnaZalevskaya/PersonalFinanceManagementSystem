@@ -7,7 +7,7 @@ using Operations.Application.Consumers;
 using Operations.Application.Interfaces;
 using Operations.Application.Interfaces.gRPC;
 using Operations.Application.Models.Consts;
-using Operations.Application.Operations.Queries.GetCategoryDetails;
+using Operations.Application.Operations.Queries.Details.GetCategoryDetails;
 using Operations.Application.Settings;
 using Operations.Infrastructure.Data;
 using Operations.Infrastructure.Repositories;

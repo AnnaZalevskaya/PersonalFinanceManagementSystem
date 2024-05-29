@@ -3,7 +3,7 @@ using MediatR;
 using Operations.Application.Interfaces;
 using Operations.Application.Models;
 
-namespace Operations.Application.Operations.Queries.GetOperationList
+namespace Operations.Application.Operations.Queries.Lists.GetOperationList
 {
     public class GetOperationListQueryHandler : IRequestHandler<GetOperationListQuery, List<OperationModel>>
     {
@@ -18,7 +18,7 @@ namespace Operations.Application.Operations.Queries.GetOperationList
             _cacheRepository = cacheRepository;
         }
 
-        public async Task<List<OperationModel>> Handle(GetOperationListQuery query, 
+        public async Task<List<OperationModel>> Handle(GetOperationListQuery query,
             CancellationToken cancellationToken)
         {
             var cachedOperations = await _cacheRepository

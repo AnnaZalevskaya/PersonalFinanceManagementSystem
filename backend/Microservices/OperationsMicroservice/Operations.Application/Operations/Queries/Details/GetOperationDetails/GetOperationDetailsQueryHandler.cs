@@ -4,7 +4,7 @@ using Operations.Application.Interfaces;
 using Operations.Application.Models;
 using Operations.Core.Exceptions;
 
-namespace Operations.Application.Operations.Queries.GetOperationDetails
+namespace Operations.Application.Operations.Queries.Details.GetOperationDetails
 {
     public class GetOperationDetailsQueryHandler : IRequestHandler<GetOperationDetailsQuery, OperationModel>
     {
@@ -19,7 +19,7 @@ namespace Operations.Application.Operations.Queries.GetOperationDetails
             _cacheRepository = cacheRepository;
         }
 
-        public async Task<OperationModel> Handle(GetOperationDetailsQuery query, 
+        public async Task<OperationModel> Handle(GetOperationDetailsQuery query,
             CancellationToken cancellationToken)
         {
             var cachedObj = await _cacheRepository.GetCachedDataAsync<OperationModel>(query.Id);

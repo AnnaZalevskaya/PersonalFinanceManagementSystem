@@ -49,7 +49,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-      //  [Authorize]
+        //  [Authorize]
         public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id,
             CancellationToken cancellationToken)
         {
@@ -72,29 +72,12 @@ namespace Accounts.Presentation.Controllers
             return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));
         }
 
-        [HttpPost("report/{accountId}")]
-        public async Task<ActionResult<string>> GeneratePdf([FromBody] FinancialAccountModel model)
+        [HttpPost("report")]
+        public async Task<ActionResult> GenerateReportAsync(FinancialAccountModel model)
         {
-            byte[] pdfBytes = await _service.GenerateAccountReport(model);
+            var file = await _service.GenerateAccountReport(model);
 
-            string fileName = _service.SaveToFiles(pdfBytes);
-
-            return Ok(fileName);
-        }
-
-        [HttpGet("{fileName}")]
-        public IActionResult DownloadPdf(string fileName)
-        {
-            string filePath = Path.Combine("PDFs", fileName);
-
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound();
-            }
-
-            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-
-            return File(fileBytes, "application/pdf", fileName);
+            return Ok(file);
         }
     }
 }

@@ -2,13 +2,13 @@
 using Operations.Application.Models;
 using Operations.Application.Settings;
 
-namespace Operations.Application.Operations.Queries.GetCategoryList
+namespace Operations.Application.Operations.Queries.Lists.GetOperationList
 {
-    public class GetCategoryListQuery : IRequest<List<CategoryModel>>
+    public class GetOperationListQuery : IRequest<List<OperationModel>>
     {
         public PaginationSettings paginationSettings;
 
-        public GetCategoryListQuery(PaginationSettings settings)
+        public GetOperationListQuery(PaginationSettings settings)
         {
             paginationSettings = settings;
         }

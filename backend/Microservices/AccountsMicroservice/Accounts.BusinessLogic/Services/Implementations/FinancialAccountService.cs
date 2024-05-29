@@ -241,12 +241,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
         public async Task<byte[]> GenerateAccountReport(FinancialAccountModel model)
         {
-            return await _reportService.GeneratePdfReportFromModel(model);
-        }
-
-        public string SaveToFiles(byte[] pdfBytes)
-        {
-            return _reportService.SavePdfToFile(pdfBytes);
+            return await _reportService.GeneratePdfReportFromAccountModel(model);
         }
     }
 }
