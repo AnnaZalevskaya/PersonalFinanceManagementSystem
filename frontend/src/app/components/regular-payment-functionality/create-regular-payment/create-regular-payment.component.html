@@ -1,0 +1,42 @@
+<div class="container">
+  <form [formGroup]="recurringOperationForm" (ngSubmit)="AddRegOper()" class="rec-oper-form">
+    <h2>Create Recurring Operation</h2>
+    <mat-form-field>
+      <mat-label>Operation name:</mat-label>
+      <input matInput formControlName="name" required>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Account:</mat-label>
+      <mat-select formControlName="account" required>
+        <mat-option *ngFor="let account of accounts" [value]="account">{{ account.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Amount:</mat-label>
+      <input matInput formControlName="amount" required>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Execution Time:</mat-label>
+      <input matInput [type]="'time'" formControlName="executionTime" required>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Interval:</mat-label>
+      <mat-select formControlName="interval" required>
+        <mat-option *ngFor="let interval of intervals.slice(0, intervals.length / 2)" [value]="interval">{{ interval.value }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="date">
+      <mat-label>Start Date:</mat-label>
+      <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" required>
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="date">
+      <mat-label>End Date:</mat-label>
+      <input matInput [matDatepicker]="endDatePicker" formControlName="endDate">
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Create Recurring Operation</button>
+  </form>
+</div>
