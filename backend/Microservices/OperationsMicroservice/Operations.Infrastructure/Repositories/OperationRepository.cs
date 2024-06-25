@@ -1,8 +1,11 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Identity.Client;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Operations.Application.Interfaces;
 using Operations.Application.Settings;
 using Operations.Core.Entities;
 using Operations.Infrastructure.Data;
+using System.Text.RegularExpressions;
 
 namespace Operations.Infrastructure.Repositories
 {
@@ -40,7 +43,7 @@ namespace Operations.Infrastructure.Repositories
             var operations = await _context.Operations
                 .Find(operations => true)
                 .SortBy(operation => operation.AccountId)
-                .ThenBy(operation => operation.Date)
+                .ThenByDescending(operation => operation.Date)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Limit(paginationSettings.PageSize)
                 .ToListAsync(cancellationToken);
@@ -53,12 +56,25 @@ namespace Operations.Infrastructure.Repositories
         {
             var operations = await _context.Operations
                 .Find(operation => operation.AccountId == accountId)
-                .SortBy(operation => operation.Date)
+                .SortByDescending(operation => operation.Date)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Limit(paginationSettings.PageSize)
                 .ToListAsync(cancellationToken);
 
             return operations;
+        }
+
+        public async Task<long> GetRecordsCountAsync()
+        {
+            return await _context.Operations
+                .CountDocumentsAsync(new BsonDocument());
+        }
+
+        public async Task<long> GetAccountRecordsCountAsync(int accountId)
+        {
+            return await _context.Operations
+                .Find(operation => operation.AccountId == accountId)
+                .CountDocumentsAsync();
         }
     }
 }

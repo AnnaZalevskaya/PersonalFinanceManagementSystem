@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using Operations.Core.Entities.Base;
 
 namespace Operations.Core.Entities
 {

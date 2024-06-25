@@ -1,4 +1,7 @@
 ﻿using FluentValidation.AspNetCore;
+using Grpc.Net.Client.Web;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -7,6 +10,7 @@ using Operations.Application.Consumers;
 using Operations.Application.Interfaces;
 using Operations.Application.Interfaces.gRPC;
 using Operations.Application.Models.Consts;
+using Operations.Application.Operations.Commands.ScheduleRecurringOperation;
 using Operations.Application.Operations.Queries.Details.GetCategoryDetails;
 using Operations.Application.Settings;
 using Operations.Infrastructure.Data;
@@ -14,6 +18,7 @@ using Operations.Infrastructure.Repositories;
 using Operations.Infrastructure.Repositories.gRPC;
 using Operations.Infrastructure.Settings;
 using System.Text;
+using static gRPC.Protos.Client.ReportBytes;
 
 namespace Operations.API.Extensions
 {
@@ -178,12 +183,16 @@ namespace Operations.API.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureGrpc(this IServiceCollection services)
+        public static IServiceCollection ConfigureGrpc(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddGrpc(options =>
             {
                 options.EnableDetailedErrors = true; 
             });
+
+            services.AddGrpcClient<ReportBytesClient>(options =>
+                options.Address = new Uri(configuration.GetSection("GRPC:ServerURI").Value))
+                .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(new HttpClientHandler()));
 
             return services;
         }
@@ -197,6 +206,24 @@ namespace Operations.API.Extensions
                 options.Configuration = configuration.GetSection("Redis:Host").Value;
                 options.InstanceName = configuration.GetSection("Redis:Instance").Value;
             });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHangfire(config =>
+                config.UsePostgreSqlStorage(configuration.GetSection("Hangfire:Connection").Value));
+            services.AddHangfireServer();
+
+            services.AddScoped<PaymentProcessor>();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureSignalR(this IServiceCollection services)
+        {
+            services.AddSignalR();
 
             return services;
         }

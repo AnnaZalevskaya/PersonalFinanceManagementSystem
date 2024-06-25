@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Operations.Application.Models;
 using Operations.Application.Operations.Queries.Details.GetCategoryTypeDetails;
 using Operations.Application.Operations.Queries.Lists.GetCategoryTypeList;
+using Operations.Application.Operations.Queries.RecordsCount.GetCategoryTypeRecordsCount;
 using Operations.Application.Settings;
 
 namespace Operations.API.Controllers
@@ -24,6 +25,12 @@ namespace Operations.API.Controllers
             var types = await _mediator.Send(new GetCategoryTypeListQuery(paginationSettings));
 
             return Ok(types);
+        }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<long>> GetRecordsCountAsync()
+        {
+            return Ok(await _mediator.Send(new GetCategoryTypeRecordsCountQuery()));
         }
 
         [HttpGet("{id}")]

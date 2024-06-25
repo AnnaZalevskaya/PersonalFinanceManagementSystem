@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Operations.Application.Interfaces;
-using Operations.Core.Exceptions;
 
 namespace Operations.Application.Operations.Commands.DeleteAccountOperations
 {
@@ -18,12 +17,10 @@ namespace Operations.Application.Operations.Commands.DeleteAccountOperations
             var operations = await _unitOfWork.Operations
                 .GetByAccountIdAsync(command.AccountId,  command.PaginationSettings, cancellationToken);
 
-            if (operations == null)
+            if (operations != null)
             {
-                throw new EntityNotFoundException();
-            }
-
-            await _unitOfWork.Operations.DeleteByAccountIdAsync(command.AccountId, cancellationToken);
+                await _unitOfWork.Operations.DeleteByAccountIdAsync(command.AccountId, cancellationToken);
+            }    
         }
     }
 }
