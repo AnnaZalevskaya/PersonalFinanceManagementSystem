@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from "./components/header/header.component";
+import { HeaderComponent } from './components/main-pages/header/header.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FinancialAccountsService } from './services/financial-accounts.service';
 import { AuthService } from './services/auth.service';
@@ -14,7 +14,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { SignalRService } from './services/signal-r.service';
 import { UserNotificationsService } from './services/user-notifications.service';
 import { NotificationPanelService } from './services/notification-panel.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-root',
