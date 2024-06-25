@@ -15,7 +15,7 @@ export class AuthService {
   userId!: string | null;
   tokens!: Token;
 
-  private backendUrl = "https://localhost:44313/api/auth/users";
+  private backendUrl = "https://localhost:44313/api/auth/auth";
 
   constructor(private http: HttpClient, private tokenService: TokenService) 
   {
@@ -35,15 +35,14 @@ export class AuthService {
   }
 
   refreshAccessToken(): Observable<Token> {
-    const refreshToken = this.getRefreshToken();
-    const accessToken = this.getAccessToken();
-
-    this.tokens.accessToken = accessToken;
-    this.tokens.refreshToken = refreshToken;
+    const tokenModel: Token = {
+      accessToken: this.getAccessToken()!,
+      refreshToken: this.getRefreshToken()!
+    };
 
     const url = `${this.backendUrl}/refresh-token`;
 
-    return this.http.post<Token>(url, this.tokens)
+    return this.http.post<Token>(url, tokenModel)
     .pipe(
       tap((response) => {
         const newAccessToken = response.accessToken;

@@ -39,3 +39,10 @@ mat-button-toggle {
   width: 100%;
   background-color: #33576E;
 }
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 320px;
+    margin-top: 100px;
+  }
+}

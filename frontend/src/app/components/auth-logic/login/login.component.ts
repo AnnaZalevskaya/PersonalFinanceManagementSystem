@@ -1,18 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { LoadingIndicatorComponent } from '../loading-indicator/loading-indicator.component';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../services/auth.service';
-import { merge } from 'rxjs';
-import { AuthRequest } from '../../models/auth.model';
+import { AuthService } from '../../../services/auth.service';
+import { AuthRequest } from '../../../models/auth.model';
+import { LoadingIndicatorComponent } from '../../additional-pages/loading-indicator/loading-indicator.component';
 
 @Component({
   selector: 'app-user-login',
@@ -33,27 +31,27 @@ import { AuthRequest } from '../../models/auth.model';
 })
 export class LoginComponent {
   hide = true;
+  @Output() isLoadingFormChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   isLoadingForm: boolean = true;
-  isRegistrationSuccessful: boolean = false;
 
   errorMessage = '';
 
-  email = new FormControl('', [Validators.required, Validators.email]);
-  password = new FormControl('', [Validators.required]);
+  loginForm: FormGroup;
 
-  constructor(private router: Router, private authService: AuthService) { 
-    merge(this.email.statusChanges, this.email.valueChanges)
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.updateErrorMessage());
+  constructor(private router: Router, private authService: AuthService, private formBuilder: FormBuilder) { 
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
   }
 
   login() {
-    if (this.email.value != null && this.password.value != null) {
+    if (this.loginForm.valid) {
       const model: AuthRequest = { 
-        email: this.email.value, 
-        password: this.password.value 
+        email: this.loginForm.get('email')!.value, 
+        password: this.loginForm.get('password')!.value 
       };   
-      this.isLoadingForm = false;
+      this.toggleLoadingForm();
       this.authService.authenticate(model).subscribe(
         response => {       
           this.authService.saveUser(response);
@@ -74,17 +72,12 @@ export class LoginComponent {
     };
   }
 
-  togglePasswordVisibility() {
-    this.hide = !this.hide;
+  toggleLoadingForm() {
+    this.isLoadingForm = !this.isLoadingForm;
+    this.isLoadingFormChange.emit(this.isLoadingForm);
   }
 
-  updateErrorMessage() {
-    if (this.email.hasError('required')) {
-      this.errorMessage = 'You must enter a value';
-    } else if (this.email.hasError('email')) {
-      this.errorMessage = 'Not a valid email';
-    } else {
-      this.errorMessage = '';
-    }
+  togglePasswordVisibility() {
+    this.hide = !this.hide;
   }
 }
