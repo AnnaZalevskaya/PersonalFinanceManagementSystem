@@ -15,6 +15,7 @@ namespace Auth.API
                 .ConfigureAuthentication(builder.Configuration)
                 .ConfigureAuthorization()
                 .ConfigureSwagger()
+                .ConfigureLogging()
                 .ConfigureRabbitMQ()
                 .ConfigureAppServices()
                 .ConfigureMapperProfiles()               
