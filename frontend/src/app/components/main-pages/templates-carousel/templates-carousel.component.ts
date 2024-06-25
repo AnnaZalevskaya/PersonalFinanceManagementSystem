@@ -32,9 +32,12 @@ export class TemplatesCarouselComponent {
       }
     };
 
-    this.carouselItems = [
+    this.carouselItems = [   
+      { imageUrl: 'assets/images/template3.jpg' },
       { imageUrl: 'assets/images/template1.png' },
-      { imageUrl: 'assets/images/template2.png' }
+      { imageUrl: 'assets/images/template2.png' },
+      { imageUrl: 'assets/images/template1.jpg' },
+      { imageUrl: 'assets/images/template2.jpg' }
     ];
   }
 }

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import { NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { NotificationPanelComponent } from '../notification-panel/notification-panel.component';
-import { NotificationPanelService } from '../../services/notification-panel.service';
+import { NotificationPanelComponent } from '../../additional-pages/notification-panel/notification-panel.component';
+import { NotificationPanelService } from '../../../services/notification-panel.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule, 
     MatMenuModule, 
     MatIconModule,
+    MatBadgeModule,
     NotificationPanelComponent
   ],
   templateUrl: './header.component.html',
@@ -71,6 +73,19 @@ export class HeaderComponent implements OnInit {
     else {
       return false;
     }
+  }
+
+  toProfile() {
+    if(this.isClient()) {
+      this.router.navigate([`/profile/${this.userId}`]); 
+    }
+    else {
+      this.router.navigate(['/admin']); 
+    }
+  }
+
+  toRegularPaymentPage() {
+    this.router.navigate([`/profile/${this.userId}/regular-payments`]); 
   }
 
   toggleNotificationPanel() {

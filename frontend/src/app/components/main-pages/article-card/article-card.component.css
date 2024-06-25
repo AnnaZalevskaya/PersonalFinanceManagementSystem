@@ -31,5 +31,7 @@
   
 .read-more-link {
   margin-top: 10px;
-  color: purple;
+  font-weight: 500;
+  color: #5665bd;
+  text-decoration: none;
 }

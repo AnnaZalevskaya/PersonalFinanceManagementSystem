@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { ArticleCardComponent } from '../article-card/article-card.component';
-import { FooterComponent } from "../footer/footer.component";
-import { TemplatesCarouselComponent } from "../templates-carousel/templates-carousel.component";
+import { ArticleCardComponent } from '../../main-pages/article-card/article-card.component';
+import { FooterComponent } from "../../main-pages/footer/footer.component";
+import { TemplatesCarouselComponent } from "../../main-pages/templates-carousel/templates-carousel.component";
 
 @Component({
     selector: 'app-home',

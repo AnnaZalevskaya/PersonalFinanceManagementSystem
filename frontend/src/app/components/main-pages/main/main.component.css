@@ -1,0 +1,49 @@
+.container {
+  font-family: "Nunito Sans", sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 15px;
+}
+  
+h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 28px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.post-container {
+  display: flex;
+  justify-content: center; 
+}
+
+.post {
+  border: 2px solid #5665bd; 
+  padding: 10px; 
+  width: 20%;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  .post {
+    width: 100%;
+    padding: 3px;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+}

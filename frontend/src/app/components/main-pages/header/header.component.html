@@ -2,18 +2,10 @@
   <div class="actions"> 
     <div class="left-group"> 
     <a routerLink="" class="elem-header">
-      <img src="assets/images/app-icon/app-icon.ico">
+      FinanSmart
     </a> 
   </div> 
-  <div class="right-group">
-    <button mat-button [matMenuTriggerFor]="languageMenu">
-      <mat-icon class="but-icon">language</mat-icon>
-    </button>
-    <mat-menu #languageMenu="matMenu">
-      <button mat-menu-item>EN</button>
-      <button mat-menu-item>RU</button>
-    </mat-menu>
-    
+  <div class="right-group">    
     <button mat-icon-button [matMenuTriggerFor]="mainMenu">
       <mat-icon>menu</mat-icon>
     </button>
@@ -26,15 +18,15 @@
       </div>
       
       <div *ngIf="isAuthenticated">
-        <button mat-menu-item [routerLink]="isClient() ? '/profile/{{userId}}' : '/admin'">
+        <button mat-menu-item (click)="toProfile()">
           <mat-icon>how_to_reg</mat-icon>
           <span>{{ getUserName() }}</span>
         </button>
         <button mat-menu-item [disabled]="!isClient()" (click)="toggleNotificationPanel()">
-          <mat-icon>notifications_none</mat-icon>
+          <mat-icon matBadge="0" matBadgeColor="primary" aria-hidden="false">notifications_none</mat-icon>
           <span>Notifications</span>
         </button>
-        <button mat-menu-item>
+        <button mat-menu-item [disabled]="!isClient()" (click)="toRegularPaymentPage()">
           <mat-icon>payment</mat-icon>
           <span>Regular payments</span>
         </button>
