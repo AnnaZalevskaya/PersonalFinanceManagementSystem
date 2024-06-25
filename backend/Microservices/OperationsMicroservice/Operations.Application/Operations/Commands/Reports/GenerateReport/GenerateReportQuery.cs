@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Operations.Application.Models;
 
-namespace Operations.Application.Operations.Queries.Reports.GenerateReport
+namespace Operations.Application.Operations.Commands.Reports.GenerateReport
 {
     public class GenerateReportQuery : IRequest<byte[]>
     {

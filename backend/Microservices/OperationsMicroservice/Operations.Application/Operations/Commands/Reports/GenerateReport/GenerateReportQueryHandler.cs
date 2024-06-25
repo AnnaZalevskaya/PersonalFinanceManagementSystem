@@ -1,30 +1,30 @@
 ﻿using iText.Kernel.Pdf;
 using iText.Layout;
-using iText.Layout.Element;
 using MediatR;
+using Operations.Application.Extensions;
 
-namespace Operations.Application.Operations.Queries.Reports.GenerateReport
+namespace Operations.Application.Operations.Commands.Reports.GenerateReport
 {
     public class GenerateReportQueryHandler : IRequestHandler<GenerateReportQuery, byte[]>
     {
-        public async Task<byte[]> Handle(GenerateReportQuery query, CancellationToken cancellationToken)
+        public async Task<byte[]> Handle(GenerateReportQuery command, CancellationToken cancellationToken)
         {
             var memoryStream = new MemoryStream();
             var writer = new PdfWriter(memoryStream);
             var pdfDocument = new PdfDocument(writer);
             var document = new Document(pdfDocument);
 
-            foreach(var model in query.Models)
+            document.ApplyDocHeaderContentAndStyle();
+
+            foreach (var model in command.Models)
             {
-                document.Add(new Paragraph(":"));
-                document.Add(new Paragraph($"Name: {model.Date}"));
-                document.Add(new Paragraph());
+                document.ApplyDocContentAndStyle(model);
             }
 
             document.Close();
             await Task.Yield();
 
-            byte[] pdfBytes = memoryStream.ToArray();  
+            byte[] pdfBytes = memoryStream.ToArray();
 
             return pdfBytes;
         }
