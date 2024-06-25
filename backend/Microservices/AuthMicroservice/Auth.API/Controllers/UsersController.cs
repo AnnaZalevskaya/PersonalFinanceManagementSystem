@@ -17,25 +17,7 @@ namespace Auth.API.Controllers
         {
             _usersService = userService;
         }
-
-        [HttpPost("authenticate")]
-        public async Task<ActionResult<AuthResponseModel>> AuthenticateAsync([FromBody] AuthRequestModel model,
-            CancellationToken cancellationToken)
-        {
-            var response = await _usersService.AuthenticateAsync(model, cancellationToken);
-
-            return Ok(response);
-        }
-
-        [HttpPost("register")]
-        public async Task<ActionResult<RegisterResponseModel>> RegisterAsync([FromBody] RegisterRequestModel model,
-            CancellationToken cancellationToken)
-        {
-            var response = await _usersService.RegisterAsync(model, cancellationToken);
-
-            return Ok(response);
-        }
-
+        
         [HttpGet("all-users")]
         [Authorize(Policy = AuthPolicyConsts.AdminOnly)]
         public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings,
@@ -48,19 +30,17 @@ namespace Auth.API.Controllers
 
         [HttpGet("user-info/{id}")]
         [Authorize]
-        public async Task<ActionResult<List<UserModel>>> GetUserByIdAsync(long id, CancellationToken cancellationToken)
+        public async Task<ActionResult<UserModel>> GetUserByIdAsync(long id, CancellationToken cancellationToken)
         {
             var user = await _usersService.GetUserByIdAsync(id, cancellationToken);
 
             return Ok(user);
         }
 
-        [HttpPost("refresh-token")]
-        public async Task<ActionResult<List<UserModel>>> RefreshAccessTokenAsync([FromBody] TokenModel model)
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> GetRecordsCountAsync()
         {
-            var tokens = await _usersService.RefreshAccessToken(model);
-
-            return Ok(tokens);
+            return Ok(await _usersService.GetRecordsCountAsync());
         }
     }
 }

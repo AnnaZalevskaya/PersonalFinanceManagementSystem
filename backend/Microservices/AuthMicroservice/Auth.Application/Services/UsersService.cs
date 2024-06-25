@@ -9,6 +9,8 @@ using Auth.Application.Models.Consts;
 using Auth.Application.Exceptions;
 using Auth.Core.Exceptions;
 using System.Security.Claims;
+using Serilog;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Application.Services
 {
@@ -59,6 +61,8 @@ namespace Auth.Application.Services
             response.Token = accessToken;
 
             await _userManager.UpdateAsync(user);
+
+            Log.Information($"User {response.Username} is logged in.");
 
             _producer.SendMessage(response);
 
@@ -153,6 +157,11 @@ namespace Auth.Application.Services
             userModel.Role = roles.FirstOrDefault();
 
             return userModel;
+        }
+
+        public async Task<int> GetRecordsCountAsync()
+        {
+            return await _unitOfWork.Users.GetRecordsCountAsync();
         }
     }
 }
