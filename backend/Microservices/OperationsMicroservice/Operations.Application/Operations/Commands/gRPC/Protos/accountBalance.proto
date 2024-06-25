@@ -12,6 +12,25 @@ message AccountBalanceResponse {
     double balance = 1;
 }
 
+message ProgressRequest {
+    int32 account_id = 1;
+    string start_date = 2;
+    string end_date = 3;
+    GoalTypeEnum goal_type = 4;
+}
+
+message ProgressResponse {
+    double progress = 1;
+}
+
+enum GoalTypeEnum {
+    Null = 0;
+    Save = 1;
+    Spend = 2;
+    Reach = 3;
+}
+
 service AccountBalance {
     rpc GetAccountBalance(AccountIdRequest) returns (AccountBalanceResponse);
+    rpc GetProgress(ProgressRequest) returns (ProgressResponse);
 }
