@@ -11,7 +11,6 @@ using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using gRPC.Protos.Client;
-using Hangfire;
 using Polly;
 using static gRPC.Protos.Client.AccountBalance;
 
@@ -25,15 +24,13 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly IMessageProducer _producer;
         private readonly AccountBalanceClient _balanceClient;
         private readonly ICacheRepository _cacheRepository;
-        private readonly INotificationService _notificationService;
         private readonly IAccountPdfReportService _reportService;
         private readonly IAsyncPolicy _retryPolicy;
         private readonly IAsyncPolicy<byte[]> _fallbackPolicy;
 
         public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
             IMessageConsumer consumer, IMessageProducer producer,
-            AccountBalanceClient balanceClient, ICacheRepository cacheRepository,
-            INotificationService notificationService, IAccountPdfReportService reportService)
+            AccountBalanceClient balanceClient, ICacheRepository cacheRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -41,8 +38,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
             _producer = producer;
             _balanceClient = balanceClient;
             _cacheRepository = cacheRepository;
-            _notificationService = notificationService;
-            _reportService = reportService;
 
             _retryPolicy = Policy
                 .Handle<Exception>()
@@ -78,9 +73,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _cacheRepository.CacheDataAsync(account.Id, account);
-
-            BackgroundJob.Enqueue(() => _notificationService
-                .SendNotificationAsync(account.UserId.ToString(), "New account has been added successfully"));
         }
 
         public async Task DeleteAsync(int userId, int id, CancellationToken cancellationToken)
@@ -147,23 +139,28 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return accounts;
         }
 
+        public async Task<int> GetRecordsCountAsync()
+        {
+            return await _unitOfWork.FinancialAccounts.GetRecordsCountAsync();
+        }
+
         public async Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId,
             PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
-            int id = _consumer.ConsumeMessage(userId);
+            //int id = _consumer.ConsumeMessage(userId);
 
             //if (id == 0)
             //{
             //    throw new UserUnauthorizedException();
             //}
 
-            var cachedAccounts = await _cacheRepository
-                .GetCachedLargeDataAsync<FinancialAccountModel>(paginationSettings, userId.ToString());
+            //var cachedAccounts = await _cacheRepository
+            //    .GetCachedLargeDataAsync<FinancialAccountModel>(paginationSettings, userId.ToString());
 
-            if (cachedAccounts.Count != 0)
-            {
-                return cachedAccounts;
-            }
+            //if (cachedAccounts.Count != 0)
+            //{
+            //    return cachedAccounts;
+            //}
 
             var accounts = await _unitOfWork.FinancialAccounts
                 .GetAccountsByUserIdAsync(userId, paginationSettings, cancellationToken);
@@ -189,9 +186,14 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             _producer.SendMessages(accountsList);
 
-            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList, userId.ToString());
+            //await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList, userId.ToString());
 
             return accountsList;
+        }
+
+        public async Task<int> GetUserRecordsCountAsync(int userId)
+        {
+            return await _unitOfWork.FinancialAccounts.GetUserRecordsCountAsync(userId);
         }
 
         public async Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken)
@@ -256,7 +258,8 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _cacheRepository.CacheDataAsync(id, updateModel);
+            await _cacheRepository.RemoveCachedDataAsync(id);
+            //await _cacheRepository.CacheDataAsync(id, updateModel);
         }
 
         public async Task<byte[]> GenerateAccountReport(FinancialAccountModel model)

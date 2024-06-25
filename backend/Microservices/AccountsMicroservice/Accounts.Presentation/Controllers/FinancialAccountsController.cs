@@ -49,8 +49,8 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        //  [Authorize]
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id,
+    //    [Authorize]
+        public async Task<ActionResult<FinancialAccountModel>> GetAccountByIdAsync(int id,
             CancellationToken cancellationToken)
         {
             return Ok(await _service.GetByIdAsync(id, cancellationToken));
@@ -72,12 +72,18 @@ namespace Accounts.Presentation.Controllers
             return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));
         }
 
-        [HttpPost("report")]
-        public async Task<ActionResult> GenerateReportAsync(FinancialAccountModel model)
+        [HttpGet("count")]
+        [Authorize]
+        public async Task<ActionResult<int>> GetRecordsCountAsync()
         {
-            var file = await _service.GenerateAccountReport(model);
+            return Ok(await _service.GetRecordsCountAsync());
+        }
 
-            return Ok(file);
+        [HttpGet("count_for_user/{userId}")]
+        [Authorize]
+        public async Task<ActionResult<int>> GetUserRecordsCountAsync(int userId)
+        {
+            return Ok(await _service.GetUserRecordsCountAsync(userId));
         }
     }
 }

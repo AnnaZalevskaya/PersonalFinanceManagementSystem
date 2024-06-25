@@ -16,6 +16,7 @@ namespace Accounts.DataAccess.EntityTypeConfigurations
 
             builder.Property(currency => currency.Name).HasColumnName("name");
             builder.Property(currency => currency.Abbreviation).HasColumnName("abbreviation");
+            builder.Property(currency => currency.Sign).HasColumnName("sign");
         }
     }
 }

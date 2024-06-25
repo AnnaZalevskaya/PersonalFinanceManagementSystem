@@ -13,6 +13,8 @@ namespace Accounts.BusinessLogic.Services.Interfaces
             CancellationToken cancellationToken);
         Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task UpdateAsync(int userId, int id, FinancialAccountActionModel updateModel, CancellationToken cancellationToken);
+        Task<int> GetRecordsCountAsync();
+        Task<int> GetUserRecordsCountAsync(int userId);
         Task<byte[]> GenerateAccountReport(FinancialAccountModel model);
     }
 }

@@ -33,6 +33,11 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return typesList;
         }
 
+        public async Task<int> GetRecordsCountAsync()
+        {
+            return await _unitOfWork.FinancialAccountTypes.GetRecordsCountAsync();
+        }
+
         public async Task<FinancialAccountTypeModel> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var type = await _unitOfWork.FinancialAccountTypes.GetByIdAsync(id, cancellationToken);

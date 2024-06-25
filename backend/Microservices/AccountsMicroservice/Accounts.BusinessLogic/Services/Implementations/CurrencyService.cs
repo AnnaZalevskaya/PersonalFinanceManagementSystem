@@ -33,6 +33,11 @@ namespace Accounts.BusinessLogic.Services.Implementations
             return currenciesList;
         }
 
+        public async Task<int> GetRecordsCountAsync()
+        {
+            return await _unitOfWork.Currencies.GetRecordsCountAsync();
+        }
+
         public async Task<CurrencyModel> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             var currency = await _unitOfWork.Currencies.GetByIdAsync(id, cancellationToken);

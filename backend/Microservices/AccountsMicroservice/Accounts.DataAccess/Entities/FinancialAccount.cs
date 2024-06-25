@@ -1,4 +1,6 @@
-﻿namespace Accounts.DataAccess.Entities
+﻿using Accounts.DataAccess.Entities.Base;
+
+namespace Accounts.DataAccess.Entities
 {
     public class FinancialAccount : BaseEntity
     {
