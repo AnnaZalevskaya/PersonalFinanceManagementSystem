@@ -27,4 +27,10 @@ export class OperationCategoriesService {
 
     return this.http.get<OperationCategory>(url);
   }
+
+  getRecordsCount(): Observable<number> {
+    const url = `${this.backendUrl}/count`;
+
+    return this.http.get<number>(url);
+  }
 }

@@ -11,8 +11,7 @@ import { PaginationSettings } from '../settings/pagination-settings';
 export class FinancialAccountsService {
   private backendUrl = 'https://localhost:44313/api/accounts/financial-accounts';
 
-  constructor(
-    private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   getAccounts(paginationSettings: PaginationSettings): Observable<Account[]> {
     const url = this.backendUrl;
@@ -24,6 +23,12 @@ export class FinancialAccountsService {
     return this.http.get<Account[]>(url, { params });
   }
 
+  getRecordsCount(): Observable<number> {
+    const url = `${this.backendUrl}/count`;
+
+    return this.http.get<number>(url);
+  }
+
   getAccountsByUser(userId: string, paginationSettings: PaginationSettings): Observable<Account[]> {
     const url = `${this.backendUrl}/user/${userId}`;
 
@@ -32,6 +37,12 @@ export class FinancialAccountsService {
       .set('pageSize', paginationSettings.pageSize.toString());
 
     return this.http.get<Account[]>(url, { params });
+  }
+
+  getUserRecordsCount(userId: string): Observable<number> {
+    const url = `${this.backendUrl}/count_for_user/${userId}`;
+
+    return this.http.get<number>(url);
   }
 
   getAccountById(id: string): Observable<Account> {

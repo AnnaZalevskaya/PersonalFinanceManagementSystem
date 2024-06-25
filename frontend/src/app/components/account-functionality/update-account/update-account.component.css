@@ -13,23 +13,9 @@
 .account-form h2 {
   text-align: center;
 }
-    
-.account-form .form-group {
-  margin-bottom: 15px;
-}
-    
-.account-form label {
-  display: block;
-  font-weight: bold;
-}
-    
-.account-form input[type="text"],
-.account-form select{
+
+mat-form-field {
   width: 100%;
-  box-sizing: border-box;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
     
 .account-form button[type="submit"] {

@@ -9,10 +9,10 @@
   
     <div class="modal-buttons">
       <button class="close-modal-button" (click)="closeAccount()">Close the account</button>
-      <button class="cancel-modal-button" routerLink="../">Cancel</button>
+      <button class="cancel-modal-button" (click)="back()">Cancel</button>
     </div>
 </div>
 <div *ngIf="showSuccessMessage" class="success-message">
   <p>The account has been successfully deleted!</p>
-  <a routerLink="../../../">Back</a>
+  <a (click)="back()">Back</a>
 </div>

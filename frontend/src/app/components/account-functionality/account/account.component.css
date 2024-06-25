@@ -1,11 +1,17 @@
 main {
-  background-color: #D8D6D0;
   font-family: "Nunito Sans", sans-serif;
-  margin-top: -22px;
+  margin: 0;
   padding: 0;
+}
+
+.account-info {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
   
 h1 {
+  font-size: 28pt;
   padding-top: 25px;
   text-align: center;
   display: flex;
@@ -13,37 +19,8 @@ h1 {
   align-items: center;
 }
 
-.account-details {
-  display: flex;
-  justify-content: space-between;
-
-}
-
-.account-details h2 {
-  font-size: 24px;
-}
-  
-.account-details p {
-  margin: 10px 0;
-}
-  
-.account-details h3 {
-  margin-top: 20px;
-}
-
-.account-summary {
-  width: 50%;
-  float: left;
-  margin-right: 20px;
-}
-
-.operations-list {
-  width: 50%;
-  overflow: hidden;
-}
-  
-.account-info {
-  margin: 20px;
+h3 {
+  font-size: 20pt;
 }
   
 .operation-card {
@@ -52,7 +29,7 @@ h1 {
   border: 3px solid #fff;
   padding: 10px;
   border-radius: 5px;
-  width: 90%;
+  width: 100%;
 }
   
 .description-table {
@@ -74,6 +51,7 @@ h1 {
 }
   
 .message {
+  font-size: 12pt;
   font-style: italic;
   color: #253343;
 }
@@ -85,23 +63,35 @@ h1 {
 }
   
 .account-card-footer button {
-  margin: 0 5px; 
+  margin: 0 15px; 
+}
+
+mat-grid-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+mat-grid-tile {
+  width: 60%;
+  height: 100%;
+  height: auto;
+}
+
+mat-card {
+  width: 100%;
+  background-color: transparent;
+}
+
+.account-card {
+  width: 60%;
 }
 
 button {
   color: white;
-  background-color: #2A2929;
-  padding: 4px 8px;
-  font-size: 16px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 2px solid white; 
   cursor: pointer;
-}
-
-button:disabled {
-  color: #444342;
-  background-color: transparent;
-  cursor: not-allowed;
 }
   
 .close-button {
@@ -118,13 +108,45 @@ button:disabled {
   background-color: #498B6D; 
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 15px;
+.pdf-button {
+  background-color: #2A2929;
 }
 
-.pagination button {
-  margin: 0 5px; 
+.goals-button {
+  background-color: #253343;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  button {
+    padding: 4px 6px;
+  }
+
+  mat-grid-tile {
+    width: 100%;
+  }
+
+  .profile-info {
+    margin-top: 10px;
+  }
+
+  .username {
+    font-size: 24px;
+  }
+
+  .account-card-header h3, a {
+    font-size: 18px;
+  }
+
+  .account-card-body p {
+    font-size: 12px;
+  }
 }

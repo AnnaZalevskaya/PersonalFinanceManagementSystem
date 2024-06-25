@@ -26,15 +26,6 @@
   font-weight: bold;
 }
     
-.operation-form #amount,
-.operation-form select{
-  width: 100%;
-  box-sizing: border-box;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-    
 .operation-form button[type="submit"] {
   width: 100%;
   padding: 10px;
@@ -45,23 +36,31 @@
   cursor: pointer;
 }
 
+mat-form-field {
+  width: 100%;
+}
+
 .input-group {
   display: flex;
   gap: 10px;
 }
 
 .input-group input{
-  width: 125px;
+  width: 100%;
+}
+
+button {
+  border-radius: 4px;
+  border-color: transparent;
 }
 
 .add-field {
   background-color: #AEC289;
-  border-radius: 4px;
-  border-color: transparent;
+  margin-bottom: 10px;
 }
 
 .delete-field {
+  margin-top: 15px;
   background-color: #F4DBDB;
-  border-radius: 4px;
-  border-color: transparent;
+  height: 35px;
 }
