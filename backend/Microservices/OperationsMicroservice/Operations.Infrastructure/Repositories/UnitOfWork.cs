@@ -36,5 +36,13 @@ namespace Operations.Infrastructure.Repositories
                 return new OperationRepository(_context);
             }
         }
+
+        public IRecurringPaymentRepository RecurringPayments
+        {
+            get
+            {
+                return new RecurringPaymentRepository(_context);
+            }
+        }
     }
 }
