@@ -26,6 +26,12 @@
   cursor: pointer;
 }
 
+.divider {
+  height: 1px;
+  background-color: white;
+  margin: 16px 0;
+}
+
 .notification {
   padding: 10px;
   border-bottom: 1px solid #ccc;

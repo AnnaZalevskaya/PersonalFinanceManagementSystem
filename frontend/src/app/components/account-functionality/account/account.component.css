@@ -1,6 +1,7 @@
 main {
+  background-color: #D8D6D0;
   font-family: "Nunito Sans", sans-serif;
-  margin: 0;
+  margin-top: -22px;
   padding: 0;
 }
 
@@ -11,8 +12,6 @@ main {
 }
   
 h1 {
-  font-size: 28pt;
-  padding-top: 25px;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -29,7 +28,7 @@ h3 {
   border: 3px solid #fff;
   padding: 10px;
   border-radius: 5px;
-  width: 100%;
+  width: 60%;
 }
   
 .description-table {
@@ -88,10 +87,17 @@ mat-card {
 
 button {
   color: white;
-  padding: 10px 12px;
+  padding: 8px 15px;
+  font-size: 16px;
   border-radius: 8px;
   border: 2px solid white; 
   cursor: pointer;
+}
+
+button:disabled {
+  color: #444342;
+  background-color: transparent;
+  cursor: not-allowed;
 }
   
 .close-button {
@@ -106,47 +112,4 @@ button {
   margin-left: 10px;
   margin-bottom: 15px;
   background-color: #498B6D; 
-}
-
-.pdf-button {
-  background-color: #2A2929;
-}
-
-.goals-button {
-  background-color: #253343;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 10px;
-  }
-
-  h1 {
-    font-size: 24px;
-    margin-bottom: 5px;
-  }
-
-  button {
-    padding: 4px 6px;
-  }
-
-  mat-grid-tile {
-    width: 100%;
-  }
-
-  .profile-info {
-    margin-top: 10px;
-  }
-
-  .username {
-    font-size: 24px;
-  }
-
-  .account-card-header h3, a {
-    font-size: 18px;
-  }
-
-  .account-card-body p {
-    font-size: 12px;
-  }
 }
