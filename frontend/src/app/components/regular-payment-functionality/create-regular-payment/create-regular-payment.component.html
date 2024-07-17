@@ -25,7 +25,7 @@
         <mat-option *ngFor="let interval of intervals.slice(0, intervals.length / 2)" [value]="interval">{{ interval.value }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field class="date">
+    <mat-form-field class="date" id="start-date">
       <mat-label>Start Date:</mat-label>
       <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" required>
       <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>

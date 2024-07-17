@@ -4,7 +4,6 @@ import { FinancialGoalsService } from '../../../services/financial-goals.service
 import { AuthService } from '../../../services/auth.service';
 import { User } from '../../../models/user.model';
 import { Account } from '../../../models/account.model';
-import { Goal } from '../../../models/goal.model';
 import { RecurringOperation } from '../../../models/recurring-payment.model';
 
 @Component({

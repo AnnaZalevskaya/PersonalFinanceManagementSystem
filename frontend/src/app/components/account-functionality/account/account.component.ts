@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { PaginationSettings } from '../../../settings/pagination-settings';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
 import { DeleteAccountComponent } from '../delete-account/delete-account.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -22,6 +23,7 @@ import { Observable } from 'rxjs';
 import { OperationCategory } from '../../../models/operation-category.model';
 import { UserNotificationsService } from '../../../services/user-notifications.service';
 import { ReportSavedNotification } from '../../../models/user-notification.model';
+import { DialogSavingReportComponent } from '../dialog-saving-report/dialog-saving-report.component';
 
 @Component({
   selector: 'app-account',
@@ -46,6 +48,8 @@ export class AccountComponent implements OnInit {
   isMobile = false;
   isLoadingForm: boolean = false;
   isLoadingOperationForm: boolean = false;
+  isGeneratingReport: boolean = false;
+  isDone = false;
 
   account!: Account;
   id!: string;
@@ -62,7 +66,8 @@ export class AccountComponent implements OnInit {
     private pdfService: PdfReportService,
     private userNotificationsService: UserNotificationsService,
     private bottomSheet: MatBottomSheet,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    public dialog: MatDialog
   ) { 
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
@@ -151,6 +156,12 @@ export class AccountComponent implements OnInit {
   }
 
   SaveReport(): void {
+    const dialogRef = this.dialog.open(DialogSavingReportComponent, {
+      data: { isDone: this.isDone }
+    }); 
+    //this.dialog.open(DialogSavingReportComponent);
+
+    this.isGeneratingReport = true;
     this.pdfService.generateFullReport(this.account.id.toString()).subscribe(
       response => {
         console.log("saved");
@@ -159,6 +170,12 @@ export class AccountComponent implements OnInit {
           reportName: `FinancialAccount_${ this.account.id.toString() }.pdf`
         };
         //this.userNotificationsService.addReportSavedNotification(notification);
+
+        console.log("old value " + dialogRef.componentInstance.isDone)
+        this.isGeneratingReport = false;
+        this.isDone = true;
+        dialogRef.componentInstance.isDone = this.isDone;
+        console.log("new value " + dialogRef.componentInstance.isDone)
       },
       error => {  
         this.router.navigate(['internal-server-error']);

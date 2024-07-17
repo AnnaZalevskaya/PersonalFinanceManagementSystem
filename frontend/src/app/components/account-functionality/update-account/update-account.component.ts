@@ -44,6 +44,7 @@ export class UpdateAccountComponent implements OnInit {
   typePaginationSettings: PaginationSettings = new PaginationSettings();
 
   accountForm: FormGroup;
+  selectedType!: AccountType;
 
   constructor(
     private router: Router,
@@ -73,32 +74,27 @@ export class UpdateAccountComponent implements OnInit {
   
   }
 
-  loadAccountTypes() {
-    this.typeService.getTypes(this.typePaginationSettings).subscribe((types: AccountType[]) => {
-      console.log("types " + types);
-      this.accountTypes = types;
-    });
-  }
-
-  loadCurrencies() {
-    this.currencyService.getCurrencies(this.currPaginationSettings).subscribe((currencies: Currency[]) => {
-      console.log("currencies " + currencies);
-      this.currencies = currencies;
-    });
-  }
-
   selectData() {
     this.accountService.getAccountById(this.accountId).subscribe(
       account => {
-        this.loadAccountTypes();
-        this.loadCurrencies();
-        this.accountForm.patchValue({
-          accountName: account.name,
-          accountType: account.accountType.name,
-          currency: account.currency.name
+        this.typeService.getTypes(this.typePaginationSettings).subscribe((types: AccountType[]) => {
+          this.accountTypes = types;
+
+          this.currencyService.getCurrencies(this.currPaginationSettings).subscribe((currencies: Currency[]) => {
+            this.currencies = currencies;
+
+            const selectedCurrency = this.currencies.find(curr => curr.name === account.currency.name);
+            const selectedAccountType = this.accountTypes.find(type => type.name === account.accountType.name);
+
+            this.accountForm.patchValue({
+              accountName: account.name,
+              accountType: selectedAccountType,
+              currency: selectedCurrency
+            });
+            
+            this.isLoadingForm = true;
+          });
         });
-        
-        this.isLoadingForm = true;
       }
     );
   } 

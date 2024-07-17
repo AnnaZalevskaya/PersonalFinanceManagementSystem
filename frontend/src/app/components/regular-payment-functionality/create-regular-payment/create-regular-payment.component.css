@@ -1,5 +1,5 @@
 .rec-oper-form {
-  width: 300px;
+  width: 350px;
   margin: 0 auto; 
   padding: 20px;
   border: 1px solid #ccc;
@@ -21,7 +21,11 @@ mat-form-field {
 }
 
 .date {
-  width: 50%;
+  width: 48%; 
+}
+
+#start-date {
+  margin-right: 12px;
 }
 
 .rec-oper-form button[type="submit"] {

@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { LoadingIndicatorComponent } from '../../additional-pages/loading-indicator/loading-indicator.component';
 import { FinancialGoalsService } from '../../../services/financial-goals.service';
 import { ActionGoal, GoalType } from '../../../models/goal.model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
@@ -38,9 +38,14 @@ export class UpdateGoalComponent {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private goalsService: FinancialGoalsService
   ) {
+    const goalId = this.route.snapshot.paramMap.get('goalId');
+    console.log("route " + this.route);
+    console.log("id " + goalId);
+
     this.goalTypes = this.getGoalTypes();
 
     this.goalForm = this.formBuilder.group({
@@ -51,6 +56,8 @@ export class UpdateGoalComponent {
       amount: ['', Validators.required]
     });
 
+    this.selectData(goalId!);
+
     this.isLoadingForm = true;
   }
 
@@ -60,6 +67,22 @@ export class UpdateGoalComponent {
         label: key,
         value: GoalType[key as keyof typeof GoalType]
       }));
+  }
+
+  selectData(id: string) {
+    this.goalsService.getGoalById(id).subscribe(
+      goal => {
+        const selectedGoalType = this.goalTypes.find(type => type.label === goal.typeId.toString());
+
+        this.goalForm.patchValue({
+          name: goal.name,
+          type: selectedGoalType,
+          startDate: goal.startDate,
+          endDate: goal.endDate,
+          amount: goal.amount
+        });
+      }
+    )
   }
 
   UpdateAccountGoal() {

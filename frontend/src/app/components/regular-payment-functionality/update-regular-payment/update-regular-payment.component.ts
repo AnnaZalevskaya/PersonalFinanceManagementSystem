@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Account } from '../../../models/account.model';
 import { FinancialAccountsService } from '../../../services/financial-accounts.service';
 import { PaginationSettings } from '../../../settings/pagination-settings';
+import { LoadingIndicatorComponent } from '../../additional-pages/loading-indicator/loading-indicator.component';
 
 @Component({
   selector: 'app-update-regular-payment',
@@ -23,12 +24,15 @@ import { PaginationSettings } from '../../../settings/pagination-settings';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
-    MatButtonModule
+    MatButtonModule,
+    LoadingIndicatorComponent
   ],
   templateUrl: './update-regular-payment.component.html',
   styleUrl: './update-regular-payment.component.css'
 })
 export class UpdateRegularPaymentComponent {
+  isLoadingForm: boolean = false;
+
   recurringOperationForm: FormGroup;
 
   intervals: { label: string, value: number }[];
@@ -38,15 +42,14 @@ export class UpdateRegularPaymentComponent {
   regOperId: string;
 
   constructor(
-    private recurringOperations: ScheduleOperationsService,
+    private recurringOperationsService: ScheduleOperationsService,
     private accountService: FinancialAccountsService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder
   ) {
     this.intervals = this.getIntervals();    
     this.userId = this.route.parent?.snapshot.paramMap.get('userId') ?? '';
-    this.regOperId = this.route.parent?.snapshot.paramMap.get('regPayId') ?? '';
-    this.loadAccounts();
+    this.regOperId = this.route.snapshot.paramMap.get('regPayId') ?? '';
 
     this.recurringOperationForm = this.formBuilder.group({
       account: ['', Validators.required],
@@ -57,27 +60,12 @@ export class UpdateRegularPaymentComponent {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required]
     });
+
+    this.selectData();
    }
 
   ngOnInit() {
     
-  }
-
-  loadAccounts() {
-    this.accountService.getUserRecordsCount(this.userId).subscribe(
-      response => {
-        const paginationSettings = new PaginationSettings();
-        paginationSettings.pageSize = response;
-        this.accountService.getAccountsByUser(this.userId, paginationSettings).subscribe(
-          accounts => {
-            this.accounts = accounts; 
-          },
-          error => {
-            console.error('Error retrieving accounts:', error);
-          }
-        );
-      }
-    )   
   }
 
   getIntervals(): { label: string, value: IntervalEnum }[] {
@@ -86,6 +74,42 @@ export class UpdateRegularPaymentComponent {
         label: key,
         value: IntervalEnum[key as keyof typeof IntervalEnum]
       }));
+  }
+
+  selectData() {
+    this.accountService.getUserRecordsCount(this.userId).subscribe(
+      response => {
+        const paginationSettings = new PaginationSettings();
+        paginationSettings.pageSize = response;
+        this.accountService.getAccountsByUser(this.userId, paginationSettings).subscribe(
+          accounts => {
+            this.accounts = accounts; 
+
+            this.recurringOperationsService.getOperationById(this.regOperId).subscribe(
+              operation => {
+                const selectedIntervalForReccuring = this.intervals.find(interval => interval.label === operation.intervalType.toString());
+                const selectedAccount = this.accounts.find(account => account.name === account.name);
+        
+                this.recurringOperationForm.patchValue({
+                  account: selectedAccount,
+                  name: operation.name,
+                  amount: operation.amount,
+                  executionTime: operation.executionTime,
+                  interval: selectedIntervalForReccuring,
+                  startDate: operation.startDate,
+                  endDate: operation.endDate
+                });
+
+                this.isLoadingForm = true;
+              }
+            )
+          },
+          error => {
+            console.error('Error retrieving information:', error);
+          }
+        );
+      }
+    )   
   }
 
   UpdateRegOper() {
@@ -101,7 +125,7 @@ export class UpdateRegularPaymentComponent {
         executionTime: this.recurringOperationForm.get('executionTime')!.value,
       };
   
-      this.recurringOperations.updateOperation(this.regOperId, recPayment).subscribe(
+      this.recurringOperationsService.updateOperation(this.regOperId, recPayment).subscribe(
         response => {
           console.log("updated");
         },

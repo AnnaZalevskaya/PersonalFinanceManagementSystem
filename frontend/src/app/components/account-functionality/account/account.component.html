@@ -26,7 +26,7 @@
               <button mat-fab class="goals-button" routerLink="./account-goals" matTooltip="Financial goals">
                 <mat-icon>timeline</mat-icon>
               </button>
-              <button mat-fab matTooltip="Saving the report" class="pdf-button" (click)="SaveReport()">
+              <button mat-fab matTooltip="Saving the report" class="pdf-button" (click)="SaveReport()" [disabled]="isGeneratingReport">
                 <mat-icon>picture_as_pdf</mat-icon>
               </button>
             </mat-card-footer>
