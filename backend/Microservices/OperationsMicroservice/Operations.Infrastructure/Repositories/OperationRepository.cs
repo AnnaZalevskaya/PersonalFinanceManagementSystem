@@ -1,11 +1,9 @@
-﻿using Microsoft.Identity.Client;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using Operations.Application.Interfaces;
 using Operations.Application.Settings;
 using Operations.Core.Entities;
 using Operations.Infrastructure.Data;
-using System.Text.RegularExpressions;
 
 namespace Operations.Infrastructure.Repositories
 {
@@ -20,7 +18,7 @@ namespace Operations.Infrastructure.Repositories
 
         public async Task CreateAsync(Operation operation, CancellationToken cancellationToken)
         {
-            await _context.Operations.InsertOneAsync(operation, cancellationToken);
+            await _context.Operations.InsertOneAsync(operation, new InsertOneOptions(), cancellationToken);
         }
 
         public async Task DeleteByAccountIdAsync(int accountId, CancellationToken cancellationToken)

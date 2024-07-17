@@ -7,6 +7,6 @@ namespace Operations.Core.Entities
     public class Category : BaseEntity
     {    
         [BsonElement("CategoryType")]
-        public MongoDBRef CategoryType { get; set; }
+        public MongoDBRef? CategoryType { get; set; }
     }
 }

@@ -73,8 +73,8 @@ namespace Operations.API.Controllers
 
             var pdfBytes = new MergedReportModel()
             {
-                pdfBytesFile1 = bytes1,
-                pdfBytesFile2 = bytes2
+                PdfBytesFile1 = bytes1,
+                PdfBytesFile2 = bytes2
             };
 
             var mergedFile = await _mediator.Send(new MergeReportsQuery(pdfBytes));

@@ -24,7 +24,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly IMessageProducer _producer;
         private readonly AccountBalanceClient _balanceClient;
         private readonly ICacheRepository _cacheRepository;
-        private readonly IAccountPdfReportService _reportService;
         private readonly IAsyncPolicy _retryPolicy;
         private readonly IAsyncPolicy<byte[]> _fallbackPolicy;
 
@@ -47,7 +46,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
                 .Handle<Exception>()
                 .FallbackAsync(async (cancellationToken) =>
                 {
-                    return new byte[0];
+                    return await Task.FromResult(Array.Empty<byte>());
                 });
         }
 
@@ -260,19 +259,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _cacheRepository.RemoveCachedDataAsync(id);
             //await _cacheRepository.CacheDataAsync(id, updateModel);
-        }
-
-        public async Task<byte[]> GenerateAccountReport(FinancialAccountModel model)
-        {
-            var report = await _fallbackPolicy.ExecuteAsync(async () =>
-            {
-                return await _retryPolicy.ExecuteAsync(async () =>
-                {
-                    return await _reportService.GeneratePdfReportFromAccountModel(model);
-                });
-            });
-
-            return report;
         }
     }
 }

@@ -76,20 +76,20 @@ namespace Auth.Application.Services
                 new BadCredentialsException();
             }
 
-            string accessToken = tokens.AccessToken;
+            string accessToken = tokens!.AccessToken;
             string refreshToken = tokens.RefreshToken;
 
             var claims = _tokenService.GetClaimsFromExpiredAccessToken(accessToken);
             
             var user = await _userManager.FindByIdAsync(claims
-                .FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+                .FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)!.Value);
 
             var newAccessToken = _tokenService.UpdateToken(claims);
-            var newRefreshToken = _tokenService.GetRefreshToken(user);
+            var newRefreshToken = _tokenService.GetRefreshToken(user!);
 
             tokens.AccessToken = newAccessToken;
             tokens.RefreshToken = newRefreshToken;
-            user.RefreshToken = newRefreshToken;
+            user!.RefreshToken = newRefreshToken;
             await _userManager.UpdateAsync(user);
 
             return tokens;

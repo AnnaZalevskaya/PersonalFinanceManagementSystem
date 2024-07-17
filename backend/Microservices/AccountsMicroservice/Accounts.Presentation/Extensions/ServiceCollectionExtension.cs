@@ -122,8 +122,13 @@ namespace Accounts.Presentation.Extensions
             services.Configure<ConnectionStrings>(configuration.GetSection(nameof(ConnectionStrings)));
             var connStrings = services.BuildServiceProvider().GetRequiredService<IOptions<ConnectionStrings>>();
 
-            services.AddDbContext<FinancialAccountsDbContext>(options
-                 => options.UseNpgsql(connStrings.Value.DefaultConnection));
+            services.AddDbContext<FinancialAccountsDbContext>(optionsBuilder => 
+                optionsBuilder.UseNpgsql(connStrings.Value.DefaultConnection, options => 
+                    options.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorCodesToAdd: new List<string> { "4060" }
+            )));
 
             return services;
         }

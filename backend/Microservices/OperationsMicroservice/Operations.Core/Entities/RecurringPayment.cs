@@ -5,7 +5,7 @@ namespace Operations.Core.Entities
     public class RecurringPayment : BaseOperationEntity
     {
         public int UserId { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public decimal Amount { get; set; }
         public TimeOnly ExecutionTime { get; set; }
         public int IntervalType { get; set; }

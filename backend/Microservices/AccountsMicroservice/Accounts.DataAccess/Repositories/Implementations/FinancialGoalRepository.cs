@@ -24,7 +24,7 @@ namespace Accounts.DataAccess.Repositories.Implementations
             var entityToDelete = await _context.FinancialGoals
                 .Where(goal => goal.Id == id)
                 .FirstOrDefaultAsync(cancellationToken);
-            _context.Remove(entityToDelete);
+            _context.FinancialGoals.Remove(entityToDelete);
         }
 
         public async Task<IEnumerable<FinancialGoal>> GetAllAsync(PaginationSettings paginationSettings,

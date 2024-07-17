@@ -6,9 +6,9 @@ namespace Accounts.BusinessLogic.Models
     {
         public int Id { get; set; }
         public int AccountId { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int TypeId { get; set; }
-        public FinancialGoalTypeModel Type { get; set; }
+        public FinancialGoalTypeModel? Type { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double Amount { get; set; }

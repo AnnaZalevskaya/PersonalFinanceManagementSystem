@@ -1,4 +1,7 @@
-﻿using iText.Kernel.Pdf.Canvas.Draw;
+﻿using iText.IO.Font.Constants;
+using iText.Kernel.Colors;
+using iText.Kernel.Font;
+using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
@@ -8,38 +11,77 @@ namespace Operations.Application.Extensions
 {
     public static class PdfReportExtension
     {
-        public static void ApplyDocContentAndStyle(this Document document, OperationModel model)
+        public static void ApplyDocContentAndStyle(this Document document, OperationModel model, List<CategoryModel> categoryModels)
         {
-            var operation = new Paragraph($"Financial operation № {model.Id}:")
-                .SetFontSize(26);
+            PdfFont helveticaFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+            PdfFont helveticaBoldFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+
+            PdfFont courierFont = PdfFontFactory.CreateFont(StandardFonts.COURIER);
+            PdfFont courierBoldFont = PdfFontFactory.CreateFont(StandardFonts.COURIER_BOLD);
+
+            var elementsColor = new DeviceRgb(110, 142, 236);
+
+            var operation = new Paragraph()
+                .Add("FO ")
+                .Add(new Text($"{model.Id}")
+                    .SetFontColor(elementsColor)
+                    .SetFont(helveticaFont)
+                    .SetBold())
+                .Add(":")
+                .SetFontSize(24)
+                .SetMarginTop(12);
             document?.Add(operation);
 
             var title = new Paragraph("Description:")
-                .SetFontSize(26);
+                .SetFontSize(20)
+                .SetFont(courierBoldFont);
             document?.Add(title);
 
             foreach (var record in model.Description)
             {
-                document?.Add(new Paragraph($"{record.Key} - {record.Value}"));
+                if (record.Key == "CategoryId")
+                {
+                    document?.Add(new Paragraph()
+                        .Add("Category - ")
+                        .Add(new Text($"{categoryModels.Find(model => model.Id == (int)record.Value).Name}")
+                            .SetFontColor(elementsColor))
+                        .SetFont(courierFont));
+                }
+                else
+                {
+                    document?.Add(new Paragraph()
+                        .Add($"{record.Key} - ")
+                        .Add(new Text($"{record.Value}")
+                            .SetFontColor(elementsColor))
+                        .SetFont(courierFont));
+                }
                 var ls = new LineSeparator(new SolidLine());
                 document?.Add(ls);
             }
 
-            var slF = new LineSeparator(new SolidLine()).SetWidth(3);
-            document?.Add(slF);
+            document?.Add(new Paragraph(new Text(" ")));
         }
 
         public static void ApplyDocHeaderContentAndStyle(this Document document)
         {
-            document.SetFontSize(24);
-
             var header = new Paragraph("Recent financial operations:")
                 .SetTextAlignment(TextAlignment.CENTER)
-                .SetFontSize(32);
+                .SetFontSize(28);
             document?.Add(header);
 
-            var slH = new LineSeparator(new SolidLine()).SetWidth(3);
-            document?.Add(slH);
+            document?.Add(new Paragraph(new Text(" ")));
+        }
+
+        public static void ApplyNoOperationsContentAndStyle(this Document document)
+        {
+            var message = new Paragraph(
+                new Text("This account has not have any financial operations yet.")
+                    .SetTextAlignment(TextAlignment.RIGHT)
+                    .SetFontSize(24)
+                    .SetItalic()
+                )
+                .SetMarginTop(24);
+            document.Add(message);
         }
     }
 }

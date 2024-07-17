@@ -8,4 +8,4 @@
         Monthly = 4,
         Yearly = 5
     }
-}
+} 
