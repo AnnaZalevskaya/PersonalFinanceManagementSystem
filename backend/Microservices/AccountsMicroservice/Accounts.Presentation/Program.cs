@@ -1,4 +1,5 @@
-﻿using Accounts.BusinessLogic.Services.SignalR;
+﻿using Accounts.BusinessLogic.Services.gRPC;
+using Accounts.BusinessLogic.Services.SignalR;
 using Accounts.Presentation.Extensions;
 
 namespace Accounts.Presentation
@@ -20,8 +21,8 @@ namespace Accounts.Presentation
                 .ConfigureGrpc(builder.Configuration)
                 .ConfigureMapperProfiles()
                 .ConfigureValidation()
-                .ConfigureSignalR()
-                .ConfigureHangfire(builder.Configuration)
+     //           .ConfigureSignalR()
+                .ConfigureHangfire()
                 .ConfigureControllers()  
                 .ConfigureCORS()
                 .ConfigureRedis(builder.Configuration)
@@ -29,26 +30,27 @@ namespace Accounts.Presentation
 
             var app = builder.Build();
 
-          //  app.MigrateDatabase();
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            app.ConfigureCustomExceptionMiddleware();
+       //     app.ConfigureCustomExceptionMiddleware();
       
             app.UseHttpsRedirection();
             app.UseWebSockets();
             app.UseRouting();
 
             app.UseCors("AllowSpecificOrigins");
+            app.UseGrpcWeb();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHub<NotificationsHub>("/notifications");
+            app.MapGrpcService<PdfReportGrpcService>().EnableGrpcWeb();
+
+            //     app.MapHub<NotificationsHub>("/notifications");
             app.MapControllers();
 
             app.Run();

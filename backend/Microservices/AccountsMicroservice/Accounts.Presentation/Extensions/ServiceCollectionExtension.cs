@@ -3,6 +3,7 @@ using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Implementations;
 using Accounts.BusinessLogic.Services.Interfaces;
+using Accounts.BusinessLogic.Services.SignalR;
 using Accounts.BusinessLogic.Settings;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.Repositories.Implementations;
@@ -121,8 +122,13 @@ namespace Accounts.Presentation.Extensions
             services.Configure<ConnectionStrings>(configuration.GetSection(nameof(ConnectionStrings)));
             var connStrings = services.BuildServiceProvider().GetRequiredService<IOptions<ConnectionStrings>>();
 
-            services.AddDbContext<FinancialAccountsDbContext>(options
-                 => options.UseNpgsql(connStrings.Value.DefaultConnection));
+            services.AddDbContext<FinancialAccountsDbContext>(optionsBuilder => 
+                optionsBuilder.UseNpgsql(connStrings.Value.DefaultConnection, options => 
+                    options.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorCodesToAdd: new List<string> { "4060" }
+            )));
 
             return services;
         }
@@ -140,7 +146,9 @@ namespace Accounts.Presentation.Extensions
             services.AddScoped<IFinancialAccountService, FinancialAccountService>();
             services.AddScoped<IFinancialAccountTypeService, FinancialAccountTypeService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
-            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IAccountPdfReportService, AccountPdfReportService>();
+            services.AddScoped<IFinancialGoalService, FinancialGoalService>();
+            services.AddScoped<IFinancialGoalTypeService, FinancialGoalTypeService>();
 
             return services;
         }
@@ -191,7 +199,11 @@ namespace Accounts.Presentation.Extensions
 
         public static IServiceCollection ConfigureGrpc(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddGrpc();
+            services.AddGrpc(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
+
             services.AddGrpcClient<AccountBalanceClient>(options => 
                 options.Address = new Uri(configuration.GetSection("GRPC:ServerURI").Value))
                 .ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(new HttpClientHandler())); 
@@ -217,12 +229,12 @@ namespace Accounts.Presentation.Extensions
             services.AddSignalR(options => {
                 options.EnableDetailedErrors = true;
             });
+            services.AddHostedService<NotificationService>();
 
             return services;
         }
 
-        public static IServiceCollection ConfigureHangfire(this IServiceCollection services, 
-            IConfiguration configuration)
+        public static IServiceCollection ConfigureHangfire(this IServiceCollection services)
         {
             var connStrings = services.BuildServiceProvider().GetRequiredService<IOptions<ConnectionStrings>>();
 

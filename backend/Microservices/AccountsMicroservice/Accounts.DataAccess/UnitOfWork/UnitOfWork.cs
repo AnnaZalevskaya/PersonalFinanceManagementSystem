@@ -7,22 +7,24 @@ namespace Accounts.DataAccess.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly FinancialAccountsDbContext _context;
+        private readonly FinancialAccountsDbContext _accountsContext;
 
         private IFinancialAccountRepository? _financialAccountRepository;
         private IFinancialAccountTypeRepository? _financialAccountTypeRepository;
         private ICurrencyRepository? _currencyRepository;
+        private IFinancialGoalRepository? _financialGoalRepository;
+        private IFinancialGoalTypeRepository? _financialGoalTypeRepository;
 
-        public UnitOfWork(FinancialAccountsDbContext context)
+        public UnitOfWork(FinancialAccountsDbContext accountsContext)
         {
-            _context = context ?? throw new DatabaseNotFoundException();
+            _accountsContext = accountsContext ?? throw new DatabaseNotFoundException();
         }
 
         public IFinancialAccountRepository FinancialAccounts
         {
             get
             {
-                _financialAccountRepository ??= new FinancialAccountRepository(_context);
+                _financialAccountRepository ??= new FinancialAccountRepository(_accountsContext);
 
                 return _financialAccountRepository;
             }
@@ -32,7 +34,7 @@ namespace Accounts.DataAccess.UnitOfWork
         {
             get
             {
-                _financialAccountTypeRepository ??= new FinancialAccountTypeRepository(_context);
+                _financialAccountTypeRepository ??= new FinancialAccountTypeRepository(_accountsContext);
 
                 return _financialAccountTypeRepository;
             }
@@ -42,15 +44,35 @@ namespace Accounts.DataAccess.UnitOfWork
         {
             get
             {
-                _currencyRepository ??= new CurrencyRepository(_context);
+                _currencyRepository ??= new CurrencyRepository(_accountsContext);
 
                 return _currencyRepository;
             }
         }
 
+        public IFinancialGoalRepository FinancialGoals
+        {
+            get
+            {
+                _financialGoalRepository ??= new FinancialGoalRepository(_accountsContext);
+
+                return _financialGoalRepository;
+            }
+        }
+
+        public IFinancialGoalTypeRepository FinancialGoalTypes
+        {
+            get
+            {
+                _financialGoalTypeRepository ??= new FinancialGoalTypeRepository(_accountsContext);
+
+                return _financialGoalTypeRepository;
+            }
+        }
+
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await _accountsContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

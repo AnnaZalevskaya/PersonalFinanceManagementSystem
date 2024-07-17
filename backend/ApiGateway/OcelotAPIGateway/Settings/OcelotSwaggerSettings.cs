@@ -2,7 +2,7 @@
 {
     public class OcelotSwaggerSettings
     {
-        public string DownstreamSwaggerEndPointBasePath { get; init; }
-        public string PathToSwaggerGenerator { get; init; }
+        public string? DownstreamSwaggerEndPointBasePath { get; init; }
+        public string? PathToSwaggerGenerator { get; init; }
     }
 }

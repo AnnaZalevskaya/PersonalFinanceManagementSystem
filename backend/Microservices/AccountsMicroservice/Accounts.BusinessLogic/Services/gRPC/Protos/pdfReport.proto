@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "gRPC.Protos.Server";
+
+package report;
+
+message ReportBytesRequest {
+    int32 AccountId = 1;
+}
+
+message ReportBytesResponse {
+    bytes bytes = 1;
+}
+
+service ReportBytes {
+    rpc GetReportBytes(ReportBytesRequest) returns (ReportBytesResponse);
+}

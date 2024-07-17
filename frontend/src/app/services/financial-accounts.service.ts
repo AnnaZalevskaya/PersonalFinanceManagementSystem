@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Account } from '../models/account.model';
 import { AccountAction } from '../models/account-action.model';
 import { PaginationSettings } from '../settings/pagination-settings';
@@ -11,8 +11,7 @@ import { PaginationSettings } from '../settings/pagination-settings';
 export class FinancialAccountsService {
   private backendUrl = 'https://localhost:44313/api/accounts/financial-accounts';
 
-  constructor(
-    private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   getAccounts(paginationSettings: PaginationSettings): Observable<Account[]> {
     const url = this.backendUrl;
@@ -24,14 +23,16 @@ export class FinancialAccountsService {
     return this.http.get<Account[]>(url, { params });
   }
 
+  getRecordsCount(): Observable<number> {
+    const url = `${this.backendUrl}/count`;
+
+    return this.http.get<number>(url);
+  }
+
   getAccountsByUser(userId: string, paginationSettings: PaginationSettings): Observable<Account[]> {
     const url = `${this.backendUrl}/user/${userId}`;
 
-    const params = new HttpParams()
-      .set('pageNumber', paginationSettings.pageNumber.toString())
-      .set('pageSize', paginationSettings.pageSize.toString());
-
-    return this.http.get<Account[]>(url, { params });
+    return this.http.get<Account[]>(url);
   }
 
   getAccountById(id: string): Observable<Account> {

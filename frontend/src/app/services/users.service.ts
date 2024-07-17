@@ -27,4 +27,10 @@ export class UsersService {
 
     return this.http.get<User>(url);
   }
+
+  getRecordsCount(): Observable<number> {
+    const url = `${this.backendUrl}/count`;
+
+    return this.http.get<number>(url);
+  }
 }

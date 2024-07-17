@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Operations.Application.Models;
-using Operations.Application.Operations.Queries.GetCategoryDetails;
-using Operations.Application.Operations.Queries.GetCategoryList;
+using Operations.Application.Operations.Queries.Details.GetCategoryDetails;
+using Operations.Application.Operations.Queries.Lists.GetCategoryList;
+using Operations.Application.Operations.Queries.RecordsCount.GetCategoryRecordsCount;
 using Operations.Application.Settings;
 
 namespace Operations.API.Controllers
@@ -24,6 +25,12 @@ namespace Operations.API.Controllers
             var categories = await _mediator.Send(new GetCategoryListQuery(paginationSettings));
 
             return Ok(categories);
+        }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<long>> GetRecordsCountAsync()
+        {
+            return Ok(await _mediator.Send(new GetCategoryRecordsCountQuery()));    
         }
 
         [HttpGet("{id}")]

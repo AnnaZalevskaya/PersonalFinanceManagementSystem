@@ -23,14 +23,16 @@ export class OperationsService {
     return this.http.get<Operation[]>(url, { params });
   }
 
+  getRecordsCount(): Observable<number> {
+    const url = `${this.backendUrl}/count`;
+
+    return this.http.get<number>(url);
+  }
+
   getOperationsByAccount(accountId: string, paginationSettings: PaginationSettings): Observable<Operation[]> {
     const url = `${this.backendUrl}/account/${accountId}`;
 
-    const params = new HttpParams()
-      .set('pageNumber', paginationSettings.pageNumber.toString())
-      .set('pageSize', paginationSettings.pageSize.toString());
-
-    return this.http.get<Operation[]>(url, { params });
+    return this.http.get<Operation[]>(url);
   }
 
   getOperationById(id: string): Observable<Operation> {
@@ -40,14 +42,8 @@ export class OperationsService {
   }
 
   addOperation(model: CreateOperation) {
-    const url = `${this.backendUrl}`;
+    const url = this.backendUrl;
 
     return this.http.post(url, model);
-  }
-
-  deleteAccountOperations(accountId: number): Observable<any> {
-    const url = `${this.backendUrl}/account/${accountId}`;
-    
-    return this.http.delete(url);
   }
 }

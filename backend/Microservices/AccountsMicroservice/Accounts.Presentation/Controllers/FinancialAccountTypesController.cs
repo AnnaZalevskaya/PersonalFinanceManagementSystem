@@ -29,5 +29,11 @@ namespace Accounts.Presentation.Controllers
         {
             return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));
         }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> GetRecordsCountAsync()
+        {
+            return Ok(await _service.GetRecordsCountAsync());
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace Operations.Core.Extensions
 
                 if (nameProperty != null)
                 {
-                    return nameProperty.GetValue(result).ToString();
+                    return nameProperty.GetValue(result)?.ToString();
                 }
             }
 

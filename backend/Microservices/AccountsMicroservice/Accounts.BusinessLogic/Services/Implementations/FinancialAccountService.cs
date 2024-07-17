@@ -1,6 +1,7 @@
 ﻿using Accounts.BusinessLogic.Consumers;
 using Accounts.BusinessLogic.Exceptions;
 using Accounts.BusinessLogic.Models;
+using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Entities;
@@ -10,7 +11,7 @@ using Accounts.DataAccess.Settings;
 using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using gRPC.Protos.Client;
-using Hangfire;
+using Polly;
 using static gRPC.Protos.Client.AccountBalance;
 
 namespace Accounts.BusinessLogic.Services.Implementations
@@ -23,12 +24,12 @@ namespace Accounts.BusinessLogic.Services.Implementations
         private readonly IMessageProducer _producer;
         private readonly AccountBalanceClient _balanceClient;
         private readonly ICacheRepository _cacheRepository;
-        private readonly INotificationService _notificationService;
+        private readonly IAsyncPolicy _retryPolicy;
+        private readonly IAsyncPolicy<byte[]> _fallbackPolicy;
 
         public FinancialAccountService(IUnitOfWork unitOfWork, IMapper mapper,
             IMessageConsumer consumer, IMessageProducer producer,
-            AccountBalanceClient balanceClient, ICacheRepository cacheRepository,
-            INotificationService notificationService)
+            AccountBalanceClient balanceClient, ICacheRepository cacheRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -36,7 +37,17 @@ namespace Accounts.BusinessLogic.Services.Implementations
             _producer = producer;
             _balanceClient = balanceClient;
             _cacheRepository = cacheRepository;
-            _notificationService = notificationService;
+
+            _retryPolicy = Policy
+                .Handle<Exception>()
+                .RetryAsync(PollyConsts.MaxRetryAttempts);
+
+            _fallbackPolicy = Policy<byte[]>
+                .Handle<Exception>()
+                .FallbackAsync(async (cancellationToken) =>
+                {
+                    return await Task.FromResult(Array.Empty<byte>());
+                });
         }
 
         public async Task AddAsync(FinancialAccountActionModel addModel, CancellationToken cancellationToken)
@@ -61,9 +72,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             await _cacheRepository.CacheDataAsync(account.Id, account);
-
-            BackgroundJob.Enqueue(() => _notificationService
-                .SendNotificationAsync(account.UserId.ToString(), "New account has been added successfully"));
         }
 
         public async Task DeleteAsync(int userId, int id, CancellationToken cancellationToken)
@@ -98,50 +106,60 @@ namespace Accounts.BusinessLogic.Services.Implementations
             {
                 return cachedAccounts;
             }
- 
-            var accounts = await _unitOfWork.FinancialAccounts.GetFullAccounts(paginationSettings, cancellationToken);
-            var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
-            foreach (var account in accountsList)
+            var accounts = await _retryPolicy.ExecuteAsync(async () =>
             {
-                var request = new AccountIdRequest
-                {
-                    AccountId = account.Id
-                };
+                var accounts = await _unitOfWork.FinancialAccounts.GetFullAccounts(paginationSettings, cancellationToken);
+                var accountsList = _mapper.Map<List<FinancialAccountModel>>(accounts);
 
-                var accountBalanceResponse = await _balanceClient
-                    .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
-
-                if (accountBalanceResponse == null)
+                foreach (var account in accountsList)
                 {
-                    throw new GetBalanceException();
+                    var request = new AccountIdRequest
+                    {
+                        AccountId = account.Id
+                    };
+
+                    var accountBalanceResponse = await _balanceClient
+                        .GetAccountBalanceAsync(request, cancellationToken: cancellationToken);
+
+                    if (accountBalanceResponse == null)
+                    {
+                        throw new GetBalanceException();
+                    }
+
+                    account.Balance = accountBalanceResponse.Balance;
                 }
 
-                account.Balance = accountBalanceResponse.Balance;
-            }
+                return accountsList;
+            });
 
-            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList);
+            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accounts);
 
-            return accountsList;
+            return accounts;
+        }
+
+        public async Task<int> GetRecordsCountAsync()
+        {
+            return await _unitOfWork.FinancialAccounts.GetRecordsCountAsync();
         }
 
         public async Task<List<FinancialAccountModel>> GetAccountsByUserIdAsync(int userId,
             PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
-            int id = _consumer.ConsumeMessage(userId);
+            //int id = _consumer.ConsumeMessage(userId);
 
             //if (id == 0)
             //{
             //    throw new UserUnauthorizedException();
             //}
 
-            var cachedAccounts = await _cacheRepository
-                .GetCachedLargeDataAsync<FinancialAccountModel>(paginationSettings, userId.ToString());
+            //var cachedAccounts = await _cacheRepository
+            //    .GetCachedLargeDataAsync<FinancialAccountModel>(paginationSettings, userId.ToString());
 
-            if (cachedAccounts.Count != 0)
-            {
-                return cachedAccounts;
-            }
+            //if (cachedAccounts.Count != 0)
+            //{
+            //    return cachedAccounts;
+            //}
 
             var accounts = await _unitOfWork.FinancialAccounts
                 .GetAccountsByUserIdAsync(userId, paginationSettings, cancellationToken);
@@ -167,9 +185,14 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             _producer.SendMessages(accountsList);
 
-            await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList, userId.ToString());
+            //await _cacheRepository.CacheLargeDataAsync(paginationSettings, accountsList, userId.ToString());
 
             return accountsList;
+        }
+
+        public async Task<int> GetUserRecordsCountAsync(int userId)
+        {
+            return await _unitOfWork.FinancialAccounts.GetUserRecordsCountAsync(userId);
         }
 
         public async Task<FinancialAccountModel> GetByIdAsync(int id, CancellationToken cancellationToken)
@@ -234,7 +257,8 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _cacheRepository.CacheDataAsync(id, updateModel);
+            await _cacheRepository.RemoveCachedDataAsync(id);
+            //await _cacheRepository.CacheDataAsync(id, updateModel);
         }
     }
 }

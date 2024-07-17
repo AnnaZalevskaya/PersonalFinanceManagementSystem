@@ -26,6 +26,11 @@ namespace Auth.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<int> GetRecordsCountAsync()
+        {
+            return await _context.Users.CountAsync();
+        }
+
         public async Task<AppUser> GetByIdAsync(long id, CancellationToken cancellationToken)
         {
             var result = await _context.Users

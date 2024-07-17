@@ -1,0 +1,5 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/frontend/src/app/components/account-functionality/account/account.component.css

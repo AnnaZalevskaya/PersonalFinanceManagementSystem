@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Operations.Application.Interfaces;
 
 namespace Operations.Application.Operations.Commands.DeleteAccountOperations

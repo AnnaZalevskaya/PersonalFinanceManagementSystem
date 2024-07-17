@@ -6,6 +6,7 @@ namespace Accounts.BusinessLogic.Services.Interfaces
     public interface ICurrencyService
     {
         Task<List<CurrencyModel>> GetAllAsync(PaginationSettings paginationSettings, CancellationToken cancellationToken);
+        Task<int> GetRecordsCountAsync();
         Task<CurrencyModel> GetByIdAsync(int id, CancellationToken cancellationToken);
     }
 }

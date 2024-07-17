@@ -30,7 +30,7 @@ namespace Accounts.Presentation.Controllers
 
         [HttpDelete("user/{userId}/account/{accountId}")]
         [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
-        public async Task<IActionResult> CloseAccountAsync(int userId, int accountId, 
+        public async Task<IActionResult> CloseAccountAsync(int userId, int accountId,
             CancellationToken cancellationToken)
         {
             await _service.DeleteAsync(userId, accountId, cancellationToken);
@@ -40,7 +40,7 @@ namespace Accounts.Presentation.Controllers
 
         [HttpPut("user/{userId}/account/{accountId}")]
         [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
-        public async Task<IActionResult> EditAccountAsync(int userId, int accountId, 
+        public async Task<IActionResult> EditAccountAsync(int userId, int accountId,
             [FromBody] FinancialAccountActionModel model, CancellationToken cancellationToken)
         {
             await _service.UpdateAsync(userId, accountId, model, cancellationToken);
@@ -49,8 +49,8 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<FinancialAccountModel>> GetAccountAsync(int id, 
+    //    [Authorize]
+        public async Task<ActionResult<FinancialAccountModel>> GetAccountByIdAsync(int id,
             CancellationToken cancellationToken)
         {
             return Ok(await _service.GetByIdAsync(id, cancellationToken));
@@ -70,6 +70,20 @@ namespace Accounts.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             return Ok(await _service.GetAllAsync(paginationSettings, cancellationToken));
+        }
+
+        [HttpGet("count")]
+        [Authorize]
+        public async Task<ActionResult<int>> GetRecordsCountAsync()
+        {
+            return Ok(await _service.GetRecordsCountAsync());
+        }
+
+        [HttpGet("count_for_user/{userId}")]
+        [Authorize]
+        public async Task<ActionResult<int>> GetUserRecordsCountAsync(int userId)
+        {
+            return Ok(await _service.GetUserRecordsCountAsync(userId));
         }
     }
 }
