@@ -13,12 +13,12 @@ namespace Operations.Application.Operations.Commands.Reports.MergeReports
             var pdfDocument = new PdfDocument(writer);
             var merger = new PdfMerger(pdfDocument);
 
-            var pdfReader1 = new PdfReader(new MemoryStream(command.MergedReport.pdfBytesFile1));
+            var pdfReader1 = new PdfReader(new MemoryStream(command.MergedReport.PdfBytesFile1));
             var sourceDocument1 = new PdfDocument(pdfReader1);
 
             merger.Merge(sourceDocument1, 1, sourceDocument1.GetNumberOfPages());
 
-            var pdfReader2 = new PdfReader(new MemoryStream(command.MergedReport.pdfBytesFile2));
+            var pdfReader2 = new PdfReader(new MemoryStream(command.MergedReport.PdfBytesFile2));
             var sourceDocument2 = new PdfDocument(pdfReader2);
 
             merger.Merge(sourceDocument2, 1, sourceDocument2.GetNumberOfPages());

@@ -2,7 +2,7 @@
 {
     public class MergedReportModel
     {
-        public byte[] pdfBytesFile1 { get; set; }
-        public byte[] pdfBytesFile2 { get; set; }
+        public byte[]? PdfBytesFile1 { get; set; }
+        public byte[]? PdfBytesFile2 { get; set; }
     }
 }
