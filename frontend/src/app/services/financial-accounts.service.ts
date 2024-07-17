@@ -32,17 +32,7 @@ export class FinancialAccountsService {
   getAccountsByUser(userId: string, paginationSettings: PaginationSettings): Observable<Account[]> {
     const url = `${this.backendUrl}/user/${userId}`;
 
-    const params = new HttpParams()
-      .set('pageNumber', paginationSettings.pageNumber.toString())
-      .set('pageSize', paginationSettings.pageSize.toString());
-
-    return this.http.get<Account[]>(url, { params });
-  }
-
-  getUserRecordsCount(userId: string): Observable<number> {
-    const url = `${this.backendUrl}/count_for_user/${userId}`;
-
-    return this.http.get<number>(url);
+    return this.http.get<Account[]>(url);
   }
 
   getAccountById(id: string): Observable<Account> {

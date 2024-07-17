@@ -1,0 +1,27 @@
+<header> 
+  <div class="actions">   
+    <div class="left-group">
+      <div class="ico">
+        <a routerLink="">
+          <img src="assets/images/app-icon/app-icon.ico">
+        </a>  
+      </div>  
+    </div>  
+    <div class="right-group">
+      <div class="dropdown">
+        <button class="login"><img src="assets/images/icon-user.png"></button>
+        <div class="dropdown-content">
+          <a [routerLink]="isClient() ? '/profile/{{userId}}' : '/admin'" *ngIf="isAuthenticated">{{getUserName()}}</a>
+          <hr *ngIf="this.isAuthenticated">
+          <a (click)="this.isAuthenticated ? this.logout() : this.login()">   
+            {{ this.isAuthenticated ? 'Logout' : 'Login' }}
+          </a>
+        </div>
+      </div>
+      <button class="notifications" [disabled]="!isAuthenticated || !isClient()" (click)="toggleNotificationPanel()">
+        <img src="assets/images/icon-notification.png">
+      </button>
+    </div>
+</div>
+</header>
+<app-notification-panel *ngIf="showNotificationPanel()"></app-notification-panel>
