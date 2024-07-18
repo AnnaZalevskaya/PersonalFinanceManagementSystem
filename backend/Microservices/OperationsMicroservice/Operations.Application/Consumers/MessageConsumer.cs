@@ -30,9 +30,9 @@ namespace Operations.Application.Consumers
             if (message != null)
             {
                 var messageObject = JsonConvert.DeserializeObject<dynamic>(message);
-                Console.WriteLine(" [x] Received id: {0}", messageObject.Id);
+                Console.WriteLine(" [x] Received id: {0}", messageObject?.Id);
 
-                return messageObject.Id;
+                return messageObject?.Id;
             }
 
             return 0;

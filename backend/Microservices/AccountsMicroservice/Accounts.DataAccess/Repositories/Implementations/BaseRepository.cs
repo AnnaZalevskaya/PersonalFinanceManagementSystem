@@ -1,5 +1,5 @@
 ﻿using Accounts.DataAccess.Data;
-using Accounts.DataAccess.Entities;
+using Accounts.DataAccess.Entities.Base;
 using Accounts.DataAccess.Repositories.Interfaces;
 using Accounts.DataAccess.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -47,5 +47,10 @@ namespace Accounts.DataAccess.Repositories.Implementations
             var entityToUpdate = await _context.FindAsync<TEntity>(id, cancellationToken);
             _context.Entry<TEntity>(entityToUpdate).CurrentValues.SetValues(item);
         }
+
+        public async Task<int> GetRecordsCountAsync()
+        {
+            return await _context.Set<TEntity>().CountAsync();
+        } 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Operations.Core.Entities;
+﻿using Operations.Application.Interfaces.Base;
+using Operations.Core.Entities;
 
 namespace Operations.Application.Interfaces
 {

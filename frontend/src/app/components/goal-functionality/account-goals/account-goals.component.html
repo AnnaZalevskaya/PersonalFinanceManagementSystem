@@ -1,0 +1,49 @@
+<main>
+  <h1>Financial Goals</h1>
+  
+  <button mat-fab class="add-button" routerLink="../add-goal" matTooltip="Create a goal">
+    <mat-icon>add_circle_outline</mat-icon>
+  </button>
+
+  <mat-grid-list [cols]="isMobile ? 1 : 2" rowHeight="275px" gutterSize="15px">
+    <ng-container *ngIf="financialGoals.length > 0; else noGoals">
+    <mat-grid-tile *ngFor="let goal of financialGoals">
+      <mat-card>
+        <mat-card-header>
+          <h3>{{ goal.name }}</h3>
+        </mat-card-header>
+        <mat-card-content>         
+          <p class="additonal">{{ goal.startDate | date: 'dd.MM.yyyy' }} - {{ goal.endDate | date: 'dd.MM.yyyy' }}</p>
+          <p class="type-label">{{ goal.type }}</p>
+          <p>Target Amount: {{ goal.amount }}</p>
+          <p>Current Progress Amount: {{ goal.progress }}</p>    
+          
+          <p class="res-show-module">Result:</p>
+          <mat-progress-bar mode="determinate" [value]="calculateProgress(goal)"></mat-progress-bar>
+        </mat-card-content>
+        <mat-card-footer>
+          <button mat-fab class="edit-button" matTooltip="Edit this goal" routerLink="../update-goal/{{goal.id}}">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-fab class="close-button" matTooltip="Deactive this goal" (click)="openCloseAccountGoalModal(goal.id.toString())">
+            <mat-icon>delete</mat-icon>
+          </button>      
+        </mat-card-footer>
+      </mat-card>
+    </mat-grid-tile>
+  </ng-container>
+    <ng-template #noGoals>
+      <div class="message">
+        This account does not contain any goals yet
+      </div>
+    </ng-template>
+  </mat-grid-list>
+    
+  <mat-paginator #paginator
+     class="demo-paginator"
+     (page)="handlePageEvent($event)"
+     [length]="recordCount"
+     [pageSize]="paginationSettings.pageSize"
+     [pageIndex]="paginationSettings.pageNumber - 1">
+    </mat-paginator>
+</main>

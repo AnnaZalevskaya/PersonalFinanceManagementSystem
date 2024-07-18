@@ -1,0 +1,34 @@
+<div class="container">
+  <form class="operation-form" [formGroup]="operationForm" (ngSubmit)="addOperation()" *ngIf="isLoadingForm">
+    <h2>Create Operation</h2>
+    <mat-form-field>
+      <mat-label>Category:</mat-label>
+      <mat-select formControlName="category" required>
+        <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Amount:</mat-label>
+      <input matInput formControlName="amount" type="number" required>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="button" class="add-field" (click)="addField()">
+      <mat-icon>add_circle</mat-icon>
+    </button>
+    <div formArrayName="description">
+      <div *ngFor="let field of addedFields; let i = index" [formGroupName]="i" class="input-group">
+      <mat-form-field>
+        <input matInput formControlName="key" placeholder="Key" required>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput formControlName="value" placeholder="Value" required>
+      </mat-form-field>
+      <button mat-button color="warn" class="delete-field" (click)="removeField(i)">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+      </div>
+    </div>
+    <br><br>
+    <button mat-raised-button color="primary" type="submit">Add Operation</button>
+  </form>
+</div>
+<app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>

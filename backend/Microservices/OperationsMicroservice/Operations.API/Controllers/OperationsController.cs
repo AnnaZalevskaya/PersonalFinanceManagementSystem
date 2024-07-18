@@ -1,11 +1,14 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Operations.Application.Models;
 using Operations.Application.Models.Consts;
 using Operations.Application.Operations.Commands.CreateOperation;
-using Operations.Application.Operations.Queries.GetOperationDetails;
-using Operations.Application.Operations.Queries.GetOperationList;
+using Operations.Application.Operations.Commands.DeleteAccountOperations;
+using Operations.Application.Operations.Queries.Details.GetOperationDetails;
+using Operations.Application.Operations.Queries.Lists.GetOperationList;
+using Operations.Application.Operations.Queries.RecordsCount.GetAccountOperationRecordsCount;
+using Operations.Application.Operations.Queries.RecordsCount.GetOperationRecordsCount;
 using Operations.Application.Settings;
 
 namespace Operations.API.Controllers
@@ -23,7 +26,7 @@ namespace Operations.API.Controllers
 
         [HttpGet]
         [Authorize(Policy = AuthPolicyConsts.AdminOnly)]
-        public async Task<ActionResult> GetAllAsync([FromQuery] PaginationSettings paginationSettings)
+        public async Task<ActionResult<List<OperationModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings)
         {
             var operations = await _mediator.Send(new GetOperationListQuery(paginationSettings));
 
@@ -50,11 +53,32 @@ namespace Operations.API.Controllers
             return Ok(operations);
         }
 
+        [HttpGet("count")]
+        public async Task<ActionResult<long>> GetRecordsCountAsync()
+        {
+            return Ok(await _mediator.Send(new GetOperationRecordsCountQuery()));
+        }
+
+        [HttpGet("count_for_account/{accountId}")]
+        public async Task<ActionResult<long>> GetAccountRecordsCountAsync(int accountId)
+        {
+            return Ok(await _mediator.Send(new GetAccountOperationRecordsCountQuery(accountId)));
+        }
+
         [HttpPost]
         [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
             await _mediator.Send(new CreateOperationCommand(model));
+
+            return NoContent();
+        }
+
+        [HttpDelete("account/{accountId}")]
+        [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
+        public async Task<ActionResult> DeleteByAccountIdAsync(int accountId)
+        {
+            await _mediator.Send(new DeleteAccountOperationsCommand(accountId));
 
             return NoContent();
         }

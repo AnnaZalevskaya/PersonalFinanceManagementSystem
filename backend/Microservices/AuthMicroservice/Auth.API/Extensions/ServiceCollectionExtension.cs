@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 namespace Auth.API.Extensions
@@ -194,6 +195,17 @@ namespace Auth.API.Extensions
             services.AddStackExchangeRedisCache(options => {
                 options.Configuration = configuration.GetSection("Redis:Host").Value;
                 options.InstanceName = configuration.GetSection("Redis:Instance").Value;
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureLogging(this IServiceCollection services)
+        {
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders(); 
+                loggingBuilder.AddSerilog(); 
             });
 
             return services;

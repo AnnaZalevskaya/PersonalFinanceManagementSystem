@@ -7,6 +7,8 @@ namespace Accounts.BusinessLogic.Validators
     {
         public CurrencyValidator()
         {
+            RuleLevelCascadeMode = CascadeMode.StopOnFirstFailure;
+
             RuleFor(currency => currency.Id)
                 .NotEmpty()
                 .Must((type, id) => id == type.Id)

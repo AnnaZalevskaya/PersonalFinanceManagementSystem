@@ -1,0 +1,43 @@
+header {
+  height: 15vh;
+  min-height: 100px;
+  background: linear-gradient(to right, #193C35, #498B6D);
+}
+
+a {
+  text-decoration: none;
+  font-family: Georgia;
+  font-size: 36px;
+  color: #5665bd;
+  text-shadow: -1px -1px 0 #FFD000, 1px -1px 0 #FFD000, -1px 1px 0 #000, 1px 1px 0 #000; 
+}
+  
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+
+.left-group,
+.right-group {
+  display: flex;
+  align-items: center;
+}
+
+.left-group a {
+  vertical-align: middle;
+}
+
+.right-group {
+  margin-left: auto;
+  gap: 20px;
+}
+
+.elem-header {
+  padding: 10px 20px;
+  background-color: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

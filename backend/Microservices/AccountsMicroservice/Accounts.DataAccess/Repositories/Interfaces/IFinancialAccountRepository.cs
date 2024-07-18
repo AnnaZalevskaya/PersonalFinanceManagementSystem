@@ -11,5 +11,6 @@ namespace Accounts.DataAccess.Repositories.Interfaces
         Task<IEnumerable<FinancialAccount>> GetAccountsByUserIdAsync(int userId, 
             PaginationSettings paginationSettings, CancellationToken cancellationToken);
         Task<FinancialAccount> GetFullAccountByIdAsync(int id, CancellationToken cancellationToken);
+        Task<int> GetUserRecordsCountAsync(int userId);
     }
 }

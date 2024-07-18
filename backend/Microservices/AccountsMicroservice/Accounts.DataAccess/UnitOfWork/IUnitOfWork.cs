@@ -7,6 +7,8 @@ namespace Accounts.DataAccess.UnitOfWork
         IFinancialAccountRepository FinancialAccounts { get; }
         IFinancialAccountTypeRepository FinancialAccountTypes { get; }
         ICurrencyRepository Currencies { get; }
+        IFinancialGoalRepository FinancialGoals { get; }
+        IFinancialGoalTypeRepository FinancialGoalTypes { get; }
 
         Task SaveChangesAsync(CancellationToken cancellationToken);
     }

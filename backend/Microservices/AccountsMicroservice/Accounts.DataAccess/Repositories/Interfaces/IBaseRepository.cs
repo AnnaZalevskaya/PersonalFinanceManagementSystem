@@ -9,5 +9,6 @@ namespace Accounts.DataAccess.Repositories.Interfaces
         Task AddAsync(TEntity item, CancellationToken cancellationToken);
         Task UpdateAsync(int id, TEntity item, CancellationToken cancellationToken);
         Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<int> GetRecordsCountAsync();
     }
 }

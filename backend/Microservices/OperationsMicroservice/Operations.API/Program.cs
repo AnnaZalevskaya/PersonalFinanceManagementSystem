@@ -1,5 +1,6 @@
 using Operations.API.Extensions;
 using Operations.Application.Operations.Commands.gRPC;
+using Operations.Application.Operations.Commands.SignalR;
 
 namespace Operations.Api
 {
@@ -17,9 +18,11 @@ namespace Operations.Api
                 .ConfigureSwagger()
                 .ConfigureRabbitMQ()
                 .ConfigureMediatR()
-                .ConfigureGrpc()        
+                .ConfigureHangfire(builder.Configuration)
+                .ConfigureGrpc(builder.Configuration)        
                 .ConfigureMapperProfiles()
                 .ConfigureValidation()
+      //          .ConfigureSignalR()
                 .ConfigureControllers()
                 .ConfigureCORS()
                 .ConfigureRedis(builder.Configuration)
@@ -33,12 +36,13 @@ namespace Operations.Api
                 app.UseSwaggerUI();
             }
 
-            app.ConfigureCustomExceptionMiddleware();
+       //     app.ConfigureCustomExceptionMiddleware();
 
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("AllowSpecificOrigins");
             app.UseGrpcWeb();
+        //    app.MapHub<ReportHub>("/reportHub");
 
             app.UseAuthentication();
             app.UseAuthorization();

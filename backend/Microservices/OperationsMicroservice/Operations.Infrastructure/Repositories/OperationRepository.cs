@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using Operations.Application.Interfaces;
 using Operations.Application.Settings;
 using Operations.Core.Entities;
@@ -17,12 +18,12 @@ namespace Operations.Infrastructure.Repositories
 
         public async Task CreateAsync(Operation operation, CancellationToken cancellationToken)
         {
-            await _context.Operations.InsertOneAsync(operation, cancellationToken);
+            await _context.Operations.InsertOneAsync(operation, new InsertOneOptions(), cancellationToken);
         }
 
-        public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+        public async Task DeleteByAccountIdAsync(int accountId, CancellationToken cancellationToken)
         {
-            await _context.Operations.DeleteOneAsync(c => c.Id == id, cancellationToken);
+            await _context.Operations.DeleteManyAsync(c => c.AccountId == accountId, cancellationToken);
         }
 
         public async Task<Operation> GetAsync(string id, CancellationToken cancellationToken)
@@ -40,7 +41,7 @@ namespace Operations.Infrastructure.Repositories
             var operations = await _context.Operations
                 .Find(operations => true)
                 .SortBy(operation => operation.AccountId)
-                .ThenBy(operation => operation.Date)
+                .ThenByDescending(operation => operation.Date)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Limit(paginationSettings.PageSize)
                 .ToListAsync(cancellationToken);
@@ -53,12 +54,25 @@ namespace Operations.Infrastructure.Repositories
         {
             var operations = await _context.Operations
                 .Find(operation => operation.AccountId == accountId)
-                .SortBy(operation => operation.Date)
+                .SortByDescending(operation => operation.Date)
                 .Skip((paginationSettings.PageNumber - 1) * paginationSettings.PageSize)
                 .Limit(paginationSettings.PageSize)
                 .ToListAsync(cancellationToken);
 
             return operations;
+        }
+
+        public async Task<long> GetRecordsCountAsync()
+        {
+            return await _context.Operations
+                .CountDocumentsAsync(new BsonDocument());
+        }
+
+        public async Task<long> GetAccountRecordsCountAsync(int accountId)
+        {
+            return await _context.Operations
+                .Find(operation => operation.AccountId == accountId)
+                .CountDocumentsAsync();
         }
     }
 }

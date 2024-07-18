@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AuthRequest, AuthResponse } from '../models/auth.model';
+import { Token } from '../models/token.model';
 import { RegisterRequest, RegisterResponse } from '../models/register.model';
 import { TokenService } from './token.service';
 
@@ -12,10 +13,14 @@ const USER_KEY = 'auth_user';
 })
 export class AuthService {
   userId!: string | null;
+  tokens!: Token;
 
-  private backendUrl = "https://localhost:44313/api/auth/users";
+  private backendUrl = "https://localhost:44313/api/auth/auth";
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {}
+  constructor(private http: HttpClient, private tokenService: TokenService) 
+  {
+    
+  }
 
   authenticate(model: AuthRequest): Observable<AuthResponse> {
     const url = `${this.backendUrl}/authenticate`;
@@ -27,6 +32,26 @@ export class AuthService {
     const url = `${this.backendUrl}/register`
 
     return this.http.post<RegisterResponse>(url, model);
+  }
+
+  refreshAccessToken(): Observable<Token> {
+    const tokenModel: Token = {
+      accessToken: this.getAccessToken()!,
+      refreshToken: this.getRefreshToken()!
+    };
+
+    const url = `${this.backendUrl}/refresh-token`;
+
+    return this.http.post<Token>(url, tokenModel)
+    .pipe(
+      tap((response) => {
+        const newAccessToken = response.accessToken;
+        const newRefreshToken = response.refreshToken;
+
+        this.saveAccessToken(newAccessToken!);
+        this.saveRefreshToken(newRefreshToken!);
+      })
+    );;
   }
 
   public getCurrentUser(): any {
@@ -49,11 +74,15 @@ export class AuthService {
   }
 
   getRefreshToken() {
-    return this.getCurrentUser()['refreshToken'];
+    return this.tokenService.getRefreshToken();
   }
 
   saveAccessToken(token: string) {
     this.tokenService.saveToken(token);
+  }
+
+  saveRefreshToken(token: string) {
+    this.tokenService.saveRefreshToken(token);
   }
 
   logOut() {

@@ -61,5 +61,12 @@ namespace Accounts.DataAccess.Repositories.Implementations
                 .Include(account => account.Currency)
                 .FirstOrDefaultAsync(account => account.Id == id, cancellationToken);
         }
+
+        public async Task<int> GetUserRecordsCountAsync(int userId)
+        {
+            return await _context.FinancialAccounts
+                .Where(account => account.UserId == userId)
+                .CountAsync();
+        }
     }
 }

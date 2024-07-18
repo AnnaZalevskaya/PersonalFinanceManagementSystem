@@ -5,5 +5,6 @@
         ICategoryRepository Categories { get; }
         ICategoryTypeRepository CategoryTypes { get; }
         IOperationRepository Operations { get; }
+        IRecurringPaymentRepository RecurringPayments { get; }
     }
 }

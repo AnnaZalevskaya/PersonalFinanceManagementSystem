@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from "./components/header/header.component";
+import { HeaderComponent } from './components/main-pages/header/header.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FinancialAccountsService } from './services/financial-accounts.service';
 import { AuthService } from './services/auth.service';

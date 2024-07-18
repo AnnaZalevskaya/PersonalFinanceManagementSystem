@@ -1,0 +1,10 @@
+.step {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+  
+.step img {
+  max-width: 500px;
+  border-radius: 20px;
+}

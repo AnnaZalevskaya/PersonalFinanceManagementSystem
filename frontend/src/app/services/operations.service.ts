@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Operation } from '../models/operation.model';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { CreateOperation } from '../models/create-operation.model';
+import { PaginationSettings } from '../settings/pagination-settings';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +13,23 @@ export class OperationsService {
 
   constructor(private http: HttpClient) { }
 
-  getOperations(): Observable<Operation[]> {
+  getOperations(paginationSettings: PaginationSettings): Observable<Operation[]> {
     const url = this.backendUrl;
 
-    return this.http.get<Operation[]>(url);
+    const params = new HttpParams()
+      .set('pageNumber', paginationSettings.pageNumber.toString())
+      .set('pageSize', paginationSettings.pageSize.toString());
+
+    return this.http.get<Operation[]>(url, { params });
   }
 
-  getOperationsByAccount(accountId: string): Observable<Operation[]> {
+  getRecordsCount(): Observable<number> {
+    const url = `${this.backendUrl}/count`;
+
+    return this.http.get<number>(url);
+  }
+
+  getOperationsByAccount(accountId: string, paginationSettings: PaginationSettings): Observable<Operation[]> {
     const url = `${this.backendUrl}/account/${accountId}`;
 
     return this.http.get<Operation[]>(url);
@@ -31,7 +42,7 @@ export class OperationsService {
   }
 
   addOperation(model: CreateOperation) {
-    const url = `${this.backendUrl}`;
+    const url = this.backendUrl;
 
     return this.http.post(url, model);
   }

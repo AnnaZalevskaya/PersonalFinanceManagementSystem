@@ -12,6 +12,7 @@ namespace Operations.Infrastructure.Data
         public IMongoCollection<Category> Categories { get; }
         public IMongoCollection<CategoryType> CategoryTypes { get; }
         public IMongoCollection<Operation> Operations { get; }
+        public IMongoCollection<RecurringPayment> RecurringPayments { get; }
 
         public OperationsDbContext(IOptions<DatabaseSettings> dbOptions)
         {
@@ -21,6 +22,7 @@ namespace Operations.Infrastructure.Data
             Categories = Database.GetCollection<Category>(dbSettings.CategoriesCollectionName);
             CategoryTypes = Database.GetCollection<CategoryType>(dbSettings.CategoryTypesCollectionName);
             Operations = Database.GetCollection<Operation>(dbSettings.OperationsCollectionName);
+            RecurringPayments = Database.GetCollection<RecurringPayment>(dbSettings.RecurringPaymentsName);
             Client = client;
         }
     }
