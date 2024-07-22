@@ -9,18 +9,18 @@ using Operations.Application.Settings;
 
 namespace Operations.Application.Operations.Commands.Reports.GenerateReport
 {
-    public class GenerateReportQueryHandler : IRequestHandler<GenerateReportQuery, byte[]>
+    public class GenerateReportCommandHandler : IRequestHandler<GenerateReportCommand, byte[]>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public GenerateReportQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GenerateReportCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<byte[]> Handle(GenerateReportQuery command, CancellationToken cancellationToken)
+        public async Task<byte[]> Handle(GenerateReportCommand command, CancellationToken cancellationToken)
         {
             var memoryStream = new MemoryStream();
             var writer = new PdfWriter(memoryStream);

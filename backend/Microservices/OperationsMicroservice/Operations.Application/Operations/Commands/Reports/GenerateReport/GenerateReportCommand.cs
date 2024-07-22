@@ -3,11 +3,11 @@ using Operations.Application.Models;
 
 namespace Operations.Application.Operations.Commands.Reports.GenerateReport
 {
-    public class GenerateReportQuery : IRequest<byte[]>
+    public class GenerateReportCommand : IRequest<byte[]>
     {
         public List<OperationModel> Models { get; set; }
 
-        public GenerateReportQuery(List<OperationModel> models)
+        public GenerateReportCommand(List<OperationModel> models)
         {
             Models = models;
         }
