@@ -3,11 +3,11 @@ using Operations.Application.Models;
 
 namespace Operations.Application.Operations.Commands.Reports.MergeReports
 {
-    public class MergeReportsQuery : IRequest<byte[]>
+    public class MergeReportsCommand : IRequest<byte[]>
     {
         public MergedReportModel MergedReport { get; set; }
 
-        public MergeReportsQuery(MergedReportModel mergedReport)
+        public MergeReportsCommand(MergedReportModel mergedReport)
         {
             MergedReport = mergedReport;
         }

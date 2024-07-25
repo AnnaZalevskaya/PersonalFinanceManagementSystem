@@ -24,6 +24,7 @@ namespace Operations.Api
                 .ConfigureValidation()
       //          .ConfigureSignalR()
                 .ConfigureControllers()
+                .ConfigureBlobStorage(builder.Configuration)
                 .ConfigureCORS()
                 .ConfigureRedis(builder.Configuration)
                 .ConfigureEndpointsApiExplorer();

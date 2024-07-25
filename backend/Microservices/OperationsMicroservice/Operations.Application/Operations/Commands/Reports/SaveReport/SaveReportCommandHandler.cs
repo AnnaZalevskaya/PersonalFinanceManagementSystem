@@ -2,9 +2,9 @@
 
 namespace Operations.Application.Operations.Commands.Reports.SaveReport
 {
-    public class SaveReportQueryHandler : IRequestHandler<SaveReportQuery>
+    public class SaveReportCommandHandler : IRequestHandler<SaveReportCommand>
     {
-        public Task Handle(SaveReportQuery command, CancellationToken cancellationToken)
+        public Task Handle(SaveReportCommand command, CancellationToken cancellationToken)
         {
             string downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
             string baseFileName = $"FinancialAccount_{command.AccountId}.pdf";

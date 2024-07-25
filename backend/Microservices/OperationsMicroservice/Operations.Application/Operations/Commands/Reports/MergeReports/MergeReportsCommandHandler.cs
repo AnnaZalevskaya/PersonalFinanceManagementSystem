@@ -4,9 +4,9 @@ using MediatR;
 
 namespace Operations.Application.Operations.Commands.Reports.MergeReports
 {
-    public class MergeReportsQueryHandler : IRequestHandler<MergeReportsQuery, byte[]>
+    public class MergeReportsCommandHandler : IRequestHandler<MergeReportsCommand, byte[]>
     {
-        public async Task<byte[]> Handle(MergeReportsQuery command, CancellationToken cancellationToken)
+        public async Task<byte[]> Handle(MergeReportsCommand command, CancellationToken cancellationToken)
         {
             var memoryStream = new MemoryStream();
             var writer = new PdfWriter(memoryStream);

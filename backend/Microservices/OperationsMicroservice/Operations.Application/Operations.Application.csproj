@@ -14,6 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Abp" Version="9.0.0" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.14.0" />
     <PackageReference Include="Cqrs" Version="5.1.0.44" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="Google.Protobuf" Version="3.25.2" />

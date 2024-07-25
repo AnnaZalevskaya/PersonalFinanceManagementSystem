@@ -2,12 +2,12 @@
 
 namespace Operations.Application.Operations.Commands.Reports.SaveReport
 {
-    public class SaveReportQuery : IRequest
+    public class SaveReportCommand : IRequest
     {
         public int AccountId { get; set; }
         public byte[] PdfBytes { get; set; }
 
-        public SaveReportQuery(int accountId, byte[] pdfBytes)
+        public SaveReportCommand(int accountId, byte[] pdfBytes)
         {
             AccountId = accountId;
             PdfBytes = pdfBytes;

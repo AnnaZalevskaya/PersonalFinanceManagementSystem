@@ -1,13 +1,14 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Operations.Application.Models;
 using Operations.Application.Models.Consts;
+using Operations.Application.Operations.Commands.DataStorage.UploadFileBlob;
 using Operations.Application.Operations.Commands.Reports.GenerateReport;
 using Operations.Application.Operations.Commands.Reports.gRPC;
 using Operations.Application.Operations.Commands.Reports.MergeReports;
 using Operations.Application.Operations.Commands.Reports.SaveReport;
+using Operations.Application.Operations.Queries.DataStorage.GetBlob;
 using Operations.Application.Operations.Queries.Lists.GetOperationList;
 using Operations.Application.Operations.Queries.RecordsCount.GetAccountOperationRecordsCount;
 using Operations.Application.Settings;
@@ -15,7 +16,7 @@ using Operations.Application.Settings;
 namespace Operations.API.Controllers
 {
     [ApiController]
-    [Route("api/pdf-operations-report")]
+    [Route("api/pdf-operations-reports")]
     public class PdfReportController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -38,7 +39,7 @@ namespace Operations.API.Controllers
 
             var operations = await _mediator
                 .Send(new GetOperationListByAccountIdQuery(accountId, paginationSettings));
-            var file = await _mediator.Send(new GenerateReportQuery(operations));
+            var file = await _mediator.Send(new GenerateReportCommand(operations));
 
             return Ok(file);
         }
@@ -48,8 +49,8 @@ namespace Operations.API.Controllers
         public async Task<IActionResult> MergeAndSavePdfFilesAsync(int accountId, 
             [FromBody] MergedReportModel pdfBytes)
         {
-            var mergedFile = await _mediator.Send(new MergeReportsQuery(pdfBytes));
-            await _mediator.Send(new SaveReportQuery(accountId, mergedFile));
+            var mergedFile = await _mediator.Send(new MergeReportsCommand(pdfBytes));
+            await _mediator.Send(new SaveReportCommand(accountId, mergedFile));
 
             return NoContent();
         }
@@ -58,27 +59,42 @@ namespace Operations.API.Controllers
        // [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
         public async Task<IActionResult> SavePdfFilesAsync(int accountId)
         {
-            var bytes1 = await _mediator.Send(new PdfBytesGrpcCommand(accountId));
+            var blob = await _mediator.Send(new GetBlobQuery($"FinancialAccount_{accountId}.pdf"));
 
-            var paginationSettings = new PaginationSettings()
+            if(blob != null)
             {
-                PageSize = (int)await _mediator
-                    .Send(new GetAccountOperationRecordsCountQuery(accountId)),
-                PageNumber = 1
-            };
-
-            var operations = await _mediator
-                .Send(new GetOperationListByAccountIdQuery(accountId, paginationSettings));
-            var bytes2 = await _mediator.Send(new GenerateReportQuery(operations));
-
-            var pdfBytes = new MergedReportModel()
+                await _mediator.Send(new SaveReportCommand(accountId, blob));
+            }
+            else
             {
-                PdfBytesFile1 = bytes1,
-                PdfBytesFile2 = bytes2
-            };
+                var bytes1 = await _mediator.Send(new PdfBytesGrpcCommand(accountId));
+                var paginationSettings = new PaginationSettings()
+                {
+                    PageSize = (int)await _mediator
+                        .Send(new GetAccountOperationRecordsCountQuery(accountId)),
+                    PageNumber = 1
+                };
 
-            var mergedFile = await _mediator.Send(new MergeReportsQuery(pdfBytes));
-            await _mediator.Send(new SaveReportQuery(accountId, mergedFile));
+                var operations = await _mediator
+                    .Send(new GetOperationListByAccountIdQuery(accountId, paginationSettings));
+                var bytes2 = await _mediator.Send(new GenerateReportCommand(operations));
+
+                var pdfBytes = new MergedReportModel()
+                {
+                    PdfBytesFile1 = bytes1,
+                    PdfBytesFile2 = bytes2
+                };
+
+                var mergedFile = await _mediator.Send(new MergeReportsCommand(pdfBytes));
+                var model = new UploadFileRequestModel()
+                {
+                    FileBytes = mergedFile,
+                    FileName = $"FinancialAccount_{accountId}.pdf"
+                };
+
+                await _mediator.Send(new UploadFileBlobCommand(model));
+                await _mediator.Send(new SaveReportCommand(accountId, mergedFile));
+            }
 
             return NoContent();
         }

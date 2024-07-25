@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using Azure.Storage.Blobs;
+using FluentValidation.AspNetCore;
 using Grpc.Net.Client.Web;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -224,6 +225,17 @@ namespace Operations.API.Extensions
         public static IServiceCollection ConfigureSignalR(this IServiceCollection services)
         {
             services.AddSignalR();
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureBlobStorage(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<AzureBlobStorageSettings>(configuration.GetSection(nameof(AzureBlobStorageSettings)));
+            var blobOptions = services.BuildServiceProvider().GetRequiredService<IOptions<AzureBlobStorageSettings>>();
+
+            services.AddSingleton(provider => 
+                new BlobServiceClient(blobOptions.Value.StorageAccountConnection));
 
             return services;
         }
