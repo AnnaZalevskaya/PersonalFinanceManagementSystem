@@ -1,9 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Operations.Application.Models;
 using Operations.Application.Models.Consts;
 using Operations.Application.Operations.Commands.CreateOperation;
+using Operations.Application.Operations.Commands.DataStorage.DeleteBlob;
 using Operations.Application.Operations.Commands.DeleteAccountOperations;
 using Operations.Application.Operations.Queries.Details.GetOperationDetails;
 using Operations.Application.Operations.Queries.Lists.GetOperationList;
@@ -70,6 +72,7 @@ namespace Operations.API.Controllers
         public async Task<ActionResult> CreateAsync([FromBody] CreateOperationModel model)
         {
             await _mediator.Send(new CreateOperationCommand(model));
+            await _mediator.Send(new DeleteBlobCommand($"FinancialAccount_{model.AccountId}.pdf"));
 
             return NoContent();
         }
@@ -79,6 +82,7 @@ namespace Operations.API.Controllers
         public async Task<ActionResult> DeleteByAccountIdAsync(int accountId)
         {
             await _mediator.Send(new DeleteAccountOperationsCommand(accountId));
+            await _mediator.Send(new DeleteBlobCommand($"FinancialAccount_{accountId}.pdf"));
 
             return NoContent();
         }

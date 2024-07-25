@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class PdfReportService {
-  private backendUrl = 'https://localhost:44313/api/operations/pdf-operations-report';
+  private backendUrl = 'https://localhost:44313/api/operations/pdf-operations-reports';
 
   constructor(private http: HttpClient) { }
 
