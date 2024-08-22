@@ -1,0 +1,12 @@
+global using Auth.Application.Exceptions;
+global using Auth.Application.Interfaces;
+global using Auth.Application.Models;
+global using Auth.Application.Producers;
+global using Auth.Application.Services;
+global using Auth.Core.Entities;
+global using Auth.Core.Exceptions;
+global using Auth.UnitTests.UsersTests.Base;
+global using AutoMapper;
+global using Microsoft.AspNetCore.Identity;
+global using Moq;
+global using Xunit;

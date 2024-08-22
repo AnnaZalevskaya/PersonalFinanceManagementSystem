@@ -1,0 +1,80 @@
+<main>
+  <div class="account-info" *ngIf="isLoadingForm">
+    <h1>Account information</h1>
+    
+    <mat-grid-list [cols]="isMobile ? 1 : 2" rowHeight="100vh">
+      <mat-grid-tile>
+          <mat-card class="account-card">
+            <mat-card-header>
+              <h2>{{ account.name }}</h2>
+            </mat-card-header>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+              <p>ID: {{ account.id }}</p>
+              <p>Balance: {{ account.balance }} {{ account.currency.sign }}</p>
+              <p>Currency: {{ account.currency.name }} ({{ account.currency.abbreviation }})</p>
+              <p>Account Type: {{ account.accountType.name }}</p>
+            </mat-card-content>
+            <mat-divider></mat-divider>
+            <mat-card-footer class="account-card-footer">
+              <button mat-fab class="close-button" (click)="openCloseAccountModal()" matTooltip="Close an account">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-fab class="edit-button" routerLink="./update-account" matTooltip="Edit an account">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-fab class="goals-button" routerLink="./account-goals" matTooltip="Financial goals">
+                <mat-icon>timeline</mat-icon>
+              </button>
+              <button mat-fab matTooltip="Saving the report" class="pdf-button" (click)="SaveReport()" [disabled]="isGeneratingReport">
+                <mat-icon>picture_as_pdf</mat-icon>
+              </button>
+            </mat-card-footer>
+          </mat-card>     
+      </mat-grid-tile>
+  
+      <mat-grid-tile>
+        <div class="accounts-container">
+          <h3>Recent operations</h3>
+          <button mat-fab class="add-button" routerLink="./add-operation" matTooltip="Create an operation">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+          <div id="account-cards-container" *ngIf="isLoadingOperationForm">
+            <ng-container *ngIf="account.operations.length > 0; else noOperationsMessage">
+              <mat-card class="operation-card" *ngFor="let operation of account.operations">
+                <mat-card-header class="account-card-header">
+                  <i>{{ operation.id }}</i>&nbsp;-> {{ operation.date | date: 'dd.MM.yyyy HH:mm' }} 
+                </mat-card-header>
+                <mat-card-content class="account-card-body">
+                  <b>Description:</b>
+                  <table class="description-table">
+                    <tr *ngFor="let item of operation.description | keyvalue">
+                        <td class="key-field">{{ item.key }}</td>
+                        <td class="value-field">{{ item.value }}</td>
+                    </tr>
+                  </table>
+                </mat-card-content>
+              </mat-card>
+              <mat-paginator #paginator
+               class="demo-paginator"
+               (page)="handlePageEvent($event)"
+               [length]="recordCount"
+               [pageSize]="paginationSettings.pageSize"
+               [pageIndex]="paginationSettings.pageNumber - 1">
+          </mat-paginator>
+            </ng-container>
+            <ng-template #noOperationsMessage>
+              <div class="message">
+                This account does not contain any operations yet
+              </div>
+            </ng-template>  
+          </div>
+          <app-loading-indicator *ngIf="!isLoadingOperationForm"></app-loading-indicator>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+  <app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>
+  <router-outlet></router-outlet>
+</main>

@@ -1,0 +1,19 @@
+<div class="close-account-modal" *ngIf="!showSuccessMessage">
+    <h2>Closing an account</h2>
+    <p>Make sure again, do you want to delete <b>this account</b>?</p>
+    <div class="account-info">
+      <span>
+        {{ goal.name }}: {{ goal.amount }} with progress {{goal.progress }}
+        from {{ goal.startDate | date: 'dd.MM.yyyy'  }} to {{ goal.endDate | date: 'dd.MM.yyyy'  }}
+      </span>
+    </div>
+  
+    <div class="modal-buttons">
+      <button class="close-modal-button" (click)="closeGoal()">Close the account</button>
+      <button class="cancel-modal-button" (click)="back()">Cancel</button>
+    </div>
+</div>
+<div *ngIf="showSuccessMessage" class="success-message">
+  <p>The account goal has been successfully deleted!</p>
+  <a (click)="back()">Back</a>
+</div>
