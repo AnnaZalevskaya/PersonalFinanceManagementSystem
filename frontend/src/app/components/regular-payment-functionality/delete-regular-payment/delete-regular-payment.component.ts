@@ -5,11 +5,12 @@ import { AuthService } from '../../../services/auth.service';
 import { User } from '../../../models/user.model';
 import { Account } from '../../../models/account.model';
 import { RecurringOperation } from '../../../models/recurring-payment.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-delete-regular-payment',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './delete-regular-payment.component.html',
   styleUrl: './delete-regular-payment.component.css'
 })

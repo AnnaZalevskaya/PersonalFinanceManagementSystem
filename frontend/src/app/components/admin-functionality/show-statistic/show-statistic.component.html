@@ -1,0 +1,28 @@
+  <mat-form-field class="type-field">
+    <mat-label>Select Type</mat-label>
+      <mat-select [(ngModel)]="selectedType" required>
+        <mat-option *ngFor="let type of types" [value]="type">{{ type.name }}</mat-option>
+      </mat-select>
+  </mat-form-field>
+  <br>
+  <button mat-raised-button color="primary" (click)="getStatistics()">Get Statistics</button>
+  <div *ngIf="isResult" class="result">
+    <p>Selected type: {{ statisticInfo[0].kind }}</p>
+    <div class="column-container">
+      <div *ngFor="let item of statisticInfo" class="column">
+        <p>Currency: {{ item.currency }}</p>
+        <p>Number of Accounts: {{ item.amount }}</p>
+      </div>
+    </div>
+
+  <ngx-charts-bar-vertical
+    [results]="chartData"
+    [xAxis]="true"
+    [yAxis]="true"
+    [legend]="true"
+    [showXAxisLabel]="true"
+    [showYAxisLabel]="true"
+    xAxisLabel="Currency"
+    yAxisLabel="Number of Accounts">
+  </ngx-charts-bar-vertical>
+  </div>

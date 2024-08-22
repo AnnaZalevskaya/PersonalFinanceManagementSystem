@@ -27,6 +27,7 @@ import { UpdateGoalComponent } from './components/goal-functionality/update-goal
 import { UpdateRegularPaymentComponent } from './components/regular-payment-functionality/update-regular-payment/update-regular-payment.component';
 import { CreateRegularPaymentComponent } from './components/regular-payment-functionality/create-regular-payment/create-regular-payment.component';
 import { AllOperationsComponent } from './components/admin-functionality/all-operations/all-operations.component';
+import { ShowStatisticComponent } from './components/admin-functionality/show-statistic/show-statistic.component';
 
 export const routes: Routes = [
     { 
@@ -120,6 +121,10 @@ export const routes: Routes = [
                 path: 'all-operations', 
                 component: AllOperationsComponent 
             },
+            {
+                path: 'show-statistic',
+                component: ShowStatisticComponent
+            }
         ]
     },
     { 
