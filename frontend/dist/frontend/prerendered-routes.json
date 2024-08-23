@@ -1,7 +1,0 @@
-{
-  "routes": [
-    "/all-accounts",
-    "/auth",
-    "/main"
-  ]
-}
