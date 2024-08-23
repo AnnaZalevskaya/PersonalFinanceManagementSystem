@@ -49,7 +49,7 @@ namespace Accounts.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-    //    [Authorize]
+        [Authorize]
         public async Task<ActionResult<FinancialAccountModel>> GetAccountByIdAsync(int id,
             CancellationToken cancellationToken)
         {
@@ -84,6 +84,14 @@ namespace Accounts.Presentation.Controllers
         public async Task<ActionResult<int>> GetUserRecordsCountAsync(int userId)
         {
             return Ok(await _service.GetUserRecordsCountAsync(userId));
+        }
+
+        [HttpGet("statistic/{accountTypeParam}")]
+        public async Task<ActionResult<AccountStatisticsModel>> GetAccountStatisticsAsync(int accountTypeParam)
+        {
+            var statistics = await _service.GetStatisticByAccountsAsync(accountTypeParam);
+
+            return Ok(statistics);
         }
     }
 }

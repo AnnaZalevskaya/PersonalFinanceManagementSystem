@@ -26,9 +26,9 @@
           <mat-icon matBadge="0" matBadgeColor="primary" aria-hidden="false">notifications_none</mat-icon>
           <span>Notifications</span>
         </button>
-        <button mat-menu-item [disabled]="!isClient()" (click)="toRegularPaymentPage()">
-          <mat-icon>payment</mat-icon>
-          <span>Regular payments</span>
+        <button mat-menu-item (click)="isClient() ? toRegularPaymentPage() : toAccountStatictics()">
+          <mat-icon>{{ isClient() ? 'payment' : 'equalizer' }}</mat-icon>
+          <span>{{ isClient() ? 'Regular payments' : 'Account statistics' }}</span>
         </button>
         <button mat-menu-item (click)="logout()">
           <mat-icon>exit_to_app</mat-icon>

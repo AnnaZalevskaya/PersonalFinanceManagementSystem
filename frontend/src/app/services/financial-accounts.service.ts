@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Account } from '../models/account.model';
 import { AccountAction } from '../models/account-action.model';
 import { PaginationSettings } from '../settings/pagination-settings';
+import { AccountStatistic } from '../models/account-statistic.model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,12 @@ export class FinancialAccountsService {
     return this.http.get<Account[]>(url);
   }
 
+  getUserRecordsCount(userId: string): Observable<number> {
+    const url = `${this.backendUrl}/count_for_user/${userId}`;
+
+    return this.http.get<number>(url);
+  }
+
   getAccountById(id: string): Observable<Account> {
     const url = `${this.backendUrl}/${id}`;
 
@@ -57,5 +64,11 @@ export class FinancialAccountsService {
     const url = `${this.backendUrl}/user/${userId}/account/${accountId}`;
 
     return this.http.put(url, model);
+  }
+
+  getAccountStatistics(typeId: string): Observable<AccountStatistic[]> {
+    const url = `${this.backendUrl}/statistic/${typeId}`;
+
+    return this.http.get<AccountStatistic[]>(url);
   }
 }

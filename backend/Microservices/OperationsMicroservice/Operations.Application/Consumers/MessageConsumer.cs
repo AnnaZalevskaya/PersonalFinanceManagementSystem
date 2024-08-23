@@ -13,7 +13,7 @@ namespace Operations.Application.Consumers
 
         public MessageConsumer()
         {
-            _factory = new ConnectionFactory() { HostName = RabbitMQConsts.Host };
+            _factory = new ConnectionFactory() { Uri = new Uri(RabbitMQConsts.Uri) };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: RabbitMQConsts.ReceivingQueue,

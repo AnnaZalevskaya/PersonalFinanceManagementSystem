@@ -260,5 +260,13 @@ namespace Accounts.BusinessLogic.Services.Implementations
             await _cacheRepository.RemoveCachedDataAsync(id);
             //await _cacheRepository.CacheDataAsync(id, updateModel);
         }
+
+        public async Task<List<AccountStatisticsModel>> GetStatisticByAccountsAsync(int accountTypeParam)
+        {
+            var statistic = await _unitOfWork.FinancialAccounts.GetStatisticByAccountsAsync(accountTypeParam);
+            var models = _mapper.Map<List<AccountStatisticsModel>>(statistic);
+
+            return models;
+        }
     }
 }

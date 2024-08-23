@@ -35,6 +35,12 @@ export class OperationsService {
     return this.http.get<Operation[]>(url);
   }
 
+  getAccountRecordsCount(accountId: string) {
+    const url = `${this.backendUrl}/count_for_account/${accountId}`;
+
+    return this.http.get<number>(url);
+  }
+
   getOperationById(id: string): Observable<Operation> {
     const url = `${this.backendUrl}/${id}`;
 
@@ -45,5 +51,11 @@ export class OperationsService {
     const url = this.backendUrl;
 
     return this.http.post(url, model);
+  }
+
+  deleteAccountOperations(accountId: string) {
+    const url = `${this.backendUrl}/account/${accountId}`;
+
+    return this.http.delete(url);
   }
 }

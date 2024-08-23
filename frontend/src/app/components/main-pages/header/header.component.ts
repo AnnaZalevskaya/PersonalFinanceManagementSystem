@@ -88,6 +88,10 @@ export class HeaderComponent implements OnInit {
     this.router.navigate([`/profile/${this.userId}/regular-payments`]); 
   }
 
+  toAccountStatictics() {
+    this.router.navigate(['/admin/show-statistic']); 
+  }
+
   toggleNotificationPanel() {
     this.panelService.openPanel();
   }

@@ -2,7 +2,9 @@
 using Accounts.DataAccess.Entities;
 using Accounts.DataAccess.Repositories.Interfaces;
 using Accounts.DataAccess.Settings;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Accounts.DataAccess.Repositories.Implementations
 {
@@ -67,6 +69,17 @@ namespace Accounts.DataAccess.Repositories.Implementations
             return await _context.FinancialAccounts
                 .Where(account => account.UserId == userId)
                 .CountAsync();
+        }
+
+        public async Task<List<AccountStatistics>> GetStatisticByAccountsAsync(int accountTypeParam)
+        {
+            var parameters = new { account_type_param = accountTypeParam };
+
+            var result = await _context.Connection
+                .QueryAsync<AccountStatistics>("SELECT * FROM accounts.get_account_statistic(@account_type_param)", 
+                parameters);
+
+            return result.AsList();
         }
     }
 }
