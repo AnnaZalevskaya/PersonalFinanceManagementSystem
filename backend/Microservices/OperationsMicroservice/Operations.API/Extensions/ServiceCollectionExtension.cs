@@ -154,7 +154,7 @@ namespace Operations.API.Extensions
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigins",
-                    policy => policy.WithOrigins("http://localhost:4200")
+                    policy => policy.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
@@ -177,9 +177,10 @@ namespace Operations.API.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
+        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IMessageConsumer, MessageConsumer>();
+            services.Configure<RabbitMQSettings>(configuration.GetSection(nameof(RabbitMQSettings)));
+            services.AddSingleton<IMessageConsumer, MessageConsumer>();            
 
             return services;
         }
@@ -213,11 +214,11 @@ namespace Operations.API.Extensions
 
         public static IServiceCollection ConfigureHangfire(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(configuration.GetSection("Hangfire:Connection").Value));
-            services.AddHangfireServer();
+            //services.AddHangfire(config =>
+            //    config.UsePostgreSqlStorage(configuration.GetSection("Hangfire:Connection").Value));
+            //services.AddHangfireServer();
 
-            services.AddScoped<PaymentProcessor>();
+            //services.AddScoped<PaymentProcessor>();
 
             return services;
         }
