@@ -13,14 +13,19 @@ namespace Operations.Application.Consumers
 
         public MessageConsumer()
         {
-            _factory = new ConnectionFactory() { Uri = new Uri(RabbitMQConsts.Uri) };
+            _factory = new ConnectionFactory() 
+            { 
+                Uri = new Uri(RabbitMQConsts.Uri) 
+            };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: RabbitMQConsts.ReceivingQueue,
-                      durable: false,
-                      exclusive: false,
-                      autoDelete: false,
-                      arguments: null);
+            _channel.QueueDeclare(
+                queue: RabbitMQConsts.ReceivingQueue,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
         }
 
         public int ConsumeMessage(int id)

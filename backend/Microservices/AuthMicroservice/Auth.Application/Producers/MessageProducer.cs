@@ -13,14 +13,19 @@ namespace Auth.Application.Producers
 
         public MessageProducer()
         {
-            _factory = new ConnectionFactory() { Uri = new Uri(RabbitMQConsts.Uri) };
+            _factory = new ConnectionFactory() 
+            { 
+                Uri = new Uri(RabbitMQConsts.Uri) 
+            };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: RabbitMQConsts.SendingQueue,
-                                  durable: false,
-                                  exclusive: false,
-                                  autoDelete: false,
-                                  arguments: null);
+            _channel.QueueDeclare(
+                queue: RabbitMQConsts.SendingQueue,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
         }
 
         public void SendMessage(object messageObject)
