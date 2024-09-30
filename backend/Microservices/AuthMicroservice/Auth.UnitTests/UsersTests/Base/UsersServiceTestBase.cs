@@ -30,7 +30,7 @@
             userStore.Setup(x => x.FindByNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new AppUser { Id = 1, Email = "john@example.com" });
 
-            _userManagerMock = new Mock<UserManager<AppUser>>(userStore.Object);
+            _userManagerMock = new Mock<UserManager<AppUser>>(userStore.Object, null, null, null, null, null, null, null, null);
 
             _usersService = new UsersService(
                 _tokenServiceMock.Object,
