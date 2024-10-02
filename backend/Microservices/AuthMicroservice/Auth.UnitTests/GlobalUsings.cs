@@ -5,6 +5,7 @@ global using Auth.Application.Producers;
 global using Auth.Application.Services;
 global using Auth.Core.Entities;
 global using Auth.Core.Exceptions;
+global using Auth.UnitTests.Extensions.Builders;
 global using Auth.UnitTests.UsersTests.Base;
 global using AutoMapper;
 global using Microsoft.AspNetCore.Identity;
