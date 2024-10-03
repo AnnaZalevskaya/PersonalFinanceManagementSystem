@@ -27,7 +27,7 @@ namespace Auth.API
 
             var app = builder.Build();
 
-            app.MigrateDatabase();
+            //app.MigrateDatabase();
 
             if (app.Environment.IsDevelopment())
             {

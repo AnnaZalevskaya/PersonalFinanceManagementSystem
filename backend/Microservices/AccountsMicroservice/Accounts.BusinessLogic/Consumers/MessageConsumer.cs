@@ -1,7 +1,8 @@
 ﻿using RabbitMQ.Client;
 using System.Text;
 using Newtonsoft.Json;
-using Accounts.BusinessLogic.Models.Consts;
+using Microsoft.Extensions.Options;
+using Accounts.BusinessLogic.Settings;
 
 namespace Accounts.BusinessLogic.Consumers
 {
@@ -10,17 +11,24 @@ namespace Accounts.BusinessLogic.Consumers
         private readonly ConnectionFactory _factory;
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly IOptions<RabbitMQSettings> _options;
 
-        public MessageConsumer()
+        public MessageConsumer(IOptions<RabbitMQSettings> options)
         {
-            _factory = new ConnectionFactory() { Uri = new Uri(RabbitMQConsts.Uri) };
+            _options = options;
+            _factory = new ConnectionFactory() 
+            { 
+                Uri = new Uri(_options.Value.Uri) 
+            };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: RabbitMQConsts.ReceivingQueue,
-                      durable: false,
-                      exclusive: false,
-                      autoDelete: false,
-                      arguments: null);
+            _channel.QueueDeclare(
+                queue: _options.Value.ReceivingQueue,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
         }
 
         public int ConsumeMessage(int id)
@@ -40,7 +48,7 @@ namespace Accounts.BusinessLogic.Consumers
 
         private string GetMessageFromQueue(Func<dynamic, bool> filter)
         {
-            BasicGetResult result = _channel.BasicGet(RabbitMQConsts.ReceivingQueue, true);
+            BasicGetResult result = _channel.BasicGet(_options.Value.ReceivingQueue, true);
 
             if (result != null)
             {

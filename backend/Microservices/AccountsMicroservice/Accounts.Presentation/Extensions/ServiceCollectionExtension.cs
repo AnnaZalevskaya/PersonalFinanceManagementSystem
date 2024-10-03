@@ -14,6 +14,7 @@ using FluentValidation.AspNetCore;
 using Grpc.Net.Client.Web;
 using Hangfire;
 using Hangfire.PostgreSql;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -189,10 +190,23 @@ namespace Accounts.Presentation.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services)
+        public static IServiceCollection ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<RabbitMQSettings>(configuration.GetSection(nameof(RabbitMQSettings)));
+            var rabbitMQOptions = services.BuildServiceProvider().GetRequiredService<IOptions<RabbitMQSettings>>();
+
             services.AddSingleton<IMessageProducer, MessageProducer>();
             services.AddSingleton<IMessageConsumer, MessageConsumer>();
+
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(new Uri(rabbitMQOptions.Value.Uri)); 
+                });
+            });
+
+            services.AddMassTransitHostedService();
 
             return services;
         }
@@ -238,7 +252,7 @@ namespace Accounts.Presentation.Extensions
         {
             var connStrings = services.BuildServiceProvider().GetRequiredService<IOptions<ConnectionStrings>>();
 
-            services.AddHangfire(config => 
+            services.AddHangfire(config =>
                 config.UsePostgreSqlStorage(connStrings.Value.HangfireConnection));
             services.AddHangfireServer();
 

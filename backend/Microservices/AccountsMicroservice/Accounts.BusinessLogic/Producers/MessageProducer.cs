@@ -1,4 +1,5 @@
-﻿using Accounts.BusinessLogic.Models.Consts;
+﻿using Accounts.BusinessLogic.Settings;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
@@ -10,17 +11,24 @@ namespace Accounts.BusinessLogic.Producers
         private readonly ConnectionFactory _factory;
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly IOptions<RabbitMQSettings> _options;
 
-        public MessageProducer()
+        public MessageProducer(IOptions<RabbitMQSettings> options)
         {
-            _factory = new ConnectionFactory() { Uri = new Uri(RabbitMQConsts.Uri) };
+            _options = options;
+            _factory = new ConnectionFactory() 
+            { 
+                Uri = new Uri(_options.Value.Uri) 
+            };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: RabbitMQConsts.SendingQueue,
-                                  durable: false,
-                                  exclusive: false,
-                                  autoDelete: false,
-                                  arguments: null);
+            _channel.QueueDeclare(
+                queue: _options.Value.SendingQueue,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
         }
 
         public void SendMessages(IEnumerable<object> messageObjects)
@@ -30,7 +38,7 @@ namespace Accounts.BusinessLogic.Producers
                 var messageJson = JsonConvert.SerializeObject(messageObject);
                 var body = Encoding.UTF8.GetBytes(messageJson);
                 _channel.BasicPublish(exchange: "",
-                                     routingKey: RabbitMQConsts.SendingQueue,
+                                     routingKey: _options.Value.SendingQueue,
                                      basicProperties: null,
                                      body: body);
                 Console.WriteLine(" [x] Sent obj: {0}", messageObject);
