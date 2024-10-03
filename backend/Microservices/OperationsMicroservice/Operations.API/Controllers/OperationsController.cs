@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using Operations.Application.Models;
 using Operations.Application.Models.Consts;
 using Operations.Application.Operations.Commands.CreateOperation;

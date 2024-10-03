@@ -16,7 +16,7 @@ namespace Operations.Api
                 .ConfigureAuthentication(builder.Configuration)
                 .ConfigureAuthorization()
                 .ConfigureSwagger()
-                .ConfigureRabbitMQ()
+                .ConfigureRabbitMQ(builder.Configuration)
                 .ConfigureMediatR()
                 .ConfigureHangfire(builder.Configuration)
                 .ConfigureGrpc(builder.Configuration)        

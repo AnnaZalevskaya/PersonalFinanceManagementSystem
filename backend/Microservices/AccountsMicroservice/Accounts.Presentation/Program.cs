@@ -16,7 +16,7 @@ namespace Accounts.Presentation
                 .ConfigureAuthentication(builder.Configuration)
                 .ConfigureAuthorization()
                 .ConfigureSwagger()
-                .ConfigureRabbitMQ()
+                .ConfigureRabbitMQ(builder.Configuration)
                 .ConfigureAppServices()
                 .ConfigureGrpc(builder.Configuration)
                 .ConfigureMapperProfiles()
