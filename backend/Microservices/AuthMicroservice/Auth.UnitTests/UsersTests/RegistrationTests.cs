@@ -46,9 +46,14 @@
         public async Task RegisterAsync_WhenUserExists_ShouldThrowEntityAlreadyExistsException()
         {
             // Arrange
+            var newUserEmail = "john@example.com";
+            var newUserPassword = "validPassword";
+
+            var newUser = AppUserBuilder.BuildAppUser(newUserEmail);
+
             var registerRequest = _fixture.Build<RegisterRequestModel>()
-                .With(r => r.Email, "john@example.com")
-                .With(r => r.Password, "validPassword")
+                .With(r => r.Email, newUser.Email)
+                .With(r => r.Password, newUserPassword)
                 .Create();
 
             _mapperMock.Setup(m => m.Map<AppUser>(It.IsAny<RegisterRequestModel>()))
@@ -83,7 +88,7 @@
 
             var user = new AppUser { Email = registerRequest.Email };
             _mapperMock.Setup(m => m.Map<AppUser>(It.IsAny<RegisterRequestModel>()))
-                .Returns(user); 
+                .Returns(user);
 
             _userManagerMock.Setup(um => um.CreateAsync(user, registerRequest.Password))
                 .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Error occurred" }));
@@ -91,6 +96,9 @@
             // Act and Assert
             var exception = await Assert.ThrowsAsync<BadCredentialsException>(() =>
                 _usersService.RegisterAsync(registerRequest, CancellationToken.None));
+
+            _userManagerMock.Verify(um => um.CreateAsync(user, registerRequest.Password), Times.Once);
+            _mapperMock.Verify(m => m.Map<RegisterResponseModel>(It.IsAny<AppUser>()), Times.Never);
         }
     }
 }
