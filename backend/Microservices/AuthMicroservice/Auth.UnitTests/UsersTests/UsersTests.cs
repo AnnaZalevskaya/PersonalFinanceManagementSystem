@@ -19,7 +19,11 @@ namespace Auth.UnitTests.UsersTests
 
             // Assert
             result.Should().BeEquivalentTo(cachedUsers);
+
             _unitOfWorkMock.Verify(uw => uw.Users.GetAllAsync(paginationSettings, CancellationToken.None), Times.Never);
+            _userManagerMock.Verify(um => um.GetRolesAsync(It.IsAny<AppUser>()), Times.Never);
+            _mapperMock.Verify(m => m.Map<UserModel>(It.IsAny<AppUser>()), Times.Never);
+            _cacheRepositoryMock.Verify(cr => cr.CacheLargeDataAsync(paginationSettings, It.IsAny<List<AppUser>>()), Times.Never);
         }
 
         [Fact]
@@ -79,7 +83,7 @@ namespace Auth.UnitTests.UsersTests
 
             var user1 = _fixture.Build<AppUser>()
                 .With(u => u.Email, "user1@example.com")
-                .Create(); 
+                .Create();
 
             var user2 = _fixture.Build<AppUser>()
                 .With(u => u.Email, "user2@example.com")
