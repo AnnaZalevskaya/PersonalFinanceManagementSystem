@@ -1,0 +1,42 @@
+<header> 
+  <div class="actions"> 
+    <div class="left-group"> 
+    <a routerLink="" class="elem-header">
+      FinanSmart
+    </a> 
+  </div> 
+  <div class="right-group">    
+    <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #mainMenu="matMenu">
+      <div *ngIf="!isAuthenticated">
+        <button mat-menu-item routerLink="/auth">
+          <mat-icon>account_circle</mat-icon>
+          <span>Login</span>
+        </button>
+      </div>
+      
+      <div *ngIf="isAuthenticated">
+        <button mat-menu-item (click)="toProfile()">
+          <mat-icon>how_to_reg</mat-icon>
+          <span>{{ getUserName() }}</span>
+        </button>
+        <button mat-menu-item [disabled]="!isClient()" (click)="toggleNotificationPanel()">
+          <mat-icon matBadge="0" matBadgeColor="primary" aria-hidden="false">notifications_none</mat-icon>
+          <span>Notifications</span>
+        </button>
+        <button mat-menu-item (click)="isClient() ? toRegularPaymentPage() : toAccountStatictics()">
+          <mat-icon>{{ isClient() ? 'payment' : 'equalizer' }}</mat-icon>
+          <span>{{ isClient() ? 'Regular payments' : 'Account statistics' }}</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </div>   
+    </mat-menu>
+</div>
+</div>
+</header>
+<app-notification-panel *ngIf="showNotificationPanel()"></app-notification-panel>

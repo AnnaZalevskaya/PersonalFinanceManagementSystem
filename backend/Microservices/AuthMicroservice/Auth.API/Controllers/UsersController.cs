@@ -1,0 +1,46 @@
+﻿using Auth.Application.Interfaces;
+using Auth.Application.Models;
+using Auth.Application.Models.Consts;
+using Auth.Application.Settings;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Auth.API.Controllers
+{
+    [ApiController]
+    [Route("api/users")]
+    public class UsersController : ControllerBase
+    {
+        private readonly IUsersService _usersService;
+
+        public UsersController(IUsersService userService)
+        {
+            _usersService = userService;
+        }
+        
+        [HttpGet("all-users")]
+        [Authorize(Policy = AuthPolicyConsts.AdminOnly)]
+        public async Task<ActionResult<List<UserModel>>> GetAllAsync([FromQuery] PaginationSettings paginationSettings,
+            CancellationToken cancellationToken)
+        {
+            var users = await _usersService.GetAllAsync(paginationSettings, cancellationToken);
+
+            return Ok(users);
+        }
+
+        [HttpGet("user-info/{id}")]
+        [Authorize]
+        public async Task<ActionResult<UserModel>> GetUserByIdAsync(long id, CancellationToken cancellationToken)
+        {
+            var user = await _usersService.GetUserByIdAsync(id, cancellationToken);
+
+            return Ok(user);
+        }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> GetRecordsCountAsync()
+        {
+            return Ok(await _usersService.GetRecordsCountAsync());
+        }
+    }
+}

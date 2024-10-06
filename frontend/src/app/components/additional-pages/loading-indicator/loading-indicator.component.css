@@ -1,0 +1,10 @@
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 82vh;  
+}
+
+mat-spinner::ng-deep circle {
+  stroke: #444342;
+}

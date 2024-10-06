@@ -1,0 +1,21 @@
+<form class="account-form" [formGroup]="accountForm" (ngSubmit)="editAccount()" *ngIf="isLoadingForm">
+  <h2>Update the account</h2>
+    <mat-form-field>
+      <mat-label>Account Name:</mat-label>
+      <input matInput formControlName="accountName" required>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Account Type:</mat-label>
+      <mat-select formControlName="accountType" required>
+        <mat-option *ngFor="let type of accountTypes" [value]="type">{{ type.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Currency:</mat-label>
+      <mat-select formControlName="currency" required>
+        <mat-option *ngFor="let curr of currencies" [value]="curr">{{ curr.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Update</button>
+</form>
+<app-loading-indicator *ngIf="!isLoadingForm"></app-loading-indicator>
