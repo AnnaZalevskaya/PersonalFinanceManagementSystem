@@ -11,6 +11,8 @@
                 .With(r => r.Password, "validPassword")
                 .Create();
 
+            var newRegisterModel = RegisterResponseModelBuilder.BuildRegisterResponseModel("newuser@example.com");
+
             _unitOfWorkMock.Setup(uw => uw.Users.FindByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((AppUser)null);
 
@@ -27,7 +29,7 @@
             _mapperMock.Setup(m => m.Map<AppUser>(It.IsAny<RegisterRequestModel>()))
                 .Returns(user);
             _mapperMock.Setup(m => m.Map<RegisterResponseModel>(It.IsAny<AppUser>()))
-                .Returns(new RegisterResponseModel { Email = "newuser@example.com" });
+                .Returns(newRegisterModel);
 
             // Act
             var response = await _usersService.RegisterAsync(registerRequest, CancellationToken.None);
@@ -41,20 +43,26 @@
         public async Task RegisterAsync_WhenUserExists_ShouldThrowEntityAlreadyExistsException()
         {
             // Arrange
+            var newUser = AppUserBuilder.BuildAppUser("john@example.com");
+            
             var registerRequest = _fixture.Build<RegisterRequestModel>()
-                .With(r => r.Email, "john@example.com")
+                .With(r => r.Email, newUser.Email)
                 .With(r => r.Password, "validPassword")
                 .Create();
 
             _mapperMock.Setup(m => m.Map<AppUser>(It.IsAny<RegisterRequestModel>()))
-                .Returns(new AppUser { Email = "john@example.com" });
+                .Returns(newUser);
 
             _unitOfWorkMock.Setup(uw => uw.Users.FindByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new AppUser { Email = "john@example.com" });
+                .ReturnsAsync(newUser);
 
             // Act and Assert
             await Assert.ThrowsAsync<EntityAlreadyExistsException>(() =>
                 _usersService.RegisterAsync(registerRequest, CancellationToken.None));
+
+            _unitOfWorkMock.Verify(uw => uw.Users.AddAsync(newUser, CancellationToken.None), Times.Never);
+            _userManagerMock.Verify(um => um.AddToRoleAsync(newUser, It.IsAny<string>()), Times.Never);
+            _mapperMock.Verify(m => m.Map<RegisterResponseModel>(It.IsAny<AppUser>()), Times.Never);
         }
 
         [Fact]
@@ -69,19 +77,18 @@
             _unitOfWorkMock.Setup(uw => uw.Users.FindByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((AppUser)null);
 
-            _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+            var user = new AppUser { Email = registerRequest.Email };
+            _mapperMock.Setup(m => m.Map<AppUser>(It.IsAny<RegisterRequestModel>()))
+                .Returns(user); 
+
+            _userManagerMock.Setup(um => um.CreateAsync(user, registerRequest.Password))
                 .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Error occurred" }));
 
-            var user = _fixture.Build<AppUser>()
-                .With(u => u.Email, "newuser@example.com")
-                .Create();
-
-            _mapperMock.Setup(m => m.Map<AppUser>(It.IsAny<RegisterRequestModel>()))
-                .Returns(user);
-
             // Act and Assert
-            await Assert.ThrowsAsync<BadCredentialsException>(() =>
+            var exception = await Assert.ThrowsAsync<BadCredentialsException>(() =>
                 _usersService.RegisterAsync(registerRequest, CancellationToken.None));
+
+            _userManagerMock.Verify(um => um.CreateAsync(user, registerRequest.Password), Times.Once);
         }
     }
 }
