@@ -50,13 +50,13 @@ namespace Auth.UnitTests.UsersTests.Base
             pwdValidators.Add(new PasswordValidator<AppUser>());
 
             var userManager = new Mock<UserManager<AppUser>>(
-                userStore, 
-                options.Object, 
+                userStore,
+                options.Object,
                 new PasswordHasher<AppUser>(),
-                userValidators, 
-                pwdValidators, 
+                userValidators,
+                pwdValidators,
                 new UpperInvariantLookupNormalizer(),
-                new IdentityErrorDescriber(), 
+                new IdentityErrorDescriber(),
                 null,
                 new Mock<ILogger<UserManager<AppUser>>>().Object
             );
