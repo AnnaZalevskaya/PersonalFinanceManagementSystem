@@ -1,0 +1,37 @@
+.article-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  padding: 20px;
+}
+  
+.article-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+  
+.article-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.article-meta {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+  
+.article-description {
+  margin-top: 10px;
+}
+  
+.read-more-link {
+  margin-top: 10px;
+  font-weight: 500;
+  color: #5665bd;
+  text-decoration: none;
+}

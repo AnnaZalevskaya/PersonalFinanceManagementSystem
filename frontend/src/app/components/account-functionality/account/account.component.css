@@ -1,0 +1,115 @@
+main {
+  background-color: #D8D6D0;
+  font-family: "Nunito Sans", sans-serif;
+  margin-top: -22px;
+  padding: 0;
+}
+
+.account-info {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+  
+h1 {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h3 {
+  font-size: 20pt;
+}
+  
+.operation-card {
+  font-family:'Courier New', Courier, monospace;
+  margin-bottom: 5px;
+  border: 3px solid #fff;
+  padding: 10px;
+  border-radius: 5px;
+  width: 60%;
+}
+  
+.description-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+  
+.description-table td {
+  padding: 8px;
+  border-bottom: 1px solid black;
+}
+  
+.description-table .key-field {
+  width: 40%;
+}
+  
+.description-table .value-field {
+  width: 60%;
+}
+  
+.message {
+  font-size: 12pt;
+  font-style: italic;
+  color: #253343;
+}
+
+.account-card-footer {
+  display: flex;
+  justify-content:last baseline;
+  margin-top: 10px; 
+}
+  
+.account-card-footer button {
+  margin: 0 15px; 
+}
+
+mat-grid-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+mat-grid-tile {
+  width: 60%;
+  height: 100%;
+  height: auto;
+}
+
+mat-card {
+  width: 100%;
+  background-color: transparent;
+}
+
+.account-card {
+  width: 60%;
+}
+
+button {
+  color: white;
+  padding: 8px 15px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid white; 
+  cursor: pointer;
+}
+
+button:disabled {
+  color: #444342;
+  background-color: transparent;
+  cursor: not-allowed;
+}
+  
+.close-button {
+  background-color: #B6000F;
+}
+  
+.edit-button {
+  background-color: #FFB700;
+}
+
+.add-button {
+  margin-left: 10px;
+  margin-bottom: 15px;
+  background-color: #498B6D; 
+}

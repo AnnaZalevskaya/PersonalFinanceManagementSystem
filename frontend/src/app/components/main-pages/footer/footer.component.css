@@ -1,0 +1,18 @@
+.footer {
+  background-color: #444342;
+  min-height: 75px;
+}
+
+.additional {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #999; 
+  margin: 20px;
+  padding-top: 42px;
+  margin-bottom: 5px;
+}
+    
+.additional a {
+  color: #FFD000;
+  text-decoration: none;
+}

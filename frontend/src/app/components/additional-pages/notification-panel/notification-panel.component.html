@@ -1,0 +1,24 @@
+<div class="notification-panel">
+  <button mat-icon-button class="close-button" (click)="closeNotificationPanel()"><mat-icon>close</mat-icon></button>
+  <div class="header">
+    <h2>Notifications</h2>
+    <button mat-icon-button matTooltip="Clear All" class="clear-button" (click)="clearAllNotifications()">
+      <mat-icon>clear_all</mat-icon>
+    </button>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="notification-list">
+    <ng-container *ngIf="notifications.length > 0; else noNotifications">
+      <div *ngFor="let notification of notifications" class="notification" [class.unread]="!notification.isRead" 
+        (click)="openNotification(notification)">
+        <div class="notification-content">
+          {{ notification.message }}
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #noNotifications>
+      <div class="no-notifications">No notifications</div>
+    </ng-template>
+  </div>
+</div>
+<div class="overlay"></div>
