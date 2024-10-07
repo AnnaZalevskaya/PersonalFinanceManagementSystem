@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Accounts.DataAccess.Dapper.Settings;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using System.Data;
 
@@ -6,14 +7,14 @@ namespace Accounts.DataAccess.Dapper.Data
 {
     public class DapperContext
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
-        public DapperContext(IConfiguration configuration)
+        private readonly IOptions<ConnectionStrings> _options;
+
+        public DapperContext(IOptions<ConnectionStrings> options)
         {
-            _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("DefaultConnection");
+            _options = options;
         }
+
         public IDbConnection CreateConnection()
-            => new NpgsqlConnection(_connectionString);
+            => new NpgsqlConnection(_options.Value.DefaultConnection);
     }
 }

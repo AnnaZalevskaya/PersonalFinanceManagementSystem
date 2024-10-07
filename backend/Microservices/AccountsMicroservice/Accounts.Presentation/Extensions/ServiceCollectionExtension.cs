@@ -8,6 +8,7 @@ using Accounts.BusinessLogic.Settings;
 using Accounts.DataAccess.Dapper.Data;
 using Accounts.DataAccess.Dapper.Repositories.Implementations;
 using Accounts.DataAccess.Dapper.Repositories.Interfaces;
+using Accounts.DataAccess.Dapper.Settings;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Repositories.Interfaces;
