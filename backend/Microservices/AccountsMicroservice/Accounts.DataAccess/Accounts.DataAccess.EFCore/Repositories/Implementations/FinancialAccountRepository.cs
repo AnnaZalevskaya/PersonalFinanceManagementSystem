@@ -76,8 +76,7 @@ namespace Accounts.DataAccess.Repositories.Implementations
             var parameters = new { account_type_param = accountTypeParam };
 
             var result = await _context.Connection
-                .QueryAsync<AccountStatistics>("SELECT * FROM accounts.get_account_statistic(@account_type_param)", 
-                parameters);
+                .QueryAsync<AccountStatistics>("accounts.get_account_statistic", parameters);
 
             return result.AsList();
         }

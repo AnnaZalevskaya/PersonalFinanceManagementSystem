@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Accounts.BusinessLogic\Accounts.BusinessLogic.csproj" />
-    <ProjectReference Include="..\Accounts.DataAccess\Accounts.DataAccess.csproj" />
+    <ProjectReference Include="..\Accounts.DataAccess\Accounts.DataAccess.EFCore\Accounts.DataAccess.EFCore.csproj" />
   </ItemGroup>
 
 </Project>
