@@ -2,6 +2,7 @@
 using Accounts.DataAccess.Dapper.Entities;
 using Accounts.DataAccess.Dapper.Repositories.Interfaces;
 using Dapper;
+using System.Data;
 
 namespace Accounts.DataAccess.Dapper.Repositories.Implementations
 {
@@ -21,8 +22,9 @@ namespace Accounts.DataAccess.Dapper.Repositories.Implementations
                 var parameters = new { account_type_param = accountTypeParam };
 
                 var result = await connection
-                    .QueryAsync<AccountStatistics>("SELECT * FROM accounts.get_account_statistic(@account_type_param)", 
-                    parameters);
+                    .QueryAsync<AccountStatistics>("accounts.get_account_statistic", 
+                    parameters, 
+                    commandType: CommandType.StoredProcedure);
 
                 return result.AsList();
             }

@@ -2,8 +2,9 @@
 {
     public enum GoalStatus
     {
-        InProgress = 1,
-        Done = 2,
-        Canceled = 3
+        New = 1,
+        InProgress = 2,
+        Completed = 3,
+        Closed = 4
     }
 }

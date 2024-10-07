@@ -1,6 +1,6 @@
 ﻿using Accounts.DataAccess.Repositories.Interfaces;
 
-namespace Accounts.DataAccess.UnitOfWork
+namespace Accounts.DataAccess.EFCore.UnitOfWork
 {
     public interface IUnitOfWork
     {

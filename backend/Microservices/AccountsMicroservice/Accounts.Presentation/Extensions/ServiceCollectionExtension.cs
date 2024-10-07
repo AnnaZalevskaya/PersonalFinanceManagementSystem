@@ -1,4 +1,6 @@
-﻿using Accounts.BusinessLogic.Consumers;
+﻿using AccountsEFCore = Accounts.DataAccess.EFCore.UnitOfWork;
+using AccountsDapper = Accounts.DataAccess.Dapper.UnitOfWork;
+using Accounts.BusinessLogic.Consumers;
 using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Implementations;
@@ -6,14 +8,9 @@ using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.BusinessLogic.Services.SignalR;
 using Accounts.BusinessLogic.Settings;
 using Accounts.DataAccess.Dapper.Data;
-using Accounts.DataAccess.Dapper.Repositories.Implementations;
-using Accounts.DataAccess.Dapper.Repositories.Interfaces;
 using Accounts.DataAccess.Dapper.Settings;
 using Accounts.DataAccess.Data;
-using Accounts.DataAccess.Repositories.Implementations;
-using Accounts.DataAccess.Repositories.Interfaces;
 using Accounts.DataAccess.Settings;
-using Accounts.DataAccess.UnitOfWork;
 using FluentValidation.AspNetCore;
 using Grpc.Net.Client.Web;
 using Hangfire;
@@ -141,9 +138,8 @@ namespace Accounts.Presentation.Extensions
 
         public static IServiceCollection ConfigureRepositoryWrapper(this IServiceCollection services)
         {
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IAccountStatisticsRepository, AccountStatisticsRepository>();
-            services.AddScoped<ICacheRepository, CacheRepository>();
+            services.AddScoped<AccountsEFCore.IUnitOfWork, AccountsEFCore.UnitOfWork>();
+            services.AddScoped<AccountsDapper.IUnitOfWork, AccountsDapper.UnitOfWork>();
 
             return services;
         }
