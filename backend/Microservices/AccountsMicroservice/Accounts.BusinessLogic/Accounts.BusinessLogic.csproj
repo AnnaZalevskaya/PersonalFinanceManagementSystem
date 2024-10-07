@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Accounts.DataAccess\Accounts.DataAccess.Dapper\Accounts.DataAccess.Dapper.csproj" />
     <ProjectReference Include="..\Accounts.DataAccess\Accounts.DataAccess.EFCore\Accounts.DataAccess.EFCore.csproj" />
   </ItemGroup>
 

@@ -5,6 +5,9 @@ using Accounts.BusinessLogic.Services.Implementations;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.BusinessLogic.Services.SignalR;
 using Accounts.BusinessLogic.Settings;
+using Accounts.DataAccess.Dapper.Data;
+using Accounts.DataAccess.Dapper.Repositories.Implementations;
+using Accounts.DataAccess.Dapper.Repositories.Interfaces;
 using Accounts.DataAccess.Data;
 using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Repositories.Interfaces;
@@ -117,18 +120,19 @@ namespace Accounts.Presentation.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigurePostgreSQL(this IServiceCollection services, 
+        public static IServiceCollection ConfigureORM(this IServiceCollection services, 
             IConfiguration configuration)
         {
             services.Configure<ConnectionStrings>(configuration.GetSection(nameof(ConnectionStrings)));
             var connStrings = services.BuildServiceProvider().GetRequiredService<IOptions<ConnectionStrings>>();
 
+            services.AddSingleton<DapperContext>();
             services.AddDbContext<FinancialAccountsDbContext>(optionsBuilder => 
                 optionsBuilder.UseNpgsql(connStrings.Value.DefaultConnection, options => 
                     options.EnableRetryOnFailure(
                         maxRetryCount: 3,
                         maxRetryDelay: TimeSpan.FromSeconds(10),
-                        errorCodesToAdd: new List<string> { "4060" }
+                        errorCodesToAdd: ["4060"]
             )));
 
             return services;
@@ -137,6 +141,7 @@ namespace Accounts.Presentation.Extensions
         public static IServiceCollection ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAccountStatisticsRepository, AccountStatisticsRepository>();
             services.AddScoped<ICacheRepository, CacheRepository>();
 
             return services;
@@ -150,6 +155,7 @@ namespace Accounts.Presentation.Extensions
             services.AddScoped<IAccountPdfReportService, AccountPdfReportService>();
             services.AddScoped<IFinancialGoalService, FinancialGoalService>();
             services.AddScoped<IFinancialGoalTypeService, FinancialGoalTypeService>();
+            services.AddScoped<IAccountStatisticsService, AccountStatisticsService>();
 
             return services;
         }

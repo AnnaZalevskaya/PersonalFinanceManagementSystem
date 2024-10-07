@@ -1,5 +1,5 @@
 ﻿using Accounts.BusinessLogic.Models;
-using Accounts.DataAccess.Entities;
+using Accounts.DataAccess.Dapper.Entities;
 using AutoMapper;
 
 namespace Accounts.BusinessLogic.MappConfigs
