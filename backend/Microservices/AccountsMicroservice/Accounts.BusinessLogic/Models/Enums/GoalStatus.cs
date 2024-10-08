@@ -1,6 +1,6 @@
 ﻿namespace Accounts.BusinessLogic.Models.Enums
 {
-    public enum GoalStatus
+    public enum GoalStatusEnum
     {
         New = 1,
         InProgress = 2,

@@ -20,6 +20,7 @@ namespace Accounts.DataAccess.EntityTypeConfigurations
             builder.Property(goal => goal.Amount).HasColumnName("monetary_goal");
             builder.Property(goal => goal.StartDate).HasColumnName("start_date");
             builder.Property(goal => goal.EndDate).HasColumnName("end_date");
+            builder.Property(goal => goal.Status).HasColumnName("status");
 
             builder.HasOne(goal => goal.Type).WithMany(type => type.FinancialGoals)
                 .HasForeignKey(goal => goal.TypeId)

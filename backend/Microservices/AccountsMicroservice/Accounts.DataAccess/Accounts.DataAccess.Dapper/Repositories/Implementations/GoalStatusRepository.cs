@@ -14,7 +14,7 @@ namespace Accounts.DataAccess.Dapper.Repositories.Implementations
             _context = context;
         }
 
-        public async Task UpdateGoalStatus(int goalId, int newStatus)
+        public async Task UpdateGoalStatusAsync(int goalId, int newStatus)
         {
             using (var connection = _context.CreateConnection())
             {

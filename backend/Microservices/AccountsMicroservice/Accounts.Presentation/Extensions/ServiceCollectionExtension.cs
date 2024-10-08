@@ -10,6 +10,8 @@ using Accounts.BusinessLogic.Settings;
 using Accounts.DataAccess.Dapper.Data;
 using Accounts.DataAccess.Dapper.Settings;
 using Accounts.DataAccess.Data;
+using Accounts.DataAccess.Repositories.Interfaces;
+using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Settings;
 using FluentValidation.AspNetCore;
 using Grpc.Net.Client.Web;
@@ -140,6 +142,7 @@ namespace Accounts.Presentation.Extensions
         {
             services.AddScoped<AccountsEFCore.IUnitOfWork, AccountsEFCore.UnitOfWork>();
             services.AddScoped<AccountsDapper.IUnitOfWork, AccountsDapper.UnitOfWork>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
 
             return services;
         }

@@ -2,6 +2,6 @@
 {
     public interface IGoalStatusRepository
     {
-        Task UpdateGoalStatus(int goalId, int newStatus);
+        Task UpdateGoalStatusAsync(int goalId, int newStatus);
     }
 }
