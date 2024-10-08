@@ -1,9 +1,9 @@
 ﻿using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Services.Interfaces;
+using Accounts.DataAccess.EFCore.UnitOfWork;
 using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Settings;
-using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using Polly;
 
