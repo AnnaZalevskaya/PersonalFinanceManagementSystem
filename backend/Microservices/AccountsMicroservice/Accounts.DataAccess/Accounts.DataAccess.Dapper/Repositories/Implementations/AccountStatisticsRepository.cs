@@ -21,10 +21,9 @@ namespace Accounts.DataAccess.Dapper.Repositories.Implementations
             {
                 var parameters = new { account_type_param = accountTypeParam };
 
-                var result = await connection
-                    .QueryAsync<AccountStatistics>("accounts.get_account_statistic", 
-                    parameters, 
-                    commandType: CommandType.StoredProcedure);
+                var result = await connection.QueryAsync<AccountStatistics>(
+                    "select * from accounts.get_account_statistic(@account_type_param)", 
+                    parameters);
 
                 return result.AsList();
             }
