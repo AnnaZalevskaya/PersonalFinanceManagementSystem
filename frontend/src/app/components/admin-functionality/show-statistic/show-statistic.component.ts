@@ -33,7 +33,7 @@ export class ShowStatisticComponent implements OnInit {
 
   typePaginationSettings: PaginationSettings = new PaginationSettings();
 
-  isResult:boolean = false;
+  isResult: boolean = false;
 
   constructor(private accountService: FinancialAccountsService, private typeService: AccountTypesService) 
   {

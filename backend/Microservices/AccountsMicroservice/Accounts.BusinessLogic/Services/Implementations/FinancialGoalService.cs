@@ -1,26 +1,30 @@
 ﻿using Accounts.BusinessLogic.Models;
-using Accounts.BusinessLogic.Models.Enums;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Entities;
 using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Settings;
-using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using gRPC.Protos.Client;
 using static gRPC.Protos.Client.AccountBalance;
 using GoalTypeEnum = gRPC.Protos.Client.GoalTypeEnum;
+using AccountsEFCoreUnitOfWork = Accounts.DataAccess.EFCore.UnitOfWork.IUnitOfWork;
+using AccountsDapperUnitOfWork = Accounts.DataAccess.Dapper.UnitOfWork.IUnitOfWork;
+using Accounts.BusinessLogic.Models.Enums;
 
 namespace Accounts.BusinessLogic.Services.Implementations
 {
     public class FinancialGoalService : IFinancialGoalService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly AccountsEFCoreUnitOfWork _efUnitOfWork;
+        private readonly AccountsDapperUnitOfWork _dapperUnitOfWork;
         private readonly IMapper _mapper;
         private readonly AccountBalanceClient _balanceClient;
 
-        public FinancialGoalService(IUnitOfWork unitOfWork, IMapper mapper, AccountBalanceClient balanceClient)
+        public FinancialGoalService(AccountsEFCoreUnitOfWork efUnitOfWork, AccountsDapperUnitOfWork dapperUnitOfWork, 
+            IMapper mapper, AccountBalanceClient balanceClient)
         {
-            _unitOfWork = unitOfWork;
+            _efUnitOfWork = efUnitOfWork;
+            _dapperUnitOfWork = dapperUnitOfWork;
             _mapper = mapper;
             _balanceClient = balanceClient;
         }
@@ -29,7 +33,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
             CancellationToken cancellationToken)
         {
             
-            var goals = await _unitOfWork.FinancialGoals.GetAllAsync(paginationSettings, cancellationToken);
+            var goals = await _efUnitOfWork.FinancialGoals.GetAllAsync(paginationSettings, cancellationToken);
             var goalsList = _mapper.Map<List<FinancialGoalModel>>(goals);
 
             return goalsList;
@@ -38,7 +42,7 @@ namespace Accounts.BusinessLogic.Services.Implementations
         public async Task<List<FinancialGoalModel>> GetAccountFinancialGoalsAsync(int accountId, PaginationSettings paginationSettings,
             CancellationToken cancellationToken)
         {
-            var goals = await _unitOfWork.FinancialGoals.GetAccountGoalsAsync(accountId, paginationSettings, 
+            var goals = await _efUnitOfWork.FinancialGoals.GetAccountGoalsAsync(accountId, paginationSettings, 
                 cancellationToken);
             var goalsList = _mapper.Map<List<FinancialGoalModel>>(goals);
 
@@ -54,15 +58,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
                 var progress = _balanceClient.GetProgress(request, cancellationToken: cancellationToken);
                 goal.Progress = progress.Progress;
-
-                if (goal.Amount > goal.Progress)
-                {
-                    goal.Status = GoalStatus.InProgress;
-                }
-                else
-                {
-                    goal.Status = GoalStatus.Done;
-                }
             }
 
             return goalsList;
@@ -70,12 +65,12 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
         public async Task<int> GetAccountRecordsCountAsync(int accountId)
         {
-            return await _unitOfWork.FinancialGoals.GetAccountRecordsCountAsync(accountId);
+            return await _efUnitOfWork.FinancialGoals.GetAccountRecordsCountAsync(accountId);
         }
 
         public async Task<FinancialGoalModel> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var goal = await _unitOfWork.FinancialGoals.GetByIdAsync(id, cancellationToken);
+            var goal = await _efUnitOfWork.FinancialGoals.GetByIdAsync(id, cancellationToken);
 
             if (goal == null)
             {
@@ -101,15 +96,15 @@ namespace Accounts.BusinessLogic.Services.Implementations
         public async Task CreateFinancialGoalAsync(FinancialGoalActionModel financialGoal, CancellationToken cancellationToken)
         {
             var goal = _mapper.Map<FinancialGoal>(financialGoal);
-            await _unitOfWork.FinancialGoals.AddAsync(goal, cancellationToken);
+            await _efUnitOfWork.FinancialGoals.AddAsync(goal, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _efUnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(int id, FinancialGoalActionModel updateModel,
             CancellationToken cancellationToken)
         {
-            var goal = await _unitOfWork.FinancialGoals.GetByIdAsync(id, cancellationToken);
+            var goal = await _efUnitOfWork.FinancialGoals.GetByIdAsync(id, cancellationToken);
 
             if (goal == null)
             {
@@ -119,23 +114,28 @@ namespace Accounts.BusinessLogic.Services.Implementations
             var updateGoal = _mapper.Map<FinancialGoal>(updateModel);
             updateGoal.Id = goal.Id;
 
-            await _unitOfWork.FinancialGoals.UpdateAsync(id, updateGoal, cancellationToken);
+            await _efUnitOfWork.FinancialGoals.UpdateAsync(id, updateGoal, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _efUnitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var account = await _unitOfWork.FinancialGoals.GetByIdAsync(id, cancellationToken);
+            var account = await _efUnitOfWork.FinancialGoals.GetByIdAsync(id, cancellationToken);
 
             if (account == null)
             {
                 throw new EntityNotFoundException();
             }
 
-            await _unitOfWork.FinancialGoals.DeleteAsync(id, cancellationToken);
+            await _efUnitOfWork.FinancialGoals.DeleteAsync(id, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _efUnitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateGoalStatusAsync(int goalId, GoalStatusEnum newStatus)
+        {
+            await _dapperUnitOfWork.GoalStatuses.UpdateGoalStatusAsync(goalId, (int)newStatus);
         }
     }
 }

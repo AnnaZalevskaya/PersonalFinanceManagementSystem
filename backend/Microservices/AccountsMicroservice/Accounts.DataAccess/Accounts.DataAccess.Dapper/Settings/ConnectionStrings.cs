@@ -1,4 +1,4 @@
-﻿namespace Accounts.DataAccess.Settings
+﻿namespace Accounts.DataAccess.Dapper.Settings
 {
     public class ConnectionStrings
     {

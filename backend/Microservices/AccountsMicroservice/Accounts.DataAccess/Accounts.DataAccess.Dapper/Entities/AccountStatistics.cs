@@ -1,4 +1,4 @@
-﻿namespace Accounts.DataAccess.Entities
+﻿namespace Accounts.DataAccess.Dapper.Entities
 {
     public class AccountStatistics
     {

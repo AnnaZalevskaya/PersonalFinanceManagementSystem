@@ -4,11 +4,11 @@ using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Models.Consts;
 using Accounts.BusinessLogic.Producers;
 using Accounts.BusinessLogic.Services.Interfaces;
+using Accounts.DataAccess.EFCore.UnitOfWork;
 using Accounts.DataAccess.Entities;
 using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Repositories.Interfaces;
 using Accounts.DataAccess.Settings;
-using Accounts.DataAccess.UnitOfWork;
 using AutoMapper;
 using gRPC.Protos.Client;
 using Polly;
@@ -259,14 +259,6 @@ namespace Accounts.BusinessLogic.Services.Implementations
 
             await _cacheRepository.RemoveCachedDataAsync(id);
             //await _cacheRepository.CacheDataAsync(id, updateModel);
-        }
-
-        public async Task<List<AccountStatisticsModel>> GetStatisticByAccountsAsync(int accountTypeParam)
-        {
-            var statistic = await _unitOfWork.FinancialAccounts.GetStatisticByAccountsAsync(accountTypeParam);
-            var models = _mapper.Map<List<AccountStatisticsModel>>(statistic);
-
-            return models;
         }
     }
 }

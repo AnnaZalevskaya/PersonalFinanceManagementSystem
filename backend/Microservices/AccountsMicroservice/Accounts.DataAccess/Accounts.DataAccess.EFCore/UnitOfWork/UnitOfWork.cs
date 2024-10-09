@@ -3,7 +3,7 @@ using Accounts.DataAccess.Exceptions;
 using Accounts.DataAccess.Repositories.Implementations;
 using Accounts.DataAccess.Repositories.Interfaces;
 
-namespace Accounts.DataAccess.UnitOfWork
+namespace Accounts.DataAccess.EFCore.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {

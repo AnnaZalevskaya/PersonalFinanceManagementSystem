@@ -7,7 +7,8 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Accounts.BusinessLogic/Accounts.BusinessLogic.csproj", "Accounts.BusinessLogic/"]
-COPY ["Accounts.DataAccess/Accounts.DataAccess.csproj", "Accounts.DataAccess/"]
+COPY ["Accounts.DataAccess/Accounts.DataAccess.EFCore/Accounts.DataAccess.EFCore.csproj", "Accounts.DataAccess/Accounts.DataAccess.EFCore/"]
+COPY ["Accounts.DataAccess/Accounts.DataAccess.Dapper/Accounts.DataAccess.Dapper.csproj", "Accounts.DataAccess/Accounts.DataAccess.Dapper/"]
 COPY ["Accounts.Presentation/Accounts.Presentation.csproj", "Accounts.Presentation/"]
 RUN dotnet restore "./AccountsPL/./Accounts.Presentation.csproj"
 COPY . .

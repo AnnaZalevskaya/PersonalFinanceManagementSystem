@@ -11,7 +11,7 @@ namespace Accounts.Presentation
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services
-                .ConfigurePostgreSQL(builder.Configuration)
+                .ConfigureORM(builder.Configuration)
                 .ConfigureRepositoryWrapper()
                 .ConfigureAuthentication(builder.Configuration)
                 .ConfigureAuthorization()

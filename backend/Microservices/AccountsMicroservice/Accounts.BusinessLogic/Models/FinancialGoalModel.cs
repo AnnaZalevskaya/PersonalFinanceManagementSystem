@@ -13,6 +13,6 @@ namespace Accounts.BusinessLogic.Models
         public DateTime EndDate { get; set; }
         public double Amount { get; set; }
         public double Progress { get; set; }
-        public GoalStatus Status { get; set; }
+        public GoalStatusEnum Status { get; set; }
     }
 }

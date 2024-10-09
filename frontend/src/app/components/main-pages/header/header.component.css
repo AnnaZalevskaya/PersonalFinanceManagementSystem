@@ -1,15 +1,7 @@
 header {
   height: 15vh;
   min-height: 100px;
-  background: linear-gradient(to right, #193C35, #498B6D);
-}
-
-a {
-  text-decoration: none;
-  font-family: Georgia;
-  font-size: 36px;
-  color: #5665bd;
-  text-shadow: -1px -1px 0 #FFD000, 1px -1px 0 #FFD000, -1px 1px 0 #000, 1px 1px 0 #000; 
+  background: linear-gradient(to right, #498B6D, #193C35);
 }
   
 .actions {

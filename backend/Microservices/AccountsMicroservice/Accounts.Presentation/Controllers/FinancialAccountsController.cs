@@ -85,13 +85,5 @@ namespace Accounts.Presentation.Controllers
         {
             return Ok(await _service.GetUserRecordsCountAsync(userId));
         }
-
-        [HttpGet("statistic/{accountTypeParam}")]
-        public async Task<ActionResult<AccountStatisticsModel>> GetAccountStatisticsAsync(int accountTypeParam)
-        {
-            var statistics = await _service.GetStatisticByAccountsAsync(accountTypeParam);
-
-            return Ok(statistics);
-        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Accounts.BusinessLogic.Models;
 using Accounts.BusinessLogic.Models.Consts;
+using Accounts.BusinessLogic.Models.Enums;
 using Accounts.BusinessLogic.Services.Interfaces;
 using Accounts.DataAccess.Settings;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +12,11 @@ namespace Accounts.Presentation.Controllers
     [Route("api/financial-goals")]
     public class FinancialGoalsController : ControllerBase
     {
-        private readonly IFinancialGoalService _financialGoalsService;
+        private readonly IFinancialGoalService _service;
 
-        public FinancialGoalsController(IFinancialGoalService financialGoalsService)
+        public FinancialGoalsController(IFinancialGoalService service)
         {
-            _financialGoalsService = financialGoalsService;
+            _service = service;
         }
 
         [HttpGet]
@@ -23,7 +24,7 @@ namespace Accounts.Presentation.Controllers
         public async Task<ActionResult<List<FinancialGoalModel>>> GetGoalsAsync([FromQuery] PaginationSettings paginationSettings, 
             CancellationToken cancellationToken)
         {
-            return Ok(await _financialGoalsService.GetFinancialGoalsAsync(paginationSettings, cancellationToken));
+            return Ok(await _service.GetFinancialGoalsAsync(paginationSettings, cancellationToken));
         }
 
         [HttpGet("account/{accountId}")]
@@ -31,7 +32,7 @@ namespace Accounts.Presentation.Controllers
         public async Task<ActionResult<List<FinancialGoalModel>>> GetAccountGoalsAsync(int accountId, 
             [FromQuery] PaginationSettings paginationSettings, CancellationToken cancellationToken)
         {
-            return Ok(await _financialGoalsService.GetAccountFinancialGoalsAsync(accountId, paginationSettings, 
+            return Ok(await _service.GetAccountFinancialGoalsAsync(accountId, paginationSettings, 
                 cancellationToken));
         }
 
@@ -39,7 +40,7 @@ namespace Accounts.Presentation.Controllers
        // [Authorize]
         public async Task<ActionResult<int>> GetUserRecordsCountAsync(int accountId)
         {
-            return Ok(await _financialGoalsService.GetAccountRecordsCountAsync(accountId));
+            return Ok(await _service.GetAccountRecordsCountAsync(accountId));
         }
 
         [HttpPost]
@@ -47,17 +48,7 @@ namespace Accounts.Presentation.Controllers
         public async Task<IActionResult> CreateGoalAsync([FromBody] FinancialGoalActionModel financialGoal, 
             CancellationToken cancellationToken)
         {
-            await _financialGoalsService.CreateFinancialGoalAsync(financialGoal, cancellationToken);
-
-            return NoContent();
-        }
-
-        [HttpPut("account/{accountId}/goal/{id}")]
-       // [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
-        public async Task<IActionResult> EditAccountGoalAsync(int accountId, int id,
-            [FromBody] FinancialGoalActionModel model, CancellationToken cancellationToken)
-        {
-            await _financialGoalsService.UpdateAsync(id, model, cancellationToken);
+            await _service.CreateFinancialGoalAsync(financialGoal, cancellationToken);
 
             return NoContent();
         }
@@ -67,7 +58,7 @@ namespace Accounts.Presentation.Controllers
         public async Task<ActionResult<FinancialAccountModel>> GetAccountGoalByIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            return Ok(await _financialGoalsService.GetByIdAsync(id, cancellationToken));
+            return Ok(await _service.GetByIdAsync(id, cancellationToken));
         }
 
         [HttpDelete("account/{accountId}/goal/{id}")]
@@ -75,7 +66,25 @@ namespace Accounts.Presentation.Controllers
         public async Task<IActionResult> CloseAccountAsync(int accountId, int id,
             CancellationToken cancellationToken)
         {
-            await _financialGoalsService.DeleteAsync(id, cancellationToken);
+            await _service.DeleteAsync(id, cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpPut("account/{accountId}/goal/{id}")]
+        // [Authorize(Policy = AuthPolicyConsts.ClientOnly)]
+        public async Task<IActionResult> EditAccountGoalAsync(int accountId, int id,
+            [FromBody] FinancialGoalActionModel model, CancellationToken cancellationToken)
+        {
+            await _service.UpdateAsync(id, model, cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpPatch("goal/{goalId}")]
+        public async Task<IActionResult> GetByIdAsync(int goalId, GoalStatusEnum goalStatus)
+        {
+            await _service.UpdateGoalStatusAsync(goalId, goalStatus);
 
             return NoContent();
         }
